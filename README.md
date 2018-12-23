@@ -26,7 +26,7 @@ develop 开发分支
     
     git checkout develop        // 切换至开发分支
     git pull      // 更戏本地分支
-    git checkout -b ch/2018xxx-city  // 
+    git checkout -b ch/2018xxx-city  // 从当前分支中，切换出ch/2018xxx-city分支
 
     // 开发 
     git status // 查看本地状态
@@ -40,3 +40,4 @@ develop 开发分支
 
     git status // 查看本地状态
     git diff 文件路径  // 查看文件修改内容
+    git log // 查看本地分支的开发日志
