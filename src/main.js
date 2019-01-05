@@ -12,6 +12,7 @@ import './css/common.less'
 import './css/autoFlex.css'
 import './css/index.less'
 import './css/main.less'
+import './css/ch_main.less'
 Vue.config.productionTip = false
 Vue.prototype.$axios=axios
 //Vue.prototype.domain='http://120.77.216.100:8088'
