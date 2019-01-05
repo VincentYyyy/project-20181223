@@ -1,85 +1,164 @@
 <template>
 	<div class="myself home">
+
 		<div class="cm-header ">
 			<img src="../../../static/myself/set_icon@2x.png" class="pre">
-			<div class="p1p">我的		
+			<div class="p1p">个人中心		
 			</div>
 		</div>
-		<div class="myself-t mt09">
-			<div class="myself-info">
-				<div  v-if="isLogined">
+
+		<!-- 头部占位 -->
+		<div class="u-header-padding" ></div>
+
+		<!-- 个人信息 -->
+		<div class="m-details" v-show="commond.pageState === 'details'">
+
+			<div class="c-list-item c-list-item-raw">
+				<div class="c-item-label">
+					<label>{{ details.userImg.label }}</label>
+				</div>
+				<div class="c-item-content">
 					<div>
-						<img :src="user.img">
-						<img :src="user.lv" class="flag" v-if="user.userLevel!=''">
+						<img class="head-portrail" 
+							:src="details.userImg.img" 
+							@click="details.userImg.onClick()">
 					</div>
-					<div>
-						<div>
-							您好，{{user.username}}
-						</div>
-						<div class="transparent-7-10">
-							ID:{{user.mobile}}
-						</div>
-					</div>
-				</div>
-				<div v-else>
-					<div>
-						<img src="../../img/appicon/people_icon2@2x.png" class="tourist">
-					</div>
-					<div>
-						您好,游客
-					</div>
-					<div class="transparent-7-10 no-logined" @click="$gotoPages('/login')">
-						未登录,去登录
-					</div>
+					<div class="c-item-raw-right"></div>
 				</div>
 			</div>
-		</div>
-		<div class="myself-tabs flex-container flex-item-3">
-			<div v-for="item in tabsList" class="flex-item" @click="toLink(item.href)">
-				<div>
-					{{item.title}}
+
+			<div v-for="item in details.items" 
+				class="c-list-item c-list-item-raw" 
+				@click="item.onClick(item)"
+			>
+				<div class="c-item-label">
+					<label> {{item.label}} </label>
+				</div>
+				<div class="c-item-content">
+					<div v-if="item.filterType">
+						{{ item.content | filterFactory(item.filterType) }}
+					</div>
+					<div v-else>
+						{{ item.content }}
+					</div>
+							
+					<div v-if="item.rawRight" class="c-item-raw-right"></div>
 				</div>
 			</div>
+		
 		</div>
-		<div class="myself-links">
-			<div v-for="item in linkList" @click="toLink(item.href)">
-				<div class="flex-container-start-end ">
-					<div class="flex-item ">
-						<div class="flex-container-middle">
-							<img :src="item.img"><span>{{item.title}}</span>
-						</div>					
-					</div>
-					<div class="flex-item">
-						<img src="../../img/appicon/trangle-r1.png">
-					</div>
-				</div>
-			</div>
-			<div  @click="toLink()">
-				<div class="flex-container-start-end ">
-					<div class="flex-item ">
-						<div class="flex-container-middle">
-							<img src="../../img/appicon/myselflist.png" style="opacity: 0;">
-							<div class="flex-container-middle">推荐<div class="flex-item price">曙光情感</div>给好友</div>
-						</div>					
-					</div>
-					<div class="flex-item">
-						<img src="../../img/appicon/trangle-r1.png">
-					</div>
-				</div>
+
+		<!-- 输入昵称 -->
+		<div class="m-name-input" v-if="commond.pageState === 'nameInput'">
+			<div class="c-list-item">
+				<input  type="text" placeholder="输入昵称">
 			</div>
 		</div>
-		<div class="btn-wrap" @click="showPopUp" v-if="isLogined">
-			<x-button type="warn">退出登录</x-button>
-		</div>
+
+
+
+      <popup v-model="popup.show" >
+        <div class="m-popup popoup-select-headport" height="300">
+          <div class="m-selector">
+			  <div class="header">
+				  选择头像
+			  </div>
+			  <div class="haederpoit-list">
+				  <div class="list-item">
+
+					  	<div class="wrap f-clear">
+							<img class="headpoint" src="../../img/myself/男@2x.png" alt="">
+							<div class="checkbox">钩</div>
+							<label>男</label>
+					  	</div>
+						
+				  </div>
+				  <div class="list-item">
+					  	<div class="wrap f-clear">
+							<img class="headpoint" src="../../img/myself/女@3x.png" alt="">
+							<div class="checkbox">钩</div>
+							<label>女</label>
+					  	</div>
+				  </div>
+				  <div class="list-item">
+					  	<div class="wrap f-clear">
+							<img class="headpoint" src="../../img/myself/老@2x.png" alt="">
+							<div class="checkbox">钩</div>
+							<label>老</label>
+					  	</div>
+				  </div>
+				  <div class="list-item">
+					  	<div class="wrap f-clear">
+							<img class="headpoint" src="../../img/myself/少@2x.png" alt="">
+							<div class="checkbox">钩</div>
+							<label>少</label>
+					  	</div>
+				  </div>
+			  </div>
+          </div>
+		  <div class="cancel">
+			  取消
+		  </div>
+        </div>
+      </popup>		
 	</div>
 </template>
 
 <script>
-	import { XButton } from 'vux'
+	import { XButton, Popup } from 'vux'	
+	
+	var popup ={show: false}
+	var common = {
+		pageState: 'details'
+	}
+
 	export default{
 		name:'myself',
+		filters: {
+			filterFactory: function(value, type){
+				var filter = {
+					phone: function(value){
+						return "TODO " + value
+					},
+					identify: function(){
+						return "TODO " + value
+					}
+				}[type];
+
+				return filter(value);
+			},
+		},
 		data(){
 			return{
+				popup: popup,
+				commond: common,
+				details: {
+					userImg:{
+						label: '头像',
+						img: require('../../img/myself/男@2x.png'),
+						rawRight: true,
+						onClick: function(){
+							popup.show = true;
+						}
+					},
+					items:[{
+						label: '昵称',
+						content: '欧阳诸葛',
+						rawRight: true,
+						onClick: function(){
+							common.pageState = "nameInput";
+						}
+					},{
+						label: '手机号码',
+						content: '12345678901',
+						filterType: 'phone'
+					},{
+						label: '手机号码',
+						content: '12345678890123',
+						filterType: "identify"
+					}]
+				},
+
 				isLogined:false,
 				random:'',
 				user:{
@@ -152,7 +231,8 @@
 			}
 		},
 		components:{
-			XButton
+			XButton,
+			Popup
 		},
 		created(){
 			this.initUserInfo()
@@ -161,6 +241,119 @@
 </script>
 
 <style lang="less" scoped>
+.myself{
+	.u-header-padding{
+		height: 0.9rem;
+		width: 100%;
+	}
+
+	.m-popup{
+		height: 6rem;
+		.header{
+			padding: 0.4rem 0;
+		}
+
+		.haederpoit-list{
+			flex-wrap: wrap;
+			display: flex;
+			justify-items: 2;
+			justify-content: center;
+
+			.list-item{
+				flex-basis: 50%;
+				height: 1.7rem;
+
+				.wrap{
+					// &>div{
+					// 	display: block;
+					// }
+					width: 1.25rem;
+					margin: 0 auto;
+					
+					.headpoint{
+						float: left;
+						display: inline-block;
+						width: 0.8rem;
+						height: 0.8rem;
+						border-radius: 0.25rem; 
+					}
+					.checkbox{
+						float: right;
+						display: inline-block;
+						line-height: 0.8rem;
+						height: 0.8rem;
+						width: 0.45rem;
+					}
+					label{
+						width: 0.8rem;
+						float: left;
+						display: block;
+						padding: 0.12rem 0;
+					}
+				}
+				
+			}
+		}
+	}
+
+	.m-details{
+		.c-list-item{
+			padding-right: 0.6rem;
+
+			.c-item-raw-right{
+				margin-left: 0.15rem;
+				margin-right: -0.44rem;
+			}
+
+			.c-item-content{
+				.head-portrail{
+					width: 1.25rem;
+					height: 1.25rem;
+					border-radius: 0.625rem;
+				}
+			}
+		}
+
+		.right-raw{
+			width: 0.24rem;
+			height: 0.33rem;
+			margin-left: 0.15rem;
+			margin-right: -0.44rem;
+		}
+
+		.item.user-headport{
+			img.head-portrail {
+				width: 1.25rem;
+				height: 1.25rem;
+				border-radius: 0.625rem;
+			}
+			img.right-raw{
+				width: 0.24rem;
+				height: 0.33rem;
+			}
+		}
+
+		.item{
+			padding: 0.24rem 0.6rem 0.24rem 0.16rem;
+			box-sizing: border-box;
+			border-bottom: 1px solid #000;
+			flex-wrap: nowrap;
+
+			label{
+				text-align: left;
+				display: inline-block;
+			}
+
+			.content{
+				.right-raw{
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+ 
  .home{
 	position: relative;	
  }
