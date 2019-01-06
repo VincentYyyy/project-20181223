@@ -12,10 +12,27 @@
 
 @gap-basic: 0.16rem;
 @padding-lg: 0.6rem;
+@padding-md: 0.3rem;
+@border-color: gray; 
+
+@font-gray-1: #9f9f9f;
+@font-gray-2: #484848;
+
 
 button:focus,
 input:focus{
     outline-style: none
+}
+
+.main{
+    background-color: #f5f5f5;
+    font-size: 12px;
+    // height: 100%;
+}
+
+.u-header-padding{
+    height: 0.9rem;
+    width: 100%;
 }
 
 // list 基本类型
@@ -114,12 +131,36 @@ input:focus{
         background: red;
         color: #fff;
         text-align: center;
+        border: none;
+    }
+
+    &.disabled{
+        button{
+            background-color: #e5a997; 
+        }
     }
     
     .c-btn-details{
         font-size: 12px;
         text-align: left;
     }
+}
+
+.c-panel{
+    background: #fff;
+    margin-top: 0.2rem;
+
+    .panel-item{
+        display: none;
+
+        &.selected{
+            display: block;
+        }
+    }
+}
+
+.c-panel{
+    padding: 0.3rem;
 }
 
 // 功能类
@@ -129,15 +170,20 @@ input:focus{
     display: block;
     width: 0px;
 }
+.f-tl{
+    text-align: left;
+}
+.f-tr{
+    text-align: right;
+}
 
-.m-panel{
-    width: 100%;
+.f-gray-1 {
+    color: @font-gray-1
+}
+.f-gray-2 {
+    color: @font-gray-2
+}
 
-    .panel-item{
-        display: none;
-
-        &.selected{
-            display: block;
-        }
-    }
+.f-bdr{
+    border-radius: 0.1rem;
 }

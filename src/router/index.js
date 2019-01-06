@@ -123,21 +123,21 @@ export default new Router({
 		name: 'mySelf-myTeam-vipList',
 		component: resolve => require(['../pages/mySelf-myTeam-vipList/vipList.vue'], resolve)
 	}, {
-		path: '/budget',
+		path: '/mySelf-wallet-bind',
+		name: 'mySelf-wallet-bind',
+		component: resolve => require(['../pages/mySelf-wallet-bind/wallet-bind.vue'], resolve)
+	},{
+		path: '/mySelf-wallet-pickup',
+		name: 'mySelf-wallet-pickup',
+		component: resolve => require(['../pages/mySelf-wallet-pickup/wallet-pickup.vue'], resolve)
+	}, {
+		path: '/mySelf-budget',
 		name: 'budget',
-		component: resolve => require(['../pages/budget/budget.vue'], resolve),
+		component: resolve => require(['../pages/mySelf-budget/budget.vue'], resolve),
 		children:[{
-			path: '/budget-panel-0',
-			name: 'budget-panel-0',
-			component: resolve => require(['../pages/budget/budget-panel-0.vue'], resolve)
-		},{
-			path: '/budget-panel-1',
-			name: 'budget-panel-1',
-			component: resolve => require(['../pages/budget/budget-panel-1.vue'], resolve)
-		},{
-			path: '/budget-panel-2',
-			name: 'budget-panel-2',
-			component: resolve => require(['../pages/budget/budget-panel-2.vue'], resolve)
+			path: '/budget-panel',
+			name: 'budget-panel',
+			component: resolve => require(['../pages/mySelf-budget/budget-panel.vue'], resolve)
 		}]
 	}]
 })

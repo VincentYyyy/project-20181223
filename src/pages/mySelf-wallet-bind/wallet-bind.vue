@@ -3,7 +3,7 @@
 
 		<div class="cm-header ">
 			<img src="../../../static/myself/set_icon@2x.png" class="pre">
-			<div class="p1p">设置
+			<div class="p1p">认证中心		
 			</div>
 		</div>
 
@@ -11,30 +11,31 @@
 		<div class="u-header-padding" ></div>
 
 		<!-- 个人信息 -->
-		<tab>
-			<tab-item selected @on-item-click="changePanel">全部</tab-item>
-			<tab-item @on-item-click="changePanel">支出</tab-item>
-			<tab-item @on-item-click="changePanel">收入</tab-item>
-		</tab>
-		 <router-view/> <router-view/> <router-view/>
+		<div class="m-details">
 
-		<!-- <div class="m-panel">
-			<div class="panel-item selected">
-				123
+			<div v-for="item in nameInputs.items" 
+				class="c-list-item c-list-item-input"
+				@click="item.onClick && item.onClick(item)"
+			>
+				<input type="text" :placeholder="item.placeholder" v-model="item.value">
 			</div>
-			<div class="panel-item">
-				123
+		
+		</div>
+
+		<div class="c-btn">
+			<button>绑定</button>
+			<div class="c-btn-details">
+				说明：银行卡用于提现使用，请确认好输入的银行卡信息。
 			</div>
-			<div class="panel-item">
-				123
-			</div>
-		</div> -->
+		</div>
+	
 	</div>
 </template>
 
 <script>
-	import { Tab, Popup, TabItem } from 'vux'	
+	import { XButton, Popup } from 'vux'	
 	
+	var popup ={show: false}
 	var common = {
 		pageState: 'details'
 	}
@@ -45,31 +46,36 @@
 		},
 		data(){
 			return{
+				popup: popup,
 				commond: common,
-				setting:{
+				nameInputs:{
 					items: [{
-						label: '意见反馈',
-						onClick: function (){
-							
-						}
+						name: 'bank',
+						value: '',
+						placeholder: '输入银行卡开户行'
+					}, {
+						name: 'bankCardId',
+						value: '',
+						placeholder: '输入银行卡账号'
+					}, {
+						name: 'name',
+						value: '',
+						placeholder: '输入持卡人姓名'
+					}, {
+						name: 'phone',
+						value: '',
+						placeholder: '输入银行预留手机号'
 					}]
 				}
 			}
 		},
 		methods:{
-			changePanel(val){
-				console.log(val)
-				var _url='/budget-panel-'+val
-				this.$gotoPages(_url)
-			}
 		},
 		components:{
-			Tab,
-			Popup,
-			TabItem
+			XButton,
+			Popup
 		},
 		created(){
-			this.changePanel(0)
 		}
 	}
 </script>
@@ -185,10 +191,6 @@
 				}
 			}
 		}
-	}
-
-	.c-btn.btn-cancel{
-		margin-top: 1.2rem;
 	}
 }
 </style>

@@ -242,11 +242,6 @@
 
 <style lang="less" scoped>
 .myself{
-	.u-header-padding{
-		height: 0.9rem;
-		width: 100%;
-	}
-
 	.m-popup{
 		height: 6rem;
 		.header{
