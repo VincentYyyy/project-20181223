@@ -2,7 +2,7 @@
 	<div class="order-manager">
 		<cmheader :title="thatTitle"></cmheader>
 		<div class="task-shirtdown">
-			<img src="../../../static/chicon/task-shirtdown.jpg">
+			<img src="../../../static/chicon/已下架@3x.png">
 		</div>
 	</div>
 	</div>

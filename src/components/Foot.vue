@@ -136,18 +136,29 @@
 	.weui-grid__label {
 		margin: 0;
 	}
+	.foot{
+		height: 1rem;
+		line-height: 1rem;
+	}
 	.foot p{
 		color: #999999;
 		font-size: 12px;
+		padding-top: .02rem;
 		line-height: 14px;
 	}
 	.foot p.active{
-		color: #FF92A1;
+		color: #e03228;
 		line-height: 14px;
 		font-size: 14px;
 	}
 	.foot a{
 		text-decoration: none;
+		height: 100%;
+		box-sizing: border-box;
+	}
+	.weui-grids{
+		height: 1rem;
+		line-height: 1rem;
 	}
 	.weui-grids a span{
 		display: inline-block;
@@ -155,40 +166,40 @@
 		height: .4rem;
 	}
 	.weui-grids a:first-child span{
-		background: url(../assets/sy_navi@2x.png);
+		background: url(../assets/首页@3x.png);
 		background-size: 100% 100%;
 	}
 	.weui-grids a:first-child span.active{
-		background: url(../assets/sy_navi1@2x.png);
+		background: url(../assets/首页选中@3x.png);
 		background-size: 100% 100%;
 	}
 	
 	.weui-grids a:nth-of-type(2) span{
-		background: url(../assets/kc_navi@2x.png);
+		background: url(../assets/城主专区@3x.png);
 		background-size: 100% 100%;
 	}
 	.weui-grids a:nth-of-type(2) span.active{
-		background: url(../assets/kc_navi1@2x.png);
+		background: url(../assets/城主专区选中@3x.png);
 		background-size: 100% 100%;
 	}
 	.weui-grids p.active{
-		color: #FF92A1;
+		color: #e03228;
 	}
 	.weui-grids a:nth-of-type(3) span{
-		background: url(../assets/hd_navi@2x.png);
+		background: url(../assets/竞乐投@3x.png);
 		background-size: 100% 100%;
 	}
 	.weui-grids a:nth-of-type(3) span.active{
-		background: url(../assets/hd_navi1@2x.png);
+		background: url(../assets/竞乐投选中@3x.png);
 		background-size: 100% 100%;
 	}
 	
 	.weui-grids a:nth-of-type(4) span{
-		background: url(../assets/wd_navi@2x.png);
+		background: url(../assets/竞乐投@3x.png);
 		background-size: 100% 100%;
 	}
 	.weui-grids a:nth-of-type(4) span.active{
-		background: url(../assets/wd_navi1@2x.png);
+		background: url(../assets/竞乐投选中@3x.png);
 		background-size: 100% 100%;
 	}
 </style>

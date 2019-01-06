@@ -1,7 +1,7 @@
 <template>
 	<div class="order-manager">
 		<div class="cm-header">
-			<img src="../../../static/myself/set_icon@2x.png" class="pre" @click="goPrev">
+			<img src="../../../static/chicon/黑色返回@2x.png" class="pre" @click="goPrev">
 			<div class="p1p"><strong  class="draw-list">领取列表</strong>
 			</div>
 		</div>
@@ -26,7 +26,7 @@
 	  },
 	  methods:{
 	  	goPrev(){
-	  		window.history.go(-1)
+	  		this.$gotoPages('/cityloadArea')
 	  	},
 	  	onItemClick(val){
 	  		var _links=['/cityloadArea/orderImperfect','/cityloadArea/orderAuditing','/cityloadArea/orderFinish','/cityloadArea/orderReject']

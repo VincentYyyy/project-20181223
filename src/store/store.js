@@ -4,6 +4,7 @@ Vue.use(Vuex)
 
 // 创建基本状态
 const state = {
+ userId:'',
  test:'3',
  isShowPop:false,
  playerInfo:{
