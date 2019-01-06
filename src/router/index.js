@@ -9,9 +9,9 @@ export default new Router({
 		path: '/',
 		name: 'home',
 		redirect: {
-			path:'/home'
+			path:'/login'
 		},
-		component: resolve => require(['../pages/home/home.vue'], resolve)
+		component: resolve => require(['../pages/login/login.vue'], resolve)
 	},{
 		path: '/home',
 		name: 'home',
@@ -37,10 +37,41 @@ export default new Router({
 		name:'moreList',
 		component: resolve => require(['../pages/cityloadArea/moreList.vue'], resolve)
 	},{
+		path:'/cityloadArea/goodsDetail',
+		name:'goodsDetail',
+		component: resolve => require(['../pages/cityloadArea/goodsDetail.vue'], resolve)
+	},{
+		//发布广告
+		path:'/cityloadArea/editAd',
+		name:'editAd',
+		component: resolve => require(['../pages/cityloadArea/editAd.vue'], resolve)
+	},{
+		//领任务
+		path:'/cityloadArea/getTask',
+		name:'getTask',
+		component: resolve => require(['../pages/cityloadArea/getTask.vue'], resolve)
+	},{
+		//普通任务，重大任务
+		path:'/cityloadArea/getTaskList',
+		name:'getTaskList',
+		component: resolve => require(['../pages/cityloadArea/getTaskList.vue'], resolve)
+	},{
+		//任务详情
+		path:'/cityloadArea/getTaskListDetail',
+		name:'getTaskListDetail',
+		component: resolve => require(['../pages/cityloadArea/getTaskListDetail.vue'], resolve)
+	},{
+		path:'/cityloadArea/share',
+		name:'share',
+		component: resolve => require(['../pages/cityloadArea/share.vue'], resolve)
+	},{
 		//订单管理主页
 		path:'/cityloadArea/orderManager',
 		name:'orderManager',
 		component: resolve => require(['../pages/cityloadArea/orderManager.vue'], resolve),
+		redirect: {
+			path:'/cityloadArea/orderImperfect'
+		},
 		children:[{
 			//订单管理主页/待完成
 			path:'/cityloadArea/orderImperfect',

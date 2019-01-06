@@ -1,0 +1,259 @@
+<template>
+	<div class="get-task-list" style="padding-top: 0;">
+		<cmheader :title="thatTitle"></cmheader>
+		<div class="order-content-scroll application-auditing">
+			<div class="application-content">
+				<div class="flex-start-end no-wrap goods-item ac-set-plr">
+					<div class="flex-start no-wrap">
+						<div>
+							<img src="../../../static/myself/set_icon@2x.png" class="goods-img">
+						</div>
+						<div>
+							<div class="goods-name">
+								{{taskDetailObj.taskName}}
+							</div>
+							<div class="goods-type">
+								{{taskDetailObj.memberTypeStr}}
+							</div>
+						</div>
+					</div>
+					<div class="flex-end">
+						<div>
+							<div class="goods-price">
+								¥&nbsp;{{taskDetailObj.memberAmount}}
+							</div>
+							<div class="goods-status">
+								{{taskDetailObj.taskStatusStr}}
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--<div class="ac-title">
+					您上传的凭证:
+				</div>-->
+				<div class="flex-start flex-item-3 ac-img-list">
+					<div>
+						<img src="../../../static/chicon/back.jpg" class="pre">
+					</div>
+					<div>
+						<img src="../../../static/chicon/back.jpg" class="pre">
+					</div>
+					<div>
+						<img src="../../../static/chicon/back.jpg" class="pre">
+					</div>
+				</div>
+				<div class="ac-title">
+					<strong>
+						任务要求
+					</strong>
+				</div>
+				<div class="ac-remark">
+					<strong>
+						{{taskDetailObj.content}}
+					</strong>
+				</div>
+				<div>
+					<div class="copy-btn btn-bg" @click="copyUrl2">
+						复制文字
+					</div>
+				</div>
+				<div class="ac-remark">
+					说明&nbsp;：<br>
+					领取任务后，请自行保存图片并复制任务要求，发布朋友圈，并保留2小时以上，完成任务后截图上传客服审核。
+				</div>
+				<div @click="saveTask" class="btn-bg submit-btn">
+					领&nbsp;取
+				</div>
+			<textarea ref="myWords" v-model="taskDetailObj.content" disabled="none"></textarea>
+			</div>
+		
+			
+		</div>
+
+	<toast v-model="showMsg" type="text" :time='1200' is-show-mask :text="msgContent" :position="'middle'" width="auto"></toast>
+	</div>
+</template>
+
+<script>
+	import { Toast } from 'vux'
+	import cmheader from '../../components/cmHeader.vue'
+	export default {
+		name: 'task-list',
+		data() {
+			return {
+				id: '',
+				thatTitle: '任务详情',
+				taskDetailObj: {},
+				showMsg: false,
+				msgContent: ''
+				//				backUrl:'/cityloadArea/getTaskList'
+			}
+		},
+		created() {
+			this.id = this.$route.query.id
+			this.getTaskDetail()
+		},
+		methods: {
+			saveTask() {
+				var params = {
+					taskId: this.id,
+					id: this.$store.state.id
+				}
+				var _this = this
+				params = this.$qs.stringify(params)
+				this.$axios({
+					method: 'post',
+					data: params,
+					url: '/appApi/appUsers/saveMemberRemain'
+				}).then(function(res) {
+					if(res.status == '200') {
+						var getData = res.data
+						console.log(getData)
+						if(getData.status == '200') {
+							var _data = getData.data
+							_this.showMsg = true
+							_this.msgContent = getData.msg
+							setTimeOut(function() {
+								window.history.go(-1)
+							}, 2000)
+						} else {
+							var msg = getData.msg
+							_this.msgContent = msg
+							_this.showMsg = true
+						}
+					}
+				}).catch(function(err) {
+
+				})
+			},
+			copyUrl2(){
+					var v=this.$refs.myWords
+				    if(v.value.length>0){
+				        v.select();
+				        document.execCommand("Copy");
+				        return false;
+				    }
+			},
+			getTaskDetail() {
+				var params = {
+					id: this.id
+				}
+				var _this = this
+				params = this.$qs.stringify(params)
+				this.$axios({
+					method: 'post',
+					data: params,
+					url: '/appApi/appUsers/getTaskListById'
+				}).then(function(res) {
+					console.log(res)
+					//str.split('')
+					if(res.status == '200') {
+						var getData = res.data
+						if(getData.status == '200') {
+							_this.taskDetailObj = getData.data
+						}
+					}
+				}).catch(function(err) {
+
+				})
+			}
+		},
+		components: {
+			cmheader,
+			Toast
+		}
+	}
+</script>
+<style lang="less">
+	.copy-btn{
+		color: #fcd1ca;
+		font-size: 14px;
+		height: .32rem;
+		line-height: .32rem;
+		padding: 0.1rem .23rem;
+		display: inline-block;
+		/*font-weight: 700;*/
+		border-radius: 0.08rem;
+	}
+	.get-task-list {
+		/*padding-top: 1rem;*/
+		box-sizing: border-box;
+		height: 100%;
+		overflow: hidden;
+		.ac-img-list:first-child{
+			padding-top: .3rem;
+		}
+		.application-auditing{
+			/*padding-top: 0;*/
+		}
+		.ac-remark{
+			font-weight: 400;
+			padding-top: 0!important;
+		}
+	}
+	
+	.draw-list {
+		color: #333;
+	}
+	
+	.application-content {
+		padding: 0 .20rem;
+		overflow: scroll;
+		height: 100%;
+		.ac-title,
+		.ac-remark {
+			text-align: left;
+			padding: .26rem .08rem;
+			word-break: break-all;
+			word-wrap: break-word;
+			line-height: 18px;
+			font-size: 12px;
+		}
+		.ac-task-detail {
+			text-align: left;
+			font-size: 18px;
+			padding: 0.26rems .08rem;
+		}
+		.ac-title {
+			font-size: 16px;
+		}
+		.ac-img-list {
+			>div {
+				padding: .08rem;
+				box-sizing: border-box;
+			}
+		}
+		.ac-set-plr {
+			padding-left: 0.08rem;
+			padding-right: 0.08rem;
+			border-bottom: 0;
+		}
+	}
+	
+	.application-auditing {
+		padding-top: .88rem;
+		box-sizing: border-box;
+		height: 100%;
+		overflow: hidden;
+	}
+	
+	.task-auditing {
+		text-align: center;
+		padding-top: 1.8rem;
+	}
+	
+	.task-auditing img {
+		width: 3.5rem;
+	}
+	
+	.goods-trangle-wrap {
+		padding-left: .2rem;
+	}
+</style>
+
+<!--
+
+<div class="application-auditing">
+		<cmheader :title="thatTitle"></cmheader>
+		
+	</div>-->

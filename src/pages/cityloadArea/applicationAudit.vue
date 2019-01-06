@@ -1,10 +1,5 @@
 <template>
 	<div class="application-auditing">
-		<!--<div class="cm-header">
-			<img src="../../../static/chicon/back.jpg" class="pre" @click="goPrev">
-			<div class="p1p"><strong class="draw-list">已完成</strong>
-			</div>
-		</div>-->
 		<cmheader :title="thatTitle"></cmheader>
 		<div class="application-content">
 			<div class="ac-title">

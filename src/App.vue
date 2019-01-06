@@ -27,13 +27,19 @@
 //				document.body.scrollTop = 0;
 //				document.documentElement.scrollTop = 0
 				var pagePath = ['/home', '/cityloadArea','/findNew', '/mySelf']
-				console.log(to.path)
+				if(JSON.parse(sessionStorage.getItem('userInfo'))){
+					var _userInfo=JSON.parse(sessionStorage.getItem('userInfo'))
+					this.$store.state.id=_userInfo.id
+				}
 				if(pagePath.indexOf(to.path) != -1) {
 					this.isShowFoot = true
 				} else {
 					this.isShowFoot = false
 				}
 			}
+		},
+		created(){
+				
 		}
 	}
 </script>

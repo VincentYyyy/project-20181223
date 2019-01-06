@@ -1,6 +1,6 @@
 <template>
 	<div class="cm-header">
-		<img src="../../static/chicon/back.jpg" class="pre" @click="goPrev">
+		<img src="../../static/chicon/黑色返回@2x.png" class="pre" @click="goPrev">
 		<div class="p1p"><strong class="draw-list">{{title}}</strong>
 		</div>
 	</div>
@@ -9,7 +9,7 @@
 <script>
 	export default{
 		name:'cm-header',
-		props:['title'],
+		props:['title','backUrl'],
 		data(){
 			return{
 				
@@ -17,7 +17,11 @@
 		},
 		methods:{
 			goPrev(){
-				window.history.go(-1)
+				if(this.backUrl){
+					this.$gotoPages(this.backUrl)
+				}else{
+					window.history.go(-1)
+				}	
 			}
 		}
 	}

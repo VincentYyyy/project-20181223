@@ -11,18 +11,12 @@
 				您上传的凭证:
 			</div>
 			<div class="flex-start flex-item-3 ac-img-list">
-				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
-				</div>
 				<div v-for="(item,index) in myFilesList" @click="deleteImg(index)">
 					<img :src="item.src">
 				</div>
 				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
-				</div>
-				<div>
 					<input type="file" multiple="multiple" id="domFiles" ref="domFiles" class="files" @change="changeFiles" @click="filesDomClk">
-					<img src="../../../static/chicon/back.jpg" class="pre">
+					<img src="../../../static/chicon/提交图片审核@3x.png" class="pre">
 				</div>
 			</div>
 			<div class="ac-remark">
@@ -73,7 +67,7 @@
 				</div>
 			</div>
 			<div class="ac-remark">
-				任务要求：XXXXXXXXXXXXXXX
+				任务要求：XXXXXXXXXXXXXXX  
 			</div>
 		</div>
 	</div>
