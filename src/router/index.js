@@ -17,6 +17,10 @@ export default new Router({
 		name: 'home',
 		component: resolve => require(['../pages/home/home.vue'], resolve)
 	}, {
+		path:'/mall',
+		name:'mall',
+		component: resolve => require(['../pages/home/mall.vue'], resolve)
+	},{
 		path:'/login',
 		name:'login',
 		component: resolve => require(['../pages/login/login.vue'], resolve)
@@ -99,6 +103,10 @@ export default new Router({
 		name:'orderImperfect',
 		component: resolve => require(['../pages/cityloadArea/orderImperfect.vue'], resolve)	
 	},{
+		path:'/cityloadArea/orderTaskDetail',
+		name:'orderTaskDetail',
+		component: resolve => require(['../pages/cityloadArea/orderTaskDetail.vue'], resolve)	
+	},{
 		//订单管理主页/待审核
 		path:'/cityloadArea/orderAuditing',
 		name:'orderAuditing',
@@ -113,6 +121,10 @@ export default new Router({
 		path:'/cityloadArea/orderReject',
 		name:'orderReject',
 		component: resolve => require(['../pages/cityloadArea/orderReject.vue'], resolve)	
+	},{
+		path:'/cityloadArea/rejectDetail',
+		name:'rejectDetail',
+		component: resolve => require(['../pages/cityloadArea/rejectDetail.vue'], resolve)	
 	},{
 		//任务下架状态
 		path:'/cityloadArea/taskUnshelve',

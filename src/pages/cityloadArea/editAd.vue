@@ -64,7 +64,11 @@
 						var getData=res.data
 						if(getData.status=='200'){
 							_this.errContent='发布成功!'
+							
 							_this.showErr=true
+							setTimeout(function(){
+								_this.$gotoPages('/cityloadArea')
+							},1500)
 						}else{
 							var msg=getData.msg
 							_this.errContent=msg

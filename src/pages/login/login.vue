@@ -1,5 +1,6 @@
 <template>
 	<div class="login">
+		<img src="../../../static/chicon/close_btn.png" @click="goBack" class="page-close">
 		<div class="login-title">
 			登录八八商城
 		</div>
@@ -117,6 +118,7 @@
 							var _userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
 							_this.$store.state.id = _userInfo.id;
 							_this.$store.state.userInfo = _userInfo;
+							sessionStorage.setItem('nowIndex',0)
 							_this.$gotoPages('/home')
 						} else {
 							var msg = getData.msg
@@ -130,6 +132,11 @@
 			},
 			clearLocalStorage() {
 				window.localStorage.clear()
+			},
+			goBack(){
+				sessionStorage.setItem('nowIndex',0)
+				this.$gotoPages('/home')
+				
 			}
 		},
 		mounted() {
@@ -146,7 +153,15 @@
 	.set-pt {
 		padding-top: .34rem;
 	}
-	
+	.page-close{
+		position: fixed;
+		top: .2rem;
+		right: .2rem;
+		display: inline-block;
+		width: .44rem;
+		height: .44rem;
+	}
+
 	.password-register {
 		line-height: .12rem;
 		font-size: 12px;
