@@ -7,10 +7,12 @@
 		</div>
 		<div class="tab-wrap">
 			<tab>
-		      <tab-item selected @on-item-click="onItemClick">待完成</tab-item>
-		      <tab-item @on-item-click="onItemClick">待审核</tab-item>
-		      <tab-item @on-item-click="onItemClick">已完成</tab-item>
-		      <tab-item @on-item-click="onItemClick">已驳回</tab-item>
+		      <tab-item @on-item-click="onItemClick" v-for="(item,index) in menuArr" :key="index" :selected="index==tabIndex">
+		      	{{item.label}}
+		      </tab-item>
+		      <!--<tab-item @on-item-click="onItemClick"></tab-item>
+		      <tab-item @on-item-click="onItemClick"></tab-item>
+		      <tab-item @on-item-click="onItemClick"></tab-item>-->
 		    </tab>
 		</div>
 		<router-view/>
@@ -24,14 +26,37 @@
 	    Tab,
 	    TabItem
 	  },
+	  data(){
+	  	return{
+	  		tabIndex:null,
+	  		menuArr:[{
+	  			label:'待完成'
+	  		},{
+	  			label:'待审核'
+	  		},{
+	  			label:'已完成'
+	  		},{
+	  			label:'已驳回'
+	  		}]
+	  	}
+	  },
 	  methods:{
 	  	goPrev(){
+	  		sessionStorage.removeItem('tabIndex')
 	  		this.$gotoPages('/cityloadArea')
 	  	},
 	  	onItemClick(val){
 	  		var _links=['/cityloadArea/orderImperfect','/cityloadArea/orderAuditing','/cityloadArea/orderFinish','/cityloadArea/orderReject']
+	  		sessionStorage.setItem('tabIndex',val)
+	  		this.tabIndex=val
 	  		this.$gotoPages(_links[val])
 	  	}
+	  },
+	  created(){
+	  	 if(sessionStorage.getItem('tabIndex')){
+	  	 	var index=sessionStorage.getItem('tabIndex')
+	  	 	this.onItemClick(index)
+	  	 }
 	  }
 	}
 </script>

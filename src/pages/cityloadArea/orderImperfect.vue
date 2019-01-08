@@ -98,6 +98,7 @@
 						var getData=res.data
 						if(getData.status=='200'){
 							var _data=getData.data
+							console.log(_data)
 							if(_data.length<_this.pageSize){
 								_this.isLoadDown=true
 							}else{
@@ -112,6 +113,9 @@
 							})
 							console.log(_this.imperfectList.concat(_data))
 							_this.imperfectList=arr
+						}
+						if(getData.status=='1906'){
+							_this.isLoadDown=true
 						}
 						_this.pageNum++
 						_this.isLoadding=false
