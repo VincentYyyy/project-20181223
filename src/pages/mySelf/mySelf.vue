@@ -1,50 +1,75 @@
 <template>
 	<div class="myself home">
 
-		<div class="cm-header ">
-			<img src="../../../static/myself/set_icon@2x.png" class="pre">
-			<div class="p1p">个人中心		
+		<div class="m-bg">
+
+		</div>
+
+		<div class="m-user">
+			<div class="container">	
+				<div @click="toLink('/mySelf-userinfor')">
+					<img class="user-headport" :src="user.img" alt="">
+					<p class="user-name">
+						<span class="f-fs-18">{{user.name}}</span>
+						<i class="i-raw-right"></i>
+					</p>
+					<p class="user-phone f-gray-1 f-sz-18"
+						v-if="user.phone"
+					>
+						手机号：{{user.phone}}
+					</p>
+				</div>
+				<div class="wallet-details">
+					<div class="item">
+						<p class="num f-fs-18 f-fw-b">26788</p>
+						<p class="label f-fs-12 f-gray-1">总收入</p>
+					</div>
+					<div class="item">
+						<p class="num f-fs-18 f-fw-b">26788</p>
+						<p class="label f-fs-12 f-gray-1">总收入</p>
+					</div>
+					<div class="item">
+						<p class="num f-fs-18 f-fw-b">26788</p>
+						<p class="label f-fs-12 f-gray-1">总收入</p>
+					</div>
+				</div>
 			</div>
 		</div>
 
-		<!-- 头部占位 -->
-		<div class="u-header-padding" ></div>
-
 		<!-- 个人信息 -->
 		<div class="m-details" v-show="commond.pageState === 'details'">
+			
+			<template v-for="item in details.items">
+				<div class="c-list-item c-list-item-raw noborder"
+					v-if="item.type !== 'line'"
+					@click="toLink(item.toPageUrl)"
+				>
+					<div class="c-item-label f-gray-2"
+					>
+						<img class="label-icon" v-if="item.icon" :src="getIconUrl(item)" alt="">
+						<label class="f-fs-14"> {{item.label}} </label>
+					</div>
+					<div class="c-item-content"
+					>
+						<div v-if="item.filterType"
+							:class="item.class"
+							class="f-fs-14"
+						>
+							{{ item.content | filterFactory(item.filterType) }}
+						</div>
+						<div v-else
+							:class="item.class"
+							class="f-fs-14"
+						>
+							{{ item.content }}
+						</div>
+								
+						<div v-if="item.rawRight" class="c-item-raw-right"></div>
+					</div>
+				</div>
 
-			<div class="c-list-item c-list-item-raw">
-				<div class="c-item-label">
-					<label>{{ details.userImg.label }}</label>
-				</div>
-				<div class="c-item-content">
-					<div>
-						<img class="head-portrail" 
-							:src="details.userImg.img" 
-							@click="details.userImg.onClick()">
-					</div>
-					<div class="c-item-raw-right"></div>
-				</div>
-			</div>
-
-			<div v-for="item in details.items" 
-				class="c-list-item c-list-item-raw" 
-				@click="item.onClick(item)"
-			>
-				<div class="c-item-label">
-					<label> {{item.label}} </label>
-				</div>
-				<div class="c-item-content">
-					<div v-if="item.filterType">
-						{{ item.content | filterFactory(item.filterType) }}
-					</div>
-					<div v-else>
-						{{ item.content }}
-					</div>
-							
-					<div v-if="item.rawRight" class="c-item-raw-right"></div>
-				</div>
-			</div>
+				<hr class="line-item" v-if="item.type === 'line'">
+			</template>
 		
 		</div>
 
@@ -55,56 +80,13 @@
 			</div>
 		</div>
 
-
-
-      <popup v-model="popup.show" >
-        <div class="m-popup popoup-select-headport" height="300">
-          <div class="m-selector">
-			  <div class="header">
-				  选择头像
-			  </div>
-			  <div class="haederpoit-list">
-				  <div class="list-item">
-
-					  	<div class="wrap f-clear">
-							<img class="headpoint" src="../../img/myself/男@2x.png" alt="">
-							<div class="checkbox">钩</div>
-							<label>男</label>
-					  	</div>
-						
-				  </div>
-				  <div class="list-item">
-					  	<div class="wrap f-clear">
-							<img class="headpoint" src="../../img/myself/女@3x.png" alt="">
-							<div class="checkbox">钩</div>
-							<label>女</label>
-					  	</div>
-				  </div>
-				  <div class="list-item">
-					  	<div class="wrap f-clear">
-							<img class="headpoint" src="../../img/myself/老@2x.png" alt="">
-							<div class="checkbox">钩</div>
-							<label>老</label>
-					  	</div>
-				  </div>
-				  <div class="list-item">
-					  	<div class="wrap f-clear">
-							<img class="headpoint" src="../../img/myself/少@2x.png" alt="">
-							<div class="checkbox">钩</div>
-							<label>少</label>
-					  	</div>
-				  </div>
-			  </div>
-          </div>
-		  <div class="cancel">
-			  取消
-		  </div>
-        </div>
-      </popup>		
+		<popup v-model="popup.show" >
+		</popup>		
 	</div>
 </template>
 
 <script>
+	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
 	
 	var popup ={show: false}
@@ -141,77 +123,99 @@
 							popup.show = true;
 						}
 					},
+					sum: 0,
 					items:[{
-						label: '昵称',
-						content: '欧阳诸葛',
-						rawRight: true,
-						onClick: function(){
-							common.pageState = "nameInput";
+							label: '钱包',
+							icon: 'wallet',
+							content: '',
+							rawRight: true,
+							toPageUrl: '/mySelf-wallet',
+							class: {
+								'f-gray-2': true
+							}
+						},{
+							label: '收支明细',
+							icon: 'budget',
+							rawRight: true,
+							toPageUrl: '/mySelf-budget',
+							class: {
+								'f-gray-1': true
+							}
+						}, {
+							label: '认证中心',
+							icon: 'identification',
+							rawRight: true,
+							toPageUrl: '/mySelf-identification',
+							content: "未认证",
+							class: {
+								'f-gray-1': true
+							}
+						}, {
+							label: '我的团队',
+							icon: 'myTeam',
+							rawRight: true,
+							toPageUrl: '/mySelf-myTeam',
+							class: {
+								'f-gray-1': true
+							}
+						}, {
+							label: '邀请有奖',
+							icon: 'invite',
+							rawRight: true,
+							class: {
+								'f-gray-1': true
+							}
+						}, {
+							label: '横线',
+							type: 'line'
+						}, {
+							label: '账号与安全',
+							icon: 'acount',
+							rawRight: true,
+							toPageUrl: '/mySelf-acount',
+							class: {
+								'f-gray-1': true
+							}
+						}, {
+							label: '关于我们',
+							icon: 'about',
+							rawRight: true,
+							class: {
+								'f-gray-1': true
+							}
+						}, {
+							label: '联系我们',
+							icon: 'conect',
+							rawRight: true,
+							toPageUrl: '/mySelf-conect',
+							class: {
+								'f-gray-1': true
+							}
+						}, {
+							label: '设置',
+							icon: 'setting',
+							rawRight: true,
+							toPageUrl: '/mySelf-setting',
+							class: {
+								'f-gray-1': true
+							}
 						}
-					},{
-						label: '手机号码',
-						content: '12345678901',
-						filterType: 'phone'
-					},{
-						label: '手机号码',
-						content: '12345678890123',
-						filterType: "identify"
-					}]
+					]
 				},
-
-				isLogined:false,
-				random:'',
 				user:{
-					username:'',
-					img:require('../../img/myself/nav6.jpg'),
-				//	img:require('../img/myself/nav6.jpg'),
-					lv:'../../static/myself/vip_icon@2x.png',
-					mobile:'',
+					name:'欧阳诸葛',
+					img: require('../../img/myself/man.png'),
+					phone:'169838929193',
 					userLevel:''
 				},
-				tabsList:[{
-					title:'我的档案',
-					href:'/myself/myflie'
-				},{
-					title:'会员中心',
-					href:'/myself/VipCenter'
-				},{
-					title:'订单管理',
-					href:'/myself/ordermanager'
-				}],
-				linkList:[{
-					title:"我的消息",
-					img:'../../../static/myself/wdxx_icon@2x.png',
-					href:'/myself/MyMsg'
-				},{
-					title:'学习进度',
-					img:'../../../static/myself/xxjd_icon@2x.png',
-					href:'/myself/studystage'
-				},{
-					title:'我的收藏',
-					img:'../../../static/myself/wdsc_icon@2x.png',
-					href:'/myself/testing-report'
-				},{
-					title:'我的关注',
-					img:'../../../static/myself/wdgz_icon@2x.png',
-					href:'/myself/myattention'
-				},{
-					title:'我的缓存',
-					img:'../../../static/myself/wdhc_icon@2x.png',
-					href:'/myself/Cache'
-				},{
-					title:'意见反馈',
-					img:'../../../static/myself/yjfk_icon@2x.png',
-					href:'/myself/complain'
-				}]
 			}
 		},
 		methods:{
-			
+			getIconUrl: function(item){
+				return require("../../img/myself/i-" + item.icon + ".png" );
+			},
 			toLink(href){
-				if(!this.isLogined){
-					this.$gotoPages('/login')
-				}else{
+				if(href){
 					this.$gotoPages(href)
 				}
 			},
@@ -219,28 +223,135 @@
 				this.$store.state.isShowPop=true				
 			},
 			initUserInfo(){	
-				if(this.$cookie.get('uid')=='undefined'){
-					this.isLogined=false
-				}else{
-					console.log('11111')
-					this.user.username=this.$cookie.get('username')
-					this.user.mobile=this.$cookie.get('mobile')
-					this.user.userLevel=this.$cookie.get('userLevel')
-					this.isLogined=true
+				// if(this.$cookie.get('uid')=='undefined'){
+				// 	this.isLogined=false
+				// }else{
+				// 	console.log('11111')
+				// 	this.user.username=this.$cookie.get('username')
+				// 	this.user.mobile=this.$cookie.get('mobile')
+				// 	this.user.userLevel=this.$cookie.get('userLevel')
+				// 	this.isLogined=true
+				// }
+				var params={
+					id:this.$store.state.id,
 				}
-			}
+				params=this.$qs.stringify(params)
+				this.$axios({
+					method:'post',
+					data:params,
+					url:'/appApi/appUsers/getBalance'
+				}).then(function(res){
+					if(res.status=='200'){
+						var sum=res.data
+						if(getData.status=='200'){
+							this.s
+						}else{
+
+						}
+					}
+				}).catch(function(err){
+					
+				})
+			},
 		},
 		components:{
 			XButton,
-			Popup
+			Popup,
+			cmheader
 		},
 		created(){
 			this.initUserInfo()
+			
 		}
 	}
 </script>
 
 <style lang="less" scoped>
+.m-bg{
+	height: 3.6rem;
+	background: url(../../img/myself/myself-bg.png) no-repeat;
+	background-size: 100% 100%;
+	margin-bottom: 2.2rem;
+}
+
+.m-user{
+	position: absolute;
+	top: 1.7rem;
+	width: 90%;
+	left: 50%;
+	margin-left: -45%; 
+	background: #FFFFFF;
+	border-radius: 0.15rem;
+	box-shadow: #eaeaea 0.021rem 0.1rem 0.5rem;
+
+	.container{
+		position: relative;
+		width: 100%;
+		height: 100%;
+		padding-top: 0.95rem; 
+
+		.user-headport{
+			width: 1.7rem;
+			height: 1.7rem;
+			border-radius: 0.85rem;
+			left: 50%;
+			display: block;
+			position: absolute;
+			margin-top: -1.8rem; 
+			margin-left: -0.85rem; 
+		}
+
+		.user-name{
+			font-size: 0.25rem;
+			text-align: center;
+			position: relative;
+			margin-bottom: 0.2rem;
+
+			span{
+				font-size: 20px;
+			}
+
+			.i-raw-right{
+				height: 0.3rem;
+				width: 0.3rem;
+				position: absolute;
+				right: 0.3rem;
+				top: 50%;
+				margin-top: -0.15rem;
+			}
+		}
+
+		.user-phone{
+			text-align: center;
+			font-size: 0.16rem;
+			margin-bottom: 0.3rem;
+		}
+
+		.wallet-details{
+			height: 1.3rem;
+			display: flex;
+			justify-content: center;
+			border-top: 0.01rem solid #f5f5f5;
+
+			.item{
+				width: 100%;
+				padding: 0.2rem 0;
+
+				.num{
+					font-size: 16px;
+					text-align: center;
+					margin-bottom: 0.1rem;
+				}
+
+				.label{
+					text-align: center;
+				}
+			}
+		}
+	}
+}
+
+
 .myself{
 	.m-popup{
 		height: 6rem;
@@ -292,12 +403,21 @@
 	}
 
 	.m-details{
+		.line-item{
+			border: 0.01rem solid #f5f5f5;
+		}
 		.c-list-item{
 			padding-right: 0.6rem;
 
+			.c-item-label .label-icon{
+				height: 0.35rem;
+				width: 0.35rem;
+				margin-right: 0.2rem;
+			}
+
 			.c-item-raw-right{
 				margin-left: 0.15rem;
-				margin-right: -0.44rem;
+				margin-right: -0.15rem;
 			}
 
 			.c-item-content{

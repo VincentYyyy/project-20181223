@@ -30,11 +30,19 @@
 				if(JSON.parse(sessionStorage.getItem('userInfo'))){
 					var _userInfo=JSON.parse(sessionStorage.getItem('userInfo'))
 					this.$store.state.id=_userInfo.id
+					this.$store.state.userInfo =_userInfo;
 				}
 				if(pagePath.indexOf(to.path) != -1) {
 					this.isShowFoot = true
 				} else {
 					this.isShowFoot = false
+				}
+				
+				// 进入个人中心验证登录
+				var toMySelf = to.name.indexOf('mySelf') > -1;
+				var isUnLogin = !this.$store.state.id;
+				if(toMySelf && isUnLogin){
+					this.$router.push('/login') //FIXME
 				}
 			}
 		},

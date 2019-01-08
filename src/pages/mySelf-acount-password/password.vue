@@ -1,11 +1,8 @@
 <template>
 	<div class="myself home">
 
-		<div class="cm-header">
-			<img src="../../../static/myself/set_icon@2x.png" class="pre">
-			<div class="p1p">修改密码		
-			</div>
-		</div>
+		<cmheader :title="'修改密码'"></cmheader>
+		
 
 		<!-- 头部占位 -->
 		<div class="u-header-padding" ></div>
@@ -21,6 +18,7 @@
 
 				<div class="c-identification-btn"
 					v-if="item.type === 'identification'"
+					@click="sendMs"
 				></div>
 			</div>
 		
@@ -34,6 +32,7 @@
 </template>
 
 <script>
+	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
 	
 	var popup ={show: false}
@@ -69,10 +68,75 @@
 			}
 		},
 		methods:{
+			sendMs(){
+				
+				var phone;
+				this.nameInputs.items.forEach(function(item){
+					if(item.name === "phone"){
+						phone = item.value;
+					}
+				})
+				var params={
+					phone:phone
+				}
+				var validPhone = this.$getChecker('phone')(phone);
+				if(!validPhone){
+					alert("请输入正确的手机号")
+					return;
+				}
+				params=this.$qs.stringify(params)
+				this.$axios({
+					method:'post',
+					data: params,
+					url:'/appApi/appUsers/sendMs'
+				}).then(function(res){
+					if(res.status=='200'){
+						alert("获取验证码成功")
+						console.log(res)
+					}else{
+						alert("获取验证码失败")
+
+					}
+				}).catch(function(err){
+					console.log(err)
+				})
+			},
+			changePassword(){
+				var params={
+					id:this.$store.state.id,
+					pwd: '',
+					newPwd: ''
+				}
+
+				this.nameInputs.items.forEach(function(item){
+				})
+
+				params=this.$qs.stringify(params)
+				this.$axios({
+					method:'post',
+					data: params,
+					url:'/appApi/appUsers/adsServ'
+				}).then(function(res){
+					if(res.status=='200'){
+						var getData=res.data
+						if(getData.status=='200'){
+							_this.errContent='发布成功!'
+							_this.showErr=true
+						}else{
+							var msg=getData.msg
+							_this.errContent=msg
+							_this.showErr=true
+						}
+					}
+				}).catch(function(err){
+					console.log(err)
+				})
+			}
 		},
 		components:{
 			XButton,
-			Popup
+			Popup,
+			cmheader
 		},
 		created(){
 		}

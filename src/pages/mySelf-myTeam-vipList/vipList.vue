@@ -1,11 +1,6 @@
 <template>
 	<div class="myself home">
-
-		<div class="cm-header ">
-			<img src="../../../static/myself/set_icon@2x.png" class="pre">
-			<div class="p1p">设置
-			</div>
-		</div>
+		<cmheader :title="title"></cmheader>
 
 		<!-- 头部占位 -->
 		<div class="u-header-padding" ></div>
@@ -20,11 +15,17 @@
 				<div class="c-item-label user-infor">
 					<img class="user-infor-img" :src="item.img" alt="">
 					<div class="user-infor-details">
-						<p>{{item.label}}</p>
-						<p class="user-infor-phone" v-if="item.phone">{{item.phone}}</p>
+						<p class="f-fs-16">{{item.label}}</p>
+						<p class="user-infor-phone f-fs-12" 
+							v-if="item.phone && level == 1"
+						>{{item.phone}}</p>
 					</div>
 				</div>
-				<div class="c-item-content">
+				<div class="c-item-content f-fs-12 f-gray-1"
+					:class="{
+						'date-bottom': level == 1
+					}"
+				>
 					{{item.date}}
 				</div>
 			</div>
@@ -36,6 +37,7 @@
 
 <script>
 	import { XButton, Popup } from 'vux'	
+	import cmheader from '../../components/cmHeader.vue'
 	
 	var common = {
 		pageState: 'details'
@@ -48,6 +50,8 @@
 		data(){
 			return{
 				commond: common,
+				title: '一级会员',
+				level: 1,
 				vipList:{
 					items: [{
 						label: '李一鸣',
@@ -62,12 +66,45 @@
 			}
 		},
 		methods:{
+			getVipList: function(pageNum){
+				var params={
+					id:this.$store.state.id,
+					pageNum: pageNum,
+					pageSize: 100		// FIXME
+				}
+
+				params=this.$qs.stringify(params);
+				var levelApi = {
+					1: 'getOneInvitationList',
+					2: 'getTwoInvitationList'
+				}
+				var url = '/appApi/appUsers/' + levelApi[this.level];
+				this.$axios({
+					method:'post',
+					data:params,
+					url: url
+				}).then(function(res){
+					if(res.status=='200'){		// TODO 
+						console.log("请求会员列表成功：", res.data);
+					}
+				}).catch(function(err){
+
+				})
+			}
 		},
 		components:{
 			XButton,
-			Popup
+			Popup,
+			cmheader
 		},
 		created(){
+			this.level = this.$route.query.level;
+			this.title = {
+				1: '一级会员',
+				2: '二级会员'
+			}[this.level];
+			
+			this.getVipList(0);
 		}
 	}
 </script>
@@ -98,6 +135,9 @@
 					.user-infor-details{
 						text-align: left;
 					}
+					.user-infor-phone{
+						margin-top: 0.1rem; 
+					}
 				}
 			}
 
@@ -106,12 +146,8 @@
 				margin-right: -0.44rem;
 			}
 
-			.c-item-content{
-				.head-portrail{
-					width: 1.25rem;
-					height: 1.25rem;
-					border-radius: 0.625rem;
-				}
+			.c-item-content.date-bottom{
+				padding-top: 0.5rem;
 			}
 		}
 
@@ -120,18 +156,6 @@
 			height: 0.33rem;
 			margin-left: 0.15rem;
 			margin-right: -0.44rem;
-		}
-
-		.item.user-headport{
-			img.head-portrail {
-				width: 1.25rem;
-				height: 1.25rem;
-				border-radius: 0.625rem;
-			}
-			img.right-raw{
-				width: 0.24rem;
-				height: 0.33rem;
-			}
 		}
 
 		.item{

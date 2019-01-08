@@ -115,7 +115,8 @@
 						if(getData.status == '200') {
 							sessionStorage.setItem('userInfo', userInfo)
 							var _userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
-							_this.$store.state.id = _userInfo.id
+							_this.$store.state.id = _userInfo.id;
+							_this.$store.state.userInfo = _userInfo;
 							_this.$gotoPages('/home')
 						} else {
 							var msg = getData.msg

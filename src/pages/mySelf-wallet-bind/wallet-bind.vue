@@ -1,11 +1,6 @@
 <template>
 	<div class="myself home">
-
-		<div class="cm-header ">
-			<img src="../../../static/myself/set_icon@2x.png" class="pre">
-			<div class="p1p">认证中心		
-			</div>
-		</div>
+		<cmheader :title="'绑定银行卡'"></cmheader>
 
 		<!-- 头部占位 -->
 		<div class="u-header-padding" ></div>
@@ -23,8 +18,8 @@
 		</div>
 
 		<div class="c-btn">
-			<button>绑定</button>
-			<div class="c-btn-details">
+			<button @click="submit">绑定</button>
+			<div class="c-btn-details f-gray-2">
 				说明：银行卡用于提现使用，请确认好输入的银行卡信息。
 			</div>
 		</div>
@@ -33,7 +28,8 @@
 </template>
 
 <script>
-	import { XButton, Popup } from 'vux'	
+	import { XButton, Popup } from 'vux';
+	import cmheader from '../../components/cmHeader.vue'
 	
 	var popup ={show: false}
 	var common = {
@@ -50,30 +46,97 @@
 				commond: common,
 				nameInputs:{
 					items: [{
-						name: 'bank',
+						name: 'bankAddress',
 						value: '',
-						placeholder: '输入银行卡开户行'
+						placeholder: '输入银行卡开户行',
+						checker: function(item){
+							if(!item.value || (item.value.length && item.length < 2))
+								return "请输入银行卡开户行"
+						}
 					}, {
-						name: 'bankCardId',
-						value: '',
-						placeholder: '输入银行卡账号'
+						name: 'bankCard',
+						value: '6231132201000248419',			//FIXME
+						placeholder: '输入银行卡账号',
+						checker: function(item, $getChecker){
+							if(!item.value)
+								return "请输入银行卡账号"
+
+							if(!$getChecker('bankCard')(item.value))
+								return "银行卡格式不正确";
+ 						}
 					}, {
-						name: 'name',
+						name: 'bankPerson',
 						value: '',
-						placeholder: '输入持卡人姓名'
+						placeholder: '输入持卡人姓名',
+						checker: function(item, $getChecker){
+							if(!item.value)
+								return "请输入持卡人姓名"
+
+							if(!$getChecker('userName')(item.value))
+								return "姓名格式不正确"
+						}
 					}, {
-						name: 'phone',
+						name: 'bankPhone',
 						value: '',
-						placeholder: '输入银行预留手机号'
+						placeholder: '输入银行预留手机号',
+						checker: function(item, $getChecker){
+							if(!item.value)
+								return "请输入银行预留手机号";
+
+							//验证规则：11位数字，以1开头。
+							if( !$getChecker('phone')(item.value))
+								return "手机号格式不正确";
+
+						}
 					}]
 				}
 			}
 		},
 		methods:{
+			submit(){
+				var params={
+					id:this.$store.state.id,
+				}
+				var items = this.nameInputs.items;
+				var warn;
+
+				for(var i=0; i< items.length; i++){
+					var item = items[i];
+					warn = item.checker(item, this.$getChecker);
+					params[item.name] = item.value;
+					if(warn){
+						alert(warn);
+						return;
+					}
+				}
+				params=this.$qs.stringify(params);
+
+				this.$axios({
+					method:'post',
+					data:params,
+					url:'/appApi/appUsers/bindBankCard'
+				}).then(function(res){
+					if(res.status=='200'){		// TODO 
+						var code=res.data.data.code;
+						if(code=='200'){
+							console.log("ok", res.data);
+						}else{
+
+						}
+					}
+				}).catch(function(err){
+
+				})
+			},
+			seGlobelUserInfor: function (params){
+				var self = this;
+				
+			}
 		},
 		components:{
 			XButton,
-			Popup
+			Popup,
+			cmheader
 		},
 		created(){
 		}

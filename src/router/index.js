@@ -133,7 +133,10 @@ export default new Router({
 		path: '/findNew',
 		name: 'findNew',
 		component: resolve => require(['../pages/findNew/findNew.vue'], resolve)
-	},{
+	},
+	
+	// 个人中心
+	{
 		path: '/mySelf',
 		name: 'mySelf',
 		component: resolve => require(['../pages/mySelf/mySelf.vue'], resolve)
@@ -142,18 +145,41 @@ export default new Router({
 		name: 'mySelf-identification',
 		component: resolve => require(['../pages/mySelf-identification/identification.vue'], resolve)
 	}, {
-		path: '/mySelf-password',
-		name: 'mySelf-password',
-		component: resolve => require(['../pages/mySelf-password/password.vue'], resolve)
+		path: '/mySelf-userinfor',
+		name: 'mySelf-userinfor',
+		component: resolve => require(['../pages/mySelf-userinfor/userinfor.vue'], resolve)
+	}, {
+		path: '/mySelf-acount',
+		name: 'mySelf-acount',
+		component: resolve => require(['../pages/mySelf-acount/acount.vue'], resolve)
+	}, {
+		path: '/mySelf-acount-password',
+		name: 'mySelf-acount-password',
+		component: resolve => require(['../pages/mySelf-acount-password/password.vue'], resolve)
 	}, {
 		path: '/mySelf-setting',
 		name: 'mySelf-setting',
 		component: resolve => require(['../pages/mySelf-setting/setting.vue'], resolve)
 	}, {
+		path: '/mySelf-conect',
+		name: 'mySelf-conect',
+		component: resolve => require(['../pages/mySelf-conect/conect.vue'], resolve)
+	}, {
+		path: '/mySelf-myTeam',
+		name: 'mySelf-myTeam',
+		component: resolve => require(['../pages/mySelf-myTeam/myTeam.vue'], resolve)
+	}, {
 		path: '/mySelf-myTeam-vipList',
 		name: 'mySelf-myTeam-vipList',
 		component: resolve => require(['../pages/mySelf-myTeam-vipList/vipList.vue'], resolve)
-	}, {
+	}, 
+	
+	// 个人中心 - 钱包
+	{
+		path: '/mySelf-wallet',
+		name: 'mySelf-wallet',
+		component: resolve => require(['../pages/mySelf-wallet/wallet.vue'], resolve)
+	},{
 		path: '/mySelf-wallet-bind',
 		name: 'mySelf-wallet-bind',
 		component: resolve => require(['../pages/mySelf-wallet-bind/wallet-bind.vue'], resolve)
@@ -163,7 +189,7 @@ export default new Router({
 		component: resolve => require(['../pages/mySelf-wallet-pickup/wallet-pickup.vue'], resolve)
 	}, {
 		path: '/mySelf-budget',
-		name: 'budget',
+		name: 'mySelf-budget',
 		component: resolve => require(['../pages/mySelf-budget/budget.vue'], resolve),
 		children:[{
 			path: '/budget-panel',

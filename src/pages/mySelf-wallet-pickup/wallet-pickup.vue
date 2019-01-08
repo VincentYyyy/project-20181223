@@ -1,14 +1,10 @@
 <template>
-	<div class="myself home main">
+	<div class="myself f-bg-gray p-binkbind">
 
-		<div class="cm-header ">
-			<img src="../../../static/myself/set_icon@2x.png" class="pre">
-			<div class="p1p">认证中心		
-			</div>
-		</div>
+		<cmheader :title="'绑定银行卡'"></cmheader>
 
 		<!-- 头部占位 -->
-		<div class="u-header-padding"></div>
+		<div class="u-header-padding" ></div>
 
 		<!-- 个人信息 -->
 		<div class="c-panel">
@@ -57,17 +53,19 @@
 
 <script>
 	import {XDialog} from 'vux'
+	import cmheader from '../../components/cmHeader.vue'
 
 	export default{
 		name:'',
 		data(){
 			return{
 				dialog: {
-					show: true
+					show: false
 				}
 			}
 		},
 		components:{
+			cmheader,
 			XDialog
 		},
 		methods:{
@@ -80,6 +78,9 @@
 </script>
 
 <style lang="less" scoped>
+	.p-binkbind{
+		height: 100%;
+	}
 	.bank{
 		font-size: 18px;
 	}

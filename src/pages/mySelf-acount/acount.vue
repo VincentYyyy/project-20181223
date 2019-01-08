@@ -1,28 +1,35 @@
 <template>
 	<div class="myself home">
-
-		<cmheader :title="'设置'"></cmheader>
+		<cmheader :title="'账号与安全'"></cmheader>
 
 		<!-- 头部占位 -->
 		<div class="u-header-padding" ></div>
 
 		<!-- 个人信息 -->
-		<div class="m-details">
+		<div class="m-details" v-show="commond.pageState === 'details'">
 
-			<div v-for="item in setting.items" 
-				class="c-list-item"
-				@click="item.onClick && item.onClick(item)"
+			<div v-for="item in details.items" 
+				class="c-list-item c-list-item-raw" 
+				@click="toLink(item)"
 			>
-				<div class="c-item-label">{{item.label}}</div>
-				<div class="c-item-raw-right"></div>
+				<div class="c-item-label f-gray-2">
+					<label class="f-fs-16"> {{item.label}} </label>
+				</div>
+				<div class="c-item-content"
+				>
+					<div
+						:class="item.class"
+						class="f-fs-14"
+					>
+						{{ item.content }}
+					</div>
+							
+					<div v-if="item.rawRight" class="c-item-raw-right"></div>
+				</div>
 			</div>
 		
 		</div>
-
-		<div class="c-btn btn-cancel">
-			<button>退出</button>
-		</div>
-	
+		
 	</div>
 </template>
 
@@ -30,6 +37,7 @@
 	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
 	
+	var popup ={show: false}
 	var common = {
 		pageState: 'details'
 	}
@@ -37,21 +45,35 @@
 	export default{
 		name:'myself',
 		filters: {
+			filterFactory: function(value, type){
+				var filter = {
+					phone: function(value){
+						return "TODO " + value
+					},
+					identify: function(){
+						return "TODO " + value
+					}
+				}[type];
+
+				return filter(value);
+			},
 		},
 		data(){
 			return{
+				popup: popup,
 				commond: common,
-				setting:{
-					items: [{
-						label: '意见反馈',
-						onClick: function (){
-							
-						}
+				details: {
+					items:[{
+						label: '修改密码',
+						rawRight: true,
 					}]
-				}
+				},
 			}
 		},
 		methods:{
+			toLink(item){
+				this.$gotoPages('/mySelf-acount-password')
+			}
 		},
 		components:{
 			XButton,
@@ -65,60 +87,6 @@
 
 <style lang="less" scoped>
 .myself{
-
-	.u-header-padding{
-		height: 0.9rem;
-		width: 100%;
-	}
-
-	.m-popup{
-		height: 6rem;
-		.header{
-			padding: 0.4rem 0;
-		}
-
-		.haederpoit-list{
-			flex-wrap: wrap;
-			display: flex;
-			justify-items: 2;
-			justify-content: center;
-
-			.list-item{
-				flex-basis: 50%;
-				height: 1.7rem;
-
-				.wrap{
-					// &>div{
-					// 	display: block;
-					// }
-					width: 1.25rem;
-					margin: 0 auto;
-					
-					.headpoint{
-						float: left;
-						display: inline-block;
-						width: 0.8rem;
-						height: 0.8rem;
-						border-radius: 0.25rem; 
-					}
-					.checkbox{
-						float: right;
-						display: inline-block;
-						line-height: 0.8rem;
-						height: 0.8rem;
-						width: 0.45rem;
-					}
-					label{
-						width: 0.8rem;
-						float: left;
-						display: block;
-						padding: 0.12rem 0;
-					}
-				}
-				
-			}
-		}
-	}
 
 	.m-details{
 		.c-list-item{
@@ -175,9 +143,10 @@
 			}
 		}
 	}
-
-	.c-btn.btn-cancel{
-		margin-top: 1.2rem;
-	}
 }
+
+ 
+ .home{
+	position: relative;	
+ }
 </style>
