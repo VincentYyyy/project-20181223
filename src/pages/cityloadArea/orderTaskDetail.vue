@@ -1,5 +1,8 @@
 <template>
 	<div class="application-auditing">
+		<div>
+			<toast v-model="showResMsg" type="text" :time='1200' is-show-mask :text="resMsgContent"  :position="'middle'" width="auto"></toast>
+		</div>
 		<cmheader :title="thatTitle"></cmheader>
 		<div class="application-content" v-if="tabIndex==0">
 			<div class="ac-title">
@@ -15,7 +18,17 @@
 				</div>
 			</div>
 			<div class="ac-remark">
-				备注：XXXXXXXXXXXXXXX
+				<textarea v-model="remark" placeholder="输入备注">
+					
+				</textarea>
+			</div>
+			<div>
+				<!--<div class="btn-bg">
+					提交审核
+				</div>-->
+				<div @click="saveTask" class="btn-bg submit-btn" style="margin: 0;margin-top: .33rem;margin-bottom: .59rem;">
+					提交审核
+				</div>
 			</div>
 			<div class="ac-task-detail">
 				<strong>
@@ -25,44 +38,40 @@
 			<div  class="flex-start-end no-wrap goods-item ac-set-plr">
 				<div class="flex-start no-wrap">
 					<div>
-						<img src="../../../static/myself/set_icon@2x.png" class="goods-img">
+						<img :src="taskInfo.taskImgsArr[0]" class="goods-img" v-if="taskInfo.taskImgsArr">
+						<!--<img :src="taskInfo.taskImgsArr[0]" class="goods-img" v-if="taskInfo.taskImgsArr">-->
+						<img src="/static/chicon/88商城余额@2x.png" class="goods-img" v-else>
 					</div>
 					<div>
 						<div class="goods-name">
-							X奥传媒
+							{{taskInfo.taskName}}
 						</div>
 						<div class="goods-type">
-							【普通】
+							【{{taskInfo.taskTypeStr}}】
 						</div>
 					</div>
 				</div>
 				<div class="flex-end">
 					<div>
 						<div class="goods-price">
-							¥&nbsp;6
+							¥&nbsp;{{taskInfo.remainAmount}}
 						</div>
 						<div class="goods-status">
-							待审核 
+							{{taskInfo.remainStatusStr}} 
 						</div>
 					</div>
-					<div class="goods-trangle-wrap">
-						>
-					</div>
+					<!--<div class="goods-trangle-wrap">
+						<img src="../../../static/chicon/右箭头@2x.png" class="goods-img">
+					</div>-->
 				</div>
 			</div>
-			<div class="flex-start flex-item-3 ac-img-list">
-				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
-				</div>
-				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
-				</div>
-				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
+			<div class="flex-start flex-item-3 ac-img-list" v-if="taskInfo.taskImgsArr">
+				<div v-for="(item,index) in taskInfo.taskImgsArr">
+					<img :src="item" class="pre">
 				</div>
 			</div>
 			<div class="ac-remark">
-				任务要求：XXXXXXXXXXXXXXX  
+				任务要求：{{taskInfo.taskContent}}  
 			</div>
 		</div>
 		<div class="application-content" v-if="tabIndex==1">
@@ -70,84 +79,230 @@
 				您上传的凭证:
 			</div>
 			<div class="flex-start flex-item-3 ac-img-list">
-				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
-				</div>
-				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
-				</div>
-				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
+				<div v-for="(item,index) in taskInfo.remainImgsArr">
+					<img :src="item" class="pre" v-if="item">
+					<img src="/static/chicon/88商城余额@2x.png" class="goods-img" v-else>
 				</div>
 			</div>
 			<div class="ac-remark">
-				备注：XXXXXXXXXXXXXXX
+				备注：{{taskInfo.remainContent}}
 			</div>
+			<!--<div class="ac-task-detail">
+				<strong>
+					驳回原因
+				</strong>
+			</div>
+			<div class="ac-remark">
+				<strong>
+					{{taskInfo.taskContent}}
+				</strong>  
+			</div>-->
 			<div class="ac-task-detail">
 				<strong>
 					任务详情
 				</strong>
 			</div>
+			
 			<div  class="flex-start-end no-wrap goods-item ac-set-plr">
 				<div class="flex-start no-wrap">
 					<div>
-						<img src="../../../static/myself/set_icon@2x.png" class="goods-img">
+						<img :src="taskInfo.taskImgsArr[0]" class="goods-img" v-if="taskInfo.taskImgsArr">
+						<!--<img :src="taskInfo.taskImgsArr[0]" class="goods-img" v-if="taskInfo.taskImgsArr">-->
+						<img src="/static/chicon/88商城余额@2x.png" class="goods-img" v-else>
 					</div>
 					<div>
 						<div class="goods-name">
-							X奥传媒
+							{{taskInfo.taskName}}
 						</div>
 						<div class="goods-type">
-							【普通】
+							【{{taskInfo.taskTypeStr}}】
 						</div>
 					</div>
 				</div>
 				<div class="flex-end">
 					<div>
 						<div class="goods-price">
-							¥&nbsp;6
+							¥&nbsp;{{taskInfo.remainAmount}}
 						</div>
 						<div class="goods-status">
-							待审核 
+							{{taskInfo.remainStatusStr}} 
 						</div>
 					</div>
-					<div class="goods-trangle-wrap">
-						>
-					</div>
+					<!--<div class="goods-trangle-wrap">
+						<img src="../../../static/chicon/右箭头@2x.png" class="goods-img">
+					</div>-->
 				</div>
 			</div>
-			<div class="flex-start flex-item-3 ac-img-list">
-				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
-				</div>
-				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
-				</div>
-				<div>
-					<img src="../../../static/chicon/back.jpg" class="pre">
+			<div class="flex-start flex-item-3 ac-img-list" v-if="taskInfo.taskImgsArr">
+				<div v-for="(item,index) in taskInfo.taskImgsArr">
+					<img :src="item" class="pre">
 				</div>
 			</div>
 			<div class="ac-remark">
-				任务要求：XXXXXXXXXXXXXXX
+				任务要求：{{taskInfo.taskContent}}  
+			</div>
+		</div>
+		<div class="application-content" v-if="tabIndex==2">
+			<div class="ac-title">
+				您上传的凭证:
+			</div>
+			<div class="flex-start flex-item-3 ac-img-list">
+				<div v-for="(item,index) in taskInfo.remainImgsArr">
+					<img :src="item" class="pre" v-if="item">
+					<img src="/static/chicon/88商城余额@2x.png" class="goods-img" v-else>
+				</div>
+			</div>
+			<div class="ac-remark">
+				备注：{{taskInfo.remainContent}}
+			</div>
+			<!--<div class="ac-task-detail">
+				<strong>
+					驳回原因
+				</strong>
+			</div>
+			<div class="ac-remark">
+				<strong>
+					{{taskInfo.taskContent}}
+				</strong>  
+			</div>-->
+			<div class="ac-task-detail">
+				<strong>
+					任务详情
+				</strong>
+			</div>
+			
+			<div  class="flex-start-end no-wrap goods-item ac-set-plr">
+				<div class="flex-start no-wrap">
+					<div>
+						<img :src="taskInfo.taskImgsArr[0]" class="goods-img" v-if="taskInfo.taskImgsArr">
+						<!--<img :src="taskInfo.taskImgsArr[0]" class="goods-img" v-if="taskInfo.taskImgsArr">-->
+						<img src="/static/chicon/88商城余额@2x.png" class="goods-img" v-else>
+					</div>
+					<div>
+						<div class="goods-name">
+							{{taskInfo.taskName}}
+						</div>
+						<div class="goods-type">
+							【{{taskInfo.taskTypeStr}}】
+						</div>
+					</div>
+				</div>
+				<div class="flex-end">
+					<div>
+						<div class="goods-price">
+							¥&nbsp;{{taskInfo.remainAmount}}
+						</div>
+						<div class="goods-status">
+							{{taskInfo.remainStatusStr}} 
+						</div>
+					</div>
+					<!--<div class="goods-trangle-wrap">
+						<img src="../../../static/chicon/右箭头@2x.png" class="goods-img">
+					</div>-->
+				</div>
+			</div>
+			<div class="flex-start flex-item-3 ac-img-list" v-if="taskInfo.taskImgsArr">
+				<div v-for="(item,index) in taskInfo.taskImgsArr">
+					<img :src="item" class="pre">
+				</div>
+			</div>
+			<div class="ac-remark">
+				任务要求：{{taskInfo.taskContent}}  
+			</div>
+		</div>
+		<div class="application-content" v-if="tabIndex==3">
+			<div class="ac-title">
+				您上传的凭证:
+			</div>
+			<div class="flex-start flex-item-3 ac-img-list">
+				<div v-for="(item,index) in taskInfo.remainImgsArr">
+					<img :src="item" class="pre" v-if="item">
+					<img src="/static/chicon/88商城余额@2x.png" class="goods-img" v-else>
+				</div>
+			</div>
+			<div class="ac-remark">
+				备注：{{taskInfo.remainContent}}
+			</div>
+			<!--<div class="ac-task-detail">
+				<strong>
+					驳回原因
+				</strong>
+			</div>
+			<div class="ac-remark">
+				<strong>
+					{{taskInfo.taskContent}}
+				</strong>  
+			</div>-->
+			<div class="ac-task-detail">
+				<strong>
+					任务详情
+				</strong>
+			</div>
+			
+			<div  class="flex-start-end no-wrap goods-item ac-set-plr">
+				<div class="flex-start no-wrap">
+					<div>
+						<img :src="taskInfo.taskImgsArr[0]" class="goods-img" v-if="taskInfo.taskImgsArr">
+						<!--<img :src="taskInfo.taskImgsArr[0]" class="goods-img" v-if="taskInfo.taskImgsArr">-->
+						<img src="/static/chicon/88商城余额@2x.png" class="goods-img" v-else>
+					</div>
+					<div>
+						<div class="goods-name">
+							{{taskInfo.taskName}}
+						</div>
+						<div class="goods-type">
+							【{{taskInfo.taskTypeStr}}】
+						</div>
+					</div>
+				</div>
+				<div class="flex-end">
+					<div>
+						<div class="goods-price">
+							¥&nbsp;{{taskInfo.remainAmount}}
+						</div>
+						<div class="goods-status">
+							{{taskInfo.remainStatusStr}} 
+						</div>
+					</div>
+					<!--<div class="goods-trangle-wrap">
+						<img src="../../../static/chicon/右箭头@2x.png" class="goods-img">
+					</div>-->
+				</div>
+			</div>
+			<div class="flex-start flex-item-3 ac-img-list" v-if="taskInfo.taskImgsArr">
+				<div v-for="(item,index) in taskInfo.taskImgsArr">
+					<img :src="item" class="pre">
+				</div>
+			</div>
+			<div class="ac-remark">
+				任务要求：{{taskInfo.taskContent}}  
 			</div>
 		</div>
 	</div>
+	
 	</div>
 </template>
 
 <script>
 	import cmheader from '../../components/cmHeader.vue'
+	import {Toast} from 'vux'
 	export default {
 		name: '',
 		data() {
 			return {
 				thatTitle:'',
 				tabIndex:0,
-				myFilesList:[]
+				taskId:'',
+				myFilesList:[],
+				remark:'',
+				taskInfo:{},
+				showResMsg:false,
+				resMsgContent:''
 			}
 		},
 		components: {
-			cmheader 
+			cmheader,
+			Toast
 		},
 		methods: {
 			goPrev() {
@@ -155,6 +310,38 @@
 			},
 			
 			//tabIndex==0
+			saveTask(){
+				var params={
+					memberId:this.$store.state.id,
+					id:this.taskId,
+					imgs:'xxxx.jpg',
+					content:this.remark
+				}
+				var _this=this
+				params=this.$qs.stringify(params)
+				this.$axios({
+					method:'post',
+					data:params,
+					url:'/appApi/appUsers/subMemberRemain'
+				}).then(function(res){
+					console.log(res)
+					if(res.status=='200'){
+						var getData=res.data
+						if(getData.status=='200'){
+							_this.showResMsg=true
+							_this.resMsgContent='提交成功!'
+							setTimeout(function(){
+								window.history.go(-1)
+							},1500)
+						}else{
+							_this.showResMsg=true
+							_this.resMsgContent=getData.msg
+						}
+					}
+				}).catch(function(err){
+					console.log(err)
+				})
+			},
 			changeFiles(){
 				//window.URL.createObjectURL(blob)//这里传一个文件对象 例如：file.files[0]
 				var filesBlobs=this.$refs.domFiles.files
@@ -188,13 +375,28 @@
 					memberId:this.$store.state.id,
 					id:this.$route.query.taskId
 				}
+				var _this=this
 				params=this.$qs.stringify(params)
 				this.$axios({
 					method:'post',
 					data:params,
 					url:'/appApi/appUsers/getRemainById'
 				}).then(function(res){
-					console.log(res)
+					if(res.status=='200'){
+						var getData=res.data
+		    			if(getData.status=='200'){
+		    				var resultObj=getData.data
+		    				if(resultObj.taskImgs!=null){
+		    					var imgsArr=resultObj.taskImgs.split(',')
+		    					resultObj.taskImgsArr=imgsArr
+		    				}
+		    				if(resultObj.remainImgs!=null){
+		    					var remainImgsArr=resultObj.remainImgs.split(',')
+		    					resultObj.remainImgsArr=remainImgsArr
+		    				}
+		    				_this.taskInfo=resultObj
+		    			}
+					}
 				}).catch(function(err){
 					console.log(err)
 				})
@@ -204,6 +406,7 @@
 			var arr=['提交审核','待审核','已完成','已驳回']
 			this.thatTitle=arr[this.$route.query.tabIndex]
 			this.tabIndex=this.$route.query.tabIndex
+			this.taskId=this.$route.query.taskId
 			this.getTaskInfo()
 		},
 		mounted() {
@@ -235,6 +438,18 @@
     	word-wrap: break-word;
     	line-height: 18px;
     	font-size: 12px;
+    }
+    .ac-remark{
+    	textarea{
+    		border: 0;
+    		padding: .2rem;
+    		outline: none;
+    		width: 100%;
+    		box-sizing: border-box;
+    		border-radius: .1rem;
+    		background: rgb(245,245,245);
+    		height: 1.36rem;
+    	}
     }
     .ac-task-detail{
     	text-align: left;
