@@ -6,7 +6,7 @@
 				<div class="flex-start-end no-wrap goods-item ac-set-plr">
 					<div class="flex-start no-wrap">
 						<div>
-							<img src="../../../static/myself/set_icon@2x.png" class="goods-img">
+							<img :src="taskDetailObj.imgsArr[0]" class="goods-img">
 						</div>
 						<div>
 							<div class="goods-name">
@@ -32,14 +32,8 @@
 					您上传的凭证:
 				</div>-->
 				<div class="flex-start flex-item-3 ac-img-list">
-					<div>
-						<img src="../../../static/chicon/back.jpg" class="pre">
-					</div>
-					<div>
-						<img src="../../../static/chicon/back.jpg" class="pre">
-					</div>
-					<div>
-						<img src="../../../static/chicon/back.jpg" class="pre">
+					<div v-for="item in taskDetailObj.imgsArr">
+						<img :src="item" class="pre">
 					</div>
 				</div>
 				<div class="ac-title">
@@ -48,8 +42,8 @@
 					</strong>
 				</div>
 				<div class="ac-remark">
-					<strong>
-						{{taskDetailObj.content}}
+					<strong v-html="taskDetailObj.content">
+						
 					</strong>
 				</div>
 				<div>
@@ -64,7 +58,8 @@
 				<div @click="saveTask" class="btn-bg submit-btn">
 					领&nbsp;取
 				</div>
-			<textarea ref="myWords" v-model="taskDetailObj.content" disabled="none"></textarea>
+			<textarea ref="myWords" v-model="taskDetailObj.content" class="remember-value"></textarea>
+			<!--<textarea id="myWords1" ref="myWords1" v-model="taskDetailObj.content"></textarea>-->
 			</div>
 		
 			
@@ -85,7 +80,8 @@
 				thatTitle: '任务详情',
 				taskDetailObj: {},
 				showMsg: false,
-				msgContent: ''
+				msgContent: '',
+				textareaValue:'11111111111111'
 				//				backUrl:'/cityloadArea/getTaskList'
 			}
 		},
@@ -130,9 +126,12 @@
 					var v=this.$refs.myWords
 				    if(v.value.length>0){
 				        v.select();
+				        this.msgContent = '任务要求已复制'
+						this.showMsg = true
 				        document.execCommand("Copy");
 				        return false;
 				    }
+				    
 			},
 			getTaskDetail() {
 				var params = {
@@ -150,6 +149,8 @@
 					if(res.status == '200') {
 						var getData = res.data
 						if(getData.status == '200') {
+							var arr=getData.data.imgs.split(',')
+							getData.data.imgsArr=arr
 							_this.taskDetailObj = getData.data
 						}
 					}
@@ -165,6 +166,11 @@
 	}
 </script>
 <style lang="less">
+	.remember-value{
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
 	.copy-btn{
 		color: #fcd1ca;
 		font-size: 14px;
@@ -195,7 +201,9 @@
 	.draw-list {
 		color: #333;
 	}
-	
+	.ac-remark strong{
+		display: block;
+	}
 	.application-content {
 		padding: 0 .20rem;
 		overflow: scroll;

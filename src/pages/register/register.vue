@@ -1,6 +1,6 @@
 <template>
 	<div class="login">
-		<img src="" @click="goBack" class="register-btn">
+		<img src="../../../static/chicon/close_btn.png" @click="goBack" class="page-close">
 		<div class="login-title">
 			注册八八商城
 		</div>
@@ -124,7 +124,7 @@
 				this.$gotoPages('/login')
 			},
 			goBack(){
-				window.history.go(-1)
+				this.$gotoPages('/login')
 			},
 			isChecked(){
 				if(this.user.username==''){
@@ -218,7 +218,7 @@
 		color: #333333;
 		top: -.1rem;
 	}
-	.register-btn{
+	.page-close{
 		position: fixed;
 		top: .2rem;
 		right: .2rem;
