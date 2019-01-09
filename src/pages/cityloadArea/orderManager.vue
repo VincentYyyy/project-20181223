@@ -28,7 +28,7 @@
 	  },
 	  data(){
 	  	return{
-	  		tabIndex:null,
+	  		tabIndex:0,
 	  		menuArr:[{
 	  			label:'待完成'
 	  		},{

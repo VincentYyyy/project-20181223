@@ -308,7 +308,34 @@
 			goPrev() {
 				window.history.go(-1)
 			},
-			
+			uploadFiles(){
+				var imgs=[]
+				if(this.myFilesList.length>0){
+					this.myFilesList.forEach(function(item){
+						imgs.push(item.uploadFiles)
+					})
+				}
+				var params={
+					bizCode:'新增文件夹',
+					File:imgs
+				}
+				console.log(imgs)
+				var formData=new FormData()
+				formData.append('bizCode','新增文件夹')
+				formData.append('File',imgs)
+				this.$axios({
+					headers: {
+				        'Content-Type': 'multipart/form-data'
+				    },
+					method:'post',
+					data:formData,
+					url:'/appApi/file/uploadFile'
+				}).then(function(res){
+					console.log(res)
+				}).catch(function(err){
+					
+				})
+			},
 			//tabIndex==0
 			saveTask(){
 				var params={
@@ -317,6 +344,8 @@
 					imgs:'xxxx.jpg',
 					content:this.remark
 				}
+				this.uploadFiles()
+				return false
 				var _this=this
 				params=this.$qs.stringify(params)
 				this.$axios({
