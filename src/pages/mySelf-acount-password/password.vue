@@ -51,15 +51,17 @@
 				nameInputs:{
 					items: [{
 						name: 'phone',
+						checkType: 'phone',
 						value: '',
 						placeholder: '输入手机号'
 					}, {
-						name: 'identification',
+						name: 'captcha',
 						value: '',
 						type: 'identification',
 						placeholder: '输入验证码'
 					}, {
 						name: 'password',
+						// checkType: 'password',
 						type: 'password',
 						value: '',
 						placeholder: '输入密码'
@@ -92,10 +94,8 @@
 				}).then(function(res){
 					if(res.status=='200'){
 						alert("获取验证码成功")
-						console.log(res)
 					}else{
 						alert("获取验证码失败")
-
 					}
 				}).catch(function(err){
 					console.log(err)
@@ -107,25 +107,30 @@
 					pwd: '',
 					newPwd: ''
 				}
+				var self = this;
+
+				var validInput = true;
 
 				this.nameInputs.items.forEach(function(item){
+					params[item.name] = item.value;
+
+					if(item.checkType){
+						var checkRight = self.getChecker(item.checkType)(item.value);
+						validInput = validInput && checkRight;
+					}
 				})
 
 				params=this.$qs.stringify(params)
 				this.$axios({
 					method:'post',
 					data: params,
-					url:'/appApi/appUsers/adsServ'
+					url:'/appApi/appUsers/forgetPassword'
 				}).then(function(res){
 					if(res.status=='200'){
 						var getData=res.data
 						if(getData.status=='200'){
-							_this.errContent='发布成功!'
-							_this.showErr=true
+							console.log(res);
 						}else{
-							var msg=getData.msg
-							_this.errContent=msg
-							_this.showErr=true
 						}
 					}
 				}).catch(function(err){
