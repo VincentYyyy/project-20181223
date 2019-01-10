@@ -51,7 +51,7 @@ module.exports = {
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: '../../../static',
     //默认是assetsPublicPath: '/',
     //打包可以本地浏览assetsPublicPath: './',
     assetsPublicPath: './',
