@@ -22,7 +22,7 @@
 							¥&nbsp;{{item.taskAmount}}
 						</div>
 						<div class="goods-status">
-							{{item.statusStr}}
+							<!--{{item.}}-->
 						</div>
 					</div>
 					<div class="goods-trangle-wrap">
