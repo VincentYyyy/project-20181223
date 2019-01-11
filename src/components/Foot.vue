@@ -129,7 +129,7 @@
 	}
 	
 	.weui-grid {
-		padding: 6px 0 5px 0;
+		padding: .1rem 0 .1rem 0;
 		line-height: 15px;
 	}
 	
@@ -157,13 +157,12 @@
 		box-sizing: border-box;
 	}
 	.weui-grids{
-		height: 1rem;
-		line-height: 1rem;
+		/*padding: .2rem 0;*/
 	}
 	.weui-grids a span{
 		display: inline-block;
-		width: .4rem;
-		height: .4rem;
+		width: 22px;
+		height: 22px;
 	}
 	.weui-grids a:first-child span{
 		background: url(../assets/首页@3x.png);

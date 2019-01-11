@@ -2,14 +2,8 @@
 	<div class="get-task-list">
 		<cmheader :title="thatTitle" :backUrl="backUrl"></cmheader>
 		<div class="order-content-scroll">
-			<div v-show="taskList.length==0" class="text-center">
-				<label v-if="!isLoadding">
-					暂无数据
-				</label>
-				<label v-else>
-					加载中...
-				</label>
-			</div>
+			
+			
 			<div v-for="(item,index) in taskList" class="flex-start-end no-wrap goods-item" @click="goTaskDetail(item)">
 				<div class="flex-start no-wrap">
 					<div>
@@ -41,12 +35,26 @@
 					</div>
 				</div>
 			</div>
+			<div lass="text-center">
+				<div class="loadding-status"v-if="isLoadding">
+					<load-more :tip="tips"></load-more>
+				</div>
+				<div class="loadding-status" v-else>
+					<label v-show="taskList.length==0">
+						暂无数据
+					</label>
+					<label v-show="taskList.length!=0">
+						加载完毕
+					</label>					
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
 	import cmheader from '../../components/cmHeader.vue'
+	import { LoadMore } from 'vux'
 	export default{
 		name:'task-list',
 		data(){
@@ -56,7 +64,8 @@
 				taskType:0,
 				taskList:[],
 				pageNum:1,
-				isLoadding:true
+				isLoadding:true,
+				tips:'正在加载...'
 			}
 		},
 		created(){
@@ -64,7 +73,8 @@
 			this.taskType=this.$route.query.type
 		},
 		components:{
-			cmheader
+			cmheader,
+			LoadMore
 		},
 		methods:{
 			goTaskDetail(item){

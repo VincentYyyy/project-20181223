@@ -12,9 +12,9 @@
 			<div>
 				精选
 			</div>
-			<div @click="moreList">
+			<!--<div @click="moreList">
 				更多礼包
-			</div>
+			</div>-->
 		</div>
 		<div class="flex-item-4 flex-start cityLoadList">
 			<div v-for="(item,index) in cityLoadList"  @click="goDetail(item.href)">
@@ -129,9 +129,9 @@
 		font-size: 13px;
 		padding-top: .3rem;
 		img{
-			width: .9rem;
+			width: 45px;
 			margin: 0 auto;
-			height: .9rem;
+			height: 45px;
 			display: block;
 		}
 	}

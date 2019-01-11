@@ -19,10 +19,10 @@
 				<div class="flex-end">
 					<div>
 						<div class="goods-price">
-							¥&nbsp;6
+							¥&nbsp;{{item.taskAmount}}
 						</div>
 						<div class="goods-status">
-							待完成
+							{{item.statusStr}}
 						</div>
 					</div>
 					<div class="goods-trangle-wrap">

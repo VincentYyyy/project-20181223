@@ -69,7 +69,8 @@
 	#app {
 		width: 100%;
 		height: 100%;
-		overflow: scroll;
+		overflow-x: hidden;
+		overflow-y: auto;
 	}
 	/*.footer-wrap{
 	position: fixed;

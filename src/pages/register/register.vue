@@ -192,6 +192,9 @@
 					if(getData.status=='200'){
 						_this.msgContent='注册成功!'
 						_this.showErr=true
+						setTimeout(function(){
+							_this.$gotoPages('/login')
+						},1500)
 					}else{
 						var msg=getData.msg
 						_this.msgContent=msg
@@ -216,6 +219,7 @@
 		font-size: 12px;
 		position: relative;
 		color: #333333;
+		text-align: center;
 		top: -.1rem;
 	}
 	.page-close{
@@ -231,7 +235,7 @@
 	}
 	.check-btn{
 		color: #e03228;
-		width: 1.2rem;
+		width: 72px;
 		text-align: center;
 	}
 	.set-pt{

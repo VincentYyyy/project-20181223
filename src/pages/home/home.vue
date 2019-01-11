@@ -65,7 +65,7 @@
 		      this.swiperIndex = index
 		    },
 		    goMall(){
-		    	this.$gotoPages('/mall',{domain:'http://39.98.52.58'})
+		    	this.$gotoPages('/mall',{domain:'http://39.98.52.58:8081/'})
 		    },
 		    initHomeData(type){
 		    	var _this=this
