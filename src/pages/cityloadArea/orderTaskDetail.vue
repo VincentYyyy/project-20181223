@@ -70,9 +70,18 @@
 					<img :src="item" class="pre">
 				</div>
 			</div>
-			<div class="ac-remark">
-				任务要求：{{taskInfo.taskContent}}  
+			<div class="ac-task-detail">
+				<div style="padding-bottom: .1rem;">
+					<strong style="font-size: 18px;">
+						任务要求
+					</strong>
+				</div>
+				<div v-html="taskInfo.taskContent">
+					
+				</div>
 			</div>
+			<!--<div class="ac-remark" v-html="taskInfo.taskContent">
+			</div>-->
 		</div>
 		<div class="application-content" v-if="tabIndex==1">
 			<div class="ac-title">
@@ -308,6 +317,7 @@
 			goPrev() {
 				window.history.go(-1)
 			},
+			
 			uploadFiles(){
 				var imgs=[]
 				if(this.myFilesList.length>0){
@@ -494,8 +504,8 @@
     		box-sizing: border-box;
     		position: relative;
     		img{
-    			width: 100%;
-    			height: auto;
+    			width: 1.8rem;
+    			height: 1.8rem;
     		}
     	}
     }

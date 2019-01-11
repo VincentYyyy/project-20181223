@@ -158,8 +158,8 @@
 		top: .2rem;
 		right: .2rem;
 		display: inline-block;
-		width: .44rem;
-		height: .44rem;
+		width: .4rem;
+		height: .4rem;
 	}
 
 	.password-register {

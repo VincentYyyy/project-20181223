@@ -31,11 +31,10 @@
 			autoGetUserInfo(){
 				var userInfo=JSON.parse(sessionStorage.getItem('userInfo'))
 				var phone=userInfo.phone
-				var params='?app_phone='+phone+'&app_strkey=hpyshop'+md5(phone)
+				var params='?app_phone='+phone+'&app_strkey='+md5('hpyshop'+md5(phone))
 				var domain=this.$route.query.domain
 				var _url=domain+params
 				this.mallSrc=_url
-				console.log(_url)
 			}
 		},
 		components:{

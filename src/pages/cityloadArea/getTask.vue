@@ -76,14 +76,14 @@
 			border-bottom:1px solid #f5f5f5;
 			padding: .28rem;
 			.right-icon img{
-				width: .82rem;
-				height: .82rem;
+				width: 42px;
+				height: 42px;
 				display: block;
 				margin-right: .2rem;
 			}
 			img{
-				width: .4rem;
-				height: .4rem;
+				width: 18px;
+				height: 18px;
 				display: block;
 			}
 		}
