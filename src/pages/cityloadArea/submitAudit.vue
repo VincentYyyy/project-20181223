@@ -30,7 +30,7 @@
 			<div  class="flex-start-end no-wrap goods-item ac-set-plr">
 				<div class="flex-start no-wrap">
 					<div>
-						<img src="../../../static/myself/set_icon@2x.png" class="goods-img">
+						<img src="../../../static/chicon/icon.png" class="goods-img">
 					</div>
 					<div>
 						<div class="goods-name">

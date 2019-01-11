@@ -13,7 +13,7 @@
 			<div v-for="(item,index) in taskList" class="flex-start-end no-wrap goods-item" @click="goTaskDetail(item)">
 				<div class="flex-start no-wrap">
 					<div>
-						<img src="../../../static/myself/set_icon@2x.png" class="goods-img" v-if="item.imgsArr.length==0">
+						<img src="../../../static/chicon/icon.png" class="goods-img" v-if="item.imgsArr.length==0">
 						<img :src="item.imgsArr[0]" class="goods-img" v-else>
 					</div>
 					<div>
