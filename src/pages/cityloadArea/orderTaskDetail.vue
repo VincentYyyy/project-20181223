@@ -322,7 +322,7 @@
 				console.log(imgs)
 				var formData=new FormData()
 				formData.append('bizCode','新增文件夹')
-				formData.append('File',imgs)
+				formData.append('File',this.myFilesList[0])
 				this.$axios({
 					headers: {
 				        'Content-Type': 'multipart/form-data'
