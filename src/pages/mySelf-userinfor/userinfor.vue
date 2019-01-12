@@ -2,12 +2,6 @@
 	<div class="myself home">
 		<cmheader :title="'个人中心'"></cmheader>
 
-		<!-- <div class="cm-header ">
-			<img src="../../../static/myself/set_icon@2x.png" class="pre">
-			<div class="p1p">个人中心		
-			</div>
-		</div> -->
-
 		<!-- 头部占位 -->
 		<div class="u-header-padding" ></div>
 
@@ -70,7 +64,7 @@
 		<popup v-model="popup.show" >
 			<div class="m-popup popoup-select-headport" height="300">
 			<div class="m-selector">
-				<div class="header">
+				<div class="header f-fs-14">
 					选择头像
 				</div>
 				<div class="haederpoit-list">
@@ -78,7 +72,7 @@
 
 							<div class="wrap f-clear">
 								<img class="headpoint" src="../../img/myself/男@2x.png" alt="">
-								<div class="checkbox">钩</div>
+								<div class="checkbox i-checkbox"></div>
 								<label>男</label>
 							</div>
 							
@@ -86,27 +80,27 @@
 					<div class="list-item">
 							<div class="wrap f-clear">
 								<img class="headpoint" src="../../img/myself/女@3x.png" alt="">
-								<div class="checkbox">钩</div>
+								<div class="checkbox i-checkbox checked"></div>
 								<label>女</label>
 							</div>
 					</div>
 					<div class="list-item">
 							<div class="wrap f-clear">
 								<img class="headpoint" src="../../img/myself/老@2x.png" alt="">
-								<div class="checkbox">钩</div>
+								<div class="checkbox i-checkbox"></div>
 								<label>老</label>
 							</div>
 					</div>
 					<div class="list-item">
 							<div class="wrap f-clear">
 								<img class="headpoint" src="../../img/myself/少@2x.png" alt="">
-								<div class="checkbox">钩</div>
+								<div class="checkbox i-checkbox"></div>
 								<label>少</label>
 							</div>
 					</div>
 				</div>
 			</div>
-			<div class="cancel">
+			<div class="cancel f-fs-16">
 				取消
 			</div>
 			</div>
@@ -154,7 +148,7 @@
 					},
 					items:[{
 						label: '昵称',
-						content: '欧阳诸葛',
+						content: '未设置昵称',
 						rawRight: true,
 						onClick: function(){
 							common.pageState = "nameInput";
@@ -164,15 +158,15 @@
 						}
 					},{
 						label: '手机号码',
-						content: '12345678901',
-						filterType: 'phone',
+						content: '未认证',
+						// filterType: 'phone',
 						class: {
 							'f-gray-1': true
 						}
 					},{
 						label: '身份证',
-						content: '12345678890123',
-						filterType: "identify",
+						content: '未认证',
+						// filterType: "identify",
 						class: {
 							'f-gray-1': true
 						}
@@ -182,52 +176,14 @@
 				isLogined:false,
 				random:'',
 				user:{
-					username:'',
+					name:'',
 					img:require('../../img/myself/nav6.jpg'),
-				//	img:require('../img/myself/nav6.jpg'),
-					lv:'../../static/myself/vip_icon@2x.png',
 					mobile:'',
 					userLevel:''
-				},
-				tabsList:[{
-					title:'我的档案',
-					href:'/myself/myflie'
-				},{
-					title:'会员中心',
-					href:'/myself/VipCenter'
-				},{
-					title:'订单管理',
-					href:'/myself/ordermanager'
-				}],
-				linkList:[{
-					title:"我的消息",
-					img:'../../../static/myself/wdxx_icon@2x.png',
-					href:'/myself/MyMsg'
-				},{
-					title:'学习进度',
-					img:'../../../static/myself/xxjd_icon@2x.png',
-					href:'/myself/studystage'
-				},{
-					title:'我的收藏',
-					img:'../../../static/myself/wdsc_icon@2x.png',
-					href:'/myself/testing-report'
-				},{
-					title:'我的关注',
-					img:'../../../static/myself/wdgz_icon@2x.png',
-					href:'/myself/myattention'
-				},{
-					title:'我的缓存',
-					img:'../../../static/myself/wdhc_icon@2x.png',
-					href:'/myself/Cache'
-				},{
-					title:'意见反馈',
-					img:'../../../static/myself/yjfk_icon@2x.png',
-					href:'/myself/complain'
-				}]
+				}
 			}
 		},
 		methods:{
-			
 			toLink(href){
 				if(!this.isLogined){
 					this.$gotoPages('/login')
@@ -238,17 +194,6 @@
 			showPopUp(){
 				this.$store.state.isShowPop=true				
 			},
-			initUserInfo(){	
-				if(this.$cookie.get('uid')=='undefined'){
-					this.isLogined=false
-				}else{
-					console.log('11111')
-					this.user.username=this.$cookie.get('username')
-					this.user.mobile=this.$cookie.get('mobile')
-					this.user.userLevel=this.$cookie.get('userLevel')
-					this.isLogined=true
-				}
-			}
 		},
 		components:{
 			XButton,
@@ -256,7 +201,16 @@
 			cmheader
 		},
 		created(){
-			this.initUserInfo()
+			var userInfo = this.$store.state.userInfo;
+
+			var nameItem =  this.$userInfo(this.details.items, 'label', '昵称');
+			nameItem.content = userInfo.nikeName || nameItem.content;
+
+			var phoneItem =  this.$userInfo(this.details.items, 'label', '手机号码');
+			phoneItem.content = userInfo.phone || phoneItem.content;
+
+			var idCardItem =  this.$userInfo(this.details.items, 'label', '身份证');
+			idCardItem.content = userInfo.idCard || idCardItem.content;
 		}
 	}
 </script>
@@ -264,9 +218,10 @@
 <style lang="less" scoped>
 .myself{
 	.m-popup{
-		height: 6rem;
+		height: 5.5rem;
 		.header{
 			padding: 0.4rem 0;
+			text-align: center;
 		}
 
 		.haederpoit-list{
@@ -283,7 +238,7 @@
 					// &>div{
 					// 	display: block;
 					// }
-					width: 1.25rem;
+					width: 1.35rem;
 					margin: 0 auto;
 					
 					.headpoint{
@@ -296,11 +251,13 @@
 					.checkbox{
 						float: right;
 						display: inline-block;
-						line-height: 0.8rem;
-						height: 0.8rem;
-						width: 0.45rem;
+						width: 0.4rem; 
+						height: 0.4rem;
+						margin-top:  0.2rem;
+						margin-left: 0.1rem;
 					}
 					label{
+						text-align: center;
 						width: 0.8rem;
 						float: left;
 						display: block;
@@ -309,6 +266,13 @@
 				}
 				
 			}
+		}
+
+		.cancel{
+			border-top: 0.01rem solid #f5f5f5; 
+			text-align: center;
+			line-height: 1rem;
+			height: 1rem;
 		}
 	}
 

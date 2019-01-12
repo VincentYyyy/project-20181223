@@ -77,8 +77,31 @@ exports.install = function(Vue, options) {
 	       }
 	}
 
-	Vue.prototype.$refresGlobalUnserInfor = function (parmas){
-		
+	// 变更$store.state、变更session storage 的 userInfor
+	Vue.prototype.$resetUserInfor = function (params){
+		if(!this.$store || !this.$store.state) return;
+
+		var sessionUserInfor = JSON.parse(sessionStorage.getItem('userInfo')) || {};
+		for(var i in params){
+			this.$store.state[i] = params[i];
+			sessionUserInfor[i] = params[i];
+		}
+
+		// 直接使用JSON.stringify 会让 npm run dev 凉凉？
+		var jsonObj = JSON;
+		sessionUserInfor = jsonObj.stringify(sessionUserInfor);
+		sessionStorage.setItem('userInfo', sessionUserInfor);
+	}
+
+	Vue.prototype.$findObj = function(obj, key, value){
+		var targetObj = undefined;
+		for(k in obj){
+			if(obj[k] === value){
+				targetObj = obj[k];
+				break;
+			}
+		}
+		return targetObj;
 	}
 
 	Vue.prototype.$getChecker = function(type){
@@ -101,6 +124,12 @@ exports.install = function(Vue, options) {
 				return /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})+$/.test(value);
 			},
 			address: commonChecker,
+			password: function(value){
+				return /^(\w){6,20}$/.test(value)
+			},
+			identification: function(value){
+				return /^[0-9]{6}$/.test(value)
+			}
 		}
 
 		return checkers[type];
