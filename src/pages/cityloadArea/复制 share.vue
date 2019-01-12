@@ -1,6 +1,5 @@
 <template>
 	<div class="share-box-wrap">
-		<img src="../../../static/chicon/share/背景图.png" class="share-bg">
 	<div class="share-box">
 		<div class="share-title">
 			<img src="../../../static/chicon/白色返回@3x.png" @click="goBack">
@@ -8,7 +7,7 @@
 		</div>
 		
 		<div class="share-content">
-			
+			<!--<img src="../../../static/chicon/share/背景图.png" class="share-bg">-->
 			<div class="share-div">
 				<div class="share-code">
 					<div class="share-code-radius">
@@ -222,7 +221,7 @@
 	.share-words{
 		margin-bottom: .3rem;
 		img{
-			width: 5.6rem;
+			width: 5.7rem;
 			display: block;
 			margin: 0 auto;
 			height: auto;
@@ -283,12 +282,11 @@
 	}
 	.share-box-wrap{
 		background-color: #df3328;
-		position: relative;
 	}
 	.share-box{
 		width: 100%;
 		min-height: 100%;
-		background: url(../../assets/背景图@3x.png);
+		/*background: url(../../assets/背景图@3x.png);*/
 		background-size: 100% auto;
 		background-repeat: no-repeat;
 		

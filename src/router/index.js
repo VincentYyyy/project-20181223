@@ -37,9 +37,15 @@ export default new Router({
 		name: 'cityloadArea',
 		component: resolve => require(['../pages/cityloadArea/cityloadArea.vue'], resolve)
 	},{
+		//礼包列表
 		path:'/cityloadArea/moreList',
 		name:'moreList',
 		component: resolve => require(['../pages/cityloadArea/moreList.vue'], resolve)
+	},{
+		//礼包详情页
+		path:'/cityloadArea/moreDetail',
+		name:'moreDetail',
+		component: resolve => require(['../pages/cityloadArea/moreDetail.vue'], resolve)
 	},{
 		path:'/cityloadArea/goodsDetail',
 		name:'goodsDetail',

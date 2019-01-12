@@ -2,6 +2,7 @@
 	<div class="application-auditing">
 		<div>
 			<toast v-model="showResMsg" type="text" :time='1200' is-show-mask :text="resMsgContent"  :position="'middle'" width="auto"></toast>
+			<loading :show="isUpLoadding" text="提交中"></loading>
 		</div>
 		<cmheader :title="thatTitle"></cmheader>
 		<div class="application-content" v-if="tabIndex==0">
@@ -26,7 +27,7 @@
 				<!--<div class="btn-bg">
 					提交审核
 				</div>-->
-				<div @click="saveTask" class="btn-bg submit-btn" style="margin: 0;margin-top: .33rem;margin-bottom: .59rem;">
+				<div @click="uploadFiles" class="btn-bg submit-btn" style="margin: 0;margin-top: .33rem;margin-bottom: .59rem;">
 					提交审核
 				</div>
 			</div>
@@ -147,8 +148,15 @@
 					<img :src="item" class="pre">
 				</div>
 			</div>
-			<div class="ac-remark">
-				任务要求：{{taskInfo.taskContent}}  
+			<div class="ac-task-detail">
+				<div style="padding-bottom: .1rem;">
+					<strong style="font-size: 18px;">
+						任务要求
+					</strong>
+				</div>
+				<div v-html="taskInfo.taskContent">
+					
+				</div>
 			</div>
 		</div>
 		<div class="application-content" v-if="tabIndex==2">
@@ -215,8 +223,15 @@
 					<img :src="item" class="pre">
 				</div>
 			</div>
-			<div class="ac-remark">
-				任务要求：{{taskInfo.taskContent}}  
+			<div class="ac-task-detail">
+				<div style="padding-bottom: .1rem;">
+					<strong style="font-size: 18px;">
+						任务要求
+					</strong>
+				</div>
+				<div v-html="taskInfo.taskContent">
+					
+				</div>
 			</div>
 		</div>
 		<div class="application-content" v-if="tabIndex==3">
@@ -283,8 +298,15 @@
 					<img :src="item" class="pre">
 				</div>
 			</div>
-			<div class="ac-remark">
-				任务要求：{{taskInfo.taskContent}}  
+			<div class="ac-task-detail">
+				<div style="padding-bottom: .1rem;">
+					<strong style="font-size: 18px;">
+						任务要求
+					</strong>
+				</div>
+				<div v-html="taskInfo.taskContent">
+					
+				</div>
 			</div>
 		</div>
 	</div>
@@ -294,7 +316,7 @@
 
 <script>
 	import cmheader from '../../components/cmHeader.vue'
-	import {Toast} from 'vux'
+	import {Toast,Loading} from 'vux'
 	export default {
 		name: '',
 		data() {
@@ -306,12 +328,15 @@
 				remark:'',
 				taskInfo:{},
 				showResMsg:false,
-				resMsgContent:''
+				resMsgContent:'',
+				isUpLoadding:false,
+				imgs:''
 			}
 		},
 		components: {
 			cmheader,
-			Toast
+			Toast,
+			Loading
 		},
 		methods: {
 			goPrev() {
@@ -319,20 +344,19 @@
 			},
 			
 			uploadFiles(){
-				var imgs=[]
+				var _this=this
+				this.isUpLoadding=true
+				var formData=new FormData()
 				if(this.myFilesList.length>0){
 					this.myFilesList.forEach(function(item){
-						imgs.push(item.uploadFiles)
+						var filesBlobs=item.uploadFiles
+						var fileName=item.uploadFiles.name
+						formData.append(fileName,filesBlobs)
 					})
+				}else{
+					formData.append('File',[])
 				}
-				var params={
-					bizCode:'新增文件夹',
-					File:imgs
-				}
-				console.log(imgs)
-				var formData=new FormData()
 				formData.append('bizCode','新增文件夹')
-				formData.append('File',this.myFilesList[0])
 				this.$axios({
 					headers: {
 				        'Content-Type': 'multipart/form-data'
@@ -342,6 +366,23 @@
 					url:'/appApi/file/uploadFile'
 				}).then(function(res){
 					console.log(res)
+					if(res.status=='200'){
+						var getData=res.data	
+						if(getData.respCode=='00000'){
+							var myfilesArr=[]
+							if(getData.files.length>0){
+								getData.files.forEach(function(item){
+									myfilesArr.push(item.filePath)
+								})
+							}
+							_this.imgs=myfilesArr.join(',')
+							_this.saveTask()
+						}else{
+							_this.showResMsg=true
+							_this.isUpLoadding=false
+							_this.resMsgContent='提交失败'
+						}
+					}
 				}).catch(function(err){
 					
 				})
@@ -351,11 +392,9 @@
 				var params={
 					memberId:this.$store.state.id,
 					id:this.taskId,
-					imgs:'xxxx.jpg',
+					imgs:this.imgs,
 					content:this.remark
 				}
-				this.uploadFiles()
-				return false
 				var _this=this
 				params=this.$qs.stringify(params)
 				this.$axios({
@@ -367,12 +406,14 @@
 					if(res.status=='200'){
 						var getData=res.data
 						if(getData.status=='200'){
+							_this.isUpLoadding=false
 							_this.showResMsg=true
 							_this.resMsgContent='提交成功!'
 							setTimeout(function(){
 								window.history.go(-1)
 							},1500)
 						}else{
+							_this.isUpLoadding=false
 							_this.showResMsg=true
 							_this.resMsgContent=getData.msg
 						}
@@ -493,7 +534,7 @@
     .ac-task-detail{
     	text-align: left;
     	font-size: 18px;
-    	padding: 0.26rems .08rem;
+    	padding: 0.26rem .08rem;
     }
     .ac-title{
     	font-size: 16px;	
