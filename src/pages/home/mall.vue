@@ -31,6 +31,7 @@
 			autoGetUserInfo(){
 				var userInfo=JSON.parse(sessionStorage.getItem('userInfo'))
 				var phone=userInfo.phone
+				console.log(phone)
 				var params='?app_phone='+phone+'&app_strkey='+md5('hpyshop'+md5(phone))
 				var domain=this.$route.query.domain
 				var _url=domain+params
@@ -53,17 +54,5 @@
 </script>
 
 <style>
-	.mall-iframe{
-		height: 100%;
-		width: 100%;
-		border: 0;
-		padding: 0;
-	}
-	.mall-wrap{
-		box-sizing: border-box;
-		height: 100%;
-		width: 100%;
-		overflow: hidden;
-		padding-top: .88rem;
-	}
+	
 </style>
