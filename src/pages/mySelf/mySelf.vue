@@ -7,7 +7,7 @@
 
 		<div class="m-user">
 			<div class="container">	
-				<div @click="toLink('/mySelf-userinfor')">
+				<div @click="toLink({toPageUrl: '/mySelf-userinfor'})">
 					<img class="user-headport" :src="user.img" alt="">
 					<p class="user-name">
 						<span class="f-fs-18">{{user.name}}</span>
@@ -21,16 +21,16 @@
 				</div>
 				<div class="wallet-details">
 					<div class="item">
-						<p class="num f-fs-18 f-fw-b">26788</p>
-						<p class="label f-fs-12 f-gray-1">总收入</p>
+						<p class="num f-fs-18 f-fw-b">{{wallet.sum}}</p>
+						<p class="label f-fs-12 f-gray-1">总余额</p>
 					</div>
 					<div class="item">
-						<p class="num f-fs-18 f-fw-b">26788</p>
-						<p class="label f-fs-12 f-gray-1">总收入</p>
+						<p class="num f-fs-18 f-fw-b">{{wallet.incommonyes}}</p>
+						<p class="label f-fs-12 f-gray-1">昨日收入</p>
 					</div>
 					<div class="item">
-						<p class="num f-fs-18 f-fw-b">26788</p>
-						<p class="label f-fs-12 f-gray-1">总收入</p>
+						<p class="num f-fs-18 f-fw-b">{{wallet.pickedup}}</p>
+						<p class="label f-fs-12 f-gray-1">已提现</p>
 					</div>
 				</div>
 			</div>
@@ -42,7 +42,7 @@
 			<template v-for="item in details.items">
 				<div class="c-list-item c-list-item-raw noborder"
 					v-if="item.type !== 'line'"
-					@click="toLink(item.toPageUrl)"
+					@click="toLink(item)"
 				>
 					<div class="c-item-label f-gray-2"
 					>
@@ -51,13 +51,8 @@
 					</div>
 					<div class="c-item-content"
 					>
-						<div v-if="item.filterType"
-							:class="item.class"
-							class="f-fs-14"
-						>
-							{{ item.content | filterFactory(item.filterType) }}
-						</div>
-						<div v-else
+						<div
+							v-if="!hasIdentified && item.content"
 							:class="item.class"
 							class="f-fs-14"
 						>
@@ -114,16 +109,16 @@
 			return{
 				popup: popup,
 				commond: common,
+				hasIdentified: false,
+				user:{
+					name:'欧阳诸葛',
+					img: require('../../img/myself/man.png'),
+					phone:'169838929193',
+					userLevel:''
+				},
 				details: {
-					userImg:{
-						label: '头像',
-						img: require('../../img/myself/男@2x.png'),
-						rawRight: true,
-						onClick: function(){
-							popup.show = true;
-						}
-					},
 					sum: 0,
+
 					items:[{
 							label: '钱包',
 							icon: 'wallet',
@@ -202,57 +197,75 @@
 						}
 					]
 				},
-				user:{
-					name:'欧阳诸葛',
-					img: require('../../img/myself/man.png'),
-					phone:'169838929193',
-					userLevel:''
-				},
+				wallet: {
+					sum:0,
+					incommonyes:0,
+					pickedup:0
+				}
 			}
 		},
 		methods:{
 			getIconUrl: function(item){
 				return require("../../img/myself/i-" + item.icon + ".png" );
 			},
-			toLink(href){
-				if(href){
-					this.$gotoPages(href)
+			toLink(item){
+				if(item.toPageUrl){
+					if(item.label === "认证中心" && this.hasIdentified){
+						this.$gotoPages('/mySelf-userinfor')
+						return;
+					}
+					this.$gotoPages(item.toPageUrl)
 				}
 			},
 			showPopUp(){
 				this.$store.state.isShowPop=true				
 			},
-			initUserInfo(){	
-				// if(this.$cookie.get('uid')=='undefined'){
-				// 	this.isLogined=false
-				// }else{
-				// 	console.log('11111')
-				// 	this.user.username=this.$cookie.get('username')
-				// 	this.user.mobile=this.$cookie.get('mobile')
-				// 	this.user.userLevel=this.$cookie.get('userLevel')
-				// 	this.isLogined=true
-				// }
+			getUserDetail(){
+				var self = this;
 				var params={
 					id:this.$store.state.id,
 				}
-				params=this.$qs.stringify(params)
+				params=this.$qs.stringify(params);
 				this.$axios({
 					method:'post',
 					data:params,
-					url:'/appApi/appUsers/getBalance'
+					url:'/appApi/appUsers/getUserDetail'
 				}).then(function(res){
-					if(res.status=='200'){
-						var sum=res.data
-						if(getData.status=='200'){
-							this.s
-						}else{
-
-						}
+					var data = res.data;
+					if(data && data.status=='200'){
+						var userinfor = res.data.data;
+						self.$resetUserInfor(userinfor);
+						self.user.name = userinfor.nickName || '未设置昵称';
+						self.user.phone = userinfor.phone;
+						self.hasIdentified = !!userinfor.userName;
 					}
 				}).catch(function(err){
 					
 				})
 			},
+			getBalance(){
+				var params={
+					id:this.$store.state.id,
+				}
+				params=this.$qs.stringify(params);
+				this.$axios({
+					method:'post',
+					data:params,
+					url:'/appApi/appUsers/getBalance'
+				}).then(function(res){
+					var data = res.data;
+					if(data && data.status=='200'){
+						// if(getData.status=='200'){
+						// console.log("getBalance",res);
+						// }else{
+
+						// }
+
+					}
+				}).catch(function(err){
+					
+				})
+			}
 		},
 		components:{
 			XButton,
@@ -260,8 +273,8 @@
 			cmheader
 		},
 		created(){
-			this.initUserInfo()
-			
+			this.getBalance();
+			this.getUserDetail();
 		}
 	}
 </script>

@@ -25,7 +25,7 @@
 		</div>
 
 		<div class="c-btn">
-			<button>确定</button>
+			<button @click="changePassword">确定</button>
 		</div>
 	
 	</div>
@@ -51,15 +51,18 @@
 				nameInputs:{
 					items: [{
 						name: 'phone',
+						checkType: 'phone',
 						value: '',
 						placeholder: '输入手机号'
 					}, {
-						name: 'identification',
+						name: 'captcha',
+						checkType: 'identification',
 						value: '',
 						type: 'identification',
 						placeholder: '输入验证码'
 					}, {
 						name: 'password',
+						checkType: 'password',
 						type: 'password',
 						value: '',
 						placeholder: '输入密码'
@@ -92,10 +95,8 @@
 				}).then(function(res){
 					if(res.status=='200'){
 						alert("获取验证码成功")
-						console.log(res)
 					}else{
 						alert("获取验证码失败")
-
 					}
 				}).catch(function(err){
 					console.log(err)
@@ -103,33 +104,53 @@
 			},
 			changePassword(){
 				var params={
-					id:this.$store.state.id,
-					pwd: '',
-					newPwd: ''
+					// id:this.$store.state.id,
 				}
+				var self = this;
+
+				var validInput = true;
+				var msgMap = {
+					"phone": "请输入正确的手机号",
+					"password": "密码格式不正确",
+					"identification": "请输入有效验证码"
+				}
+				var msg = "";
 
 				this.nameInputs.items.forEach(function(item){
+					if(!validInput) return;
+					params[item.name] = item.value;
+
+					if(item.checkType){
+						var checkRight = self.$getChecker(item.checkType)(item.value);
+						validInput = validInput && checkRight;
+						if(!checkRight){
+							validInput = false;
+							msg = msgMap[item.checkType];
+						}
+					}
 				})
+
+				if(!validInput){
+					msg && alert(msg);
+					return;
+				}
 
 				params=this.$qs.stringify(params)
 				this.$axios({
 					method:'post',
 					data: params,
-					url:'/appApi/appUsers/adsServ'
+					url:'/appApi/appUsers/forgetPassword'
 				}).then(function(res){
 					if(res.status=='200'){
-						var getData=res.data
-						if(getData.status=='200'){
-							_this.errContent='发布成功!'
-							_this.showErr=true
+						var data=res.data;
+						if(data.status=='200'){		// FIXME 服务器报错
+							alert("密码修改成功");
 						}else{
-							var msg=getData.msg
-							_this.errContent=msg
-							_this.showErr=true
+							data.msg && alert(data.msg);
 						}
 					}
 				}).catch(function(err){
-					console.log(err)
+					console.error(err)
 				})
 			}
 		},
