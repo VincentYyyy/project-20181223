@@ -1,4 +1,23 @@
 exports.install = function(Vue, options) {
+
+	Date.prototype.Format = function(fmt){ //author: meizz   
+	  var o = {   
+		"M+" : this.getMonth()+1,                 //月份   
+		"d+" : this.getDate(),                    //日   
+		"h+" : this.getHours(),                   //小时   
+		"m+" : this.getMinutes(),                 //分   
+		"s+" : this.getSeconds(),                 //秒   
+		"q+" : Math.floor((this.getMonth()+3)/3), //季度   
+		"S"  : this.getMilliseconds()             //毫秒   
+	  };   
+	  if(/(y+)/.test(fmt))   
+		fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));   
+	  for(var k in o)   
+		if(new RegExp("("+ k +")").test(fmt))   
+	  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
+	  return fmt;   
+	}  
+
 	//服务器地址
 	Vue.prototype.$domain = 'http://www.baidu.com'
 	Vue.prototype.$check = function(str, type) {
@@ -96,7 +115,7 @@ exports.install = function(Vue, options) {
 	Vue.prototype.$findObj = function(obj, key, value){
 		var targetObj = undefined;
 		for(k in obj){
-			if(obj[k] === value){
+			if(obj[k][key] === value){
 				targetObj = obj[k];
 				break;
 			}
@@ -133,6 +152,41 @@ exports.install = function(Vue, options) {
 		}
 
 		return checkers[type];
+	}
+
+	Vue.prototype.$getUserInfo = function(name, obj){
+		return this.$store.state.userInfo
+	}
+
+	Vue.prototype.$filter = function(value, type){
+		var filters = {
+			phone: function(){
+				value = value.toString();
+				return value.substr(0, 3) + '****' + val.substr(7);
+			}
+		}
+		return filters[type]()
+	}
+
+	Vue.prototype.$HRApp = function(name, obj){
+		obj.params=this.$qs.stringify(obj.params);
+		this.$axios({
+			method:'post',
+			data:obj.params,
+			url:'/appApi/appUsers/' + name
+		}).then(function (res){
+			if(obj.FIXME){			// 调试，FIXME
+				obj.then && obj.then(res.data);
+				return;
+			}
+			if(res.data.status === "200"){
+				obj.then && obj.then(res.data);
+			}else{
+				res.data.msg && alert(res.data.msg);
+			}
+		}).catch(function(err){
+			obj.catch && obj.catch(err);
+		})
 	}
 
 	function commonChecker(value){

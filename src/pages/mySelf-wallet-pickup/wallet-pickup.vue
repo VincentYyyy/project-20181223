@@ -16,12 +16,18 @@
 			<p class="f-gray-1">提现金额</p>
 			<div class="money-input">
 				<span class="money-icon">¥</span>
-				<input type="text">
+				<input type="text" v-model="wallet.pickupNum"
+					v-on:input="onInput"
+					v-on:focus="onFocus"
+					v-on:blur="onBlur"
+				>
 			</div>
 			<div class="f-gray-2">
-				可提现余额0.00元
+				可提现余额 {{wallet.sum || 0}} 元
 
-				<div class="all-pickup">
+				<div class="all-pickup"
+					@click="pickupAll"
+				>
 					全部提现
 				</div>
 			</div>
@@ -30,7 +36,10 @@
 			最低是100元才能提现
 		</p>
 
-		<div class="c-btn disabled pickup-btn">
+		<div class="c-btn  pickup-btn"
+			:class="btn.class"
+			@click="onPickup"
+		>
 			<button class="f-bdr">
 				提现
 			</button>
@@ -39,12 +48,20 @@
 		<x-dialog v-model="dialog.show">
 			<div class="m-dialog">
 				<p class="header">提现</p>
-				<p class="money">¥ 800.00</p>
+				<p class="money">¥ {{wallet.pickupNum}}</p>
 				<p class="content">确定提现到该银行卡？</p>
 
 				<div class="button">
-					<div class="cancel">取消</div>
-					<div class="confirm">确认</div>
+					<div class="cancel"
+						@click="onCancel"
+					>
+						取消
+					</div>
+					<div class="confirm"
+						@click="onConfirm"
+					>
+						确认
+					</div>
 				</div>
 			</div>
 		</x-dialog>
@@ -60,7 +77,16 @@
 		data(){
 			return{
 				dialog: {
-					show: false
+					show: false,
+				},
+				wallet: {
+					sum: 0,
+					pickupNum: 0
+				},
+				btn: {
+					class: {
+						disabled: true
+					}
 				}
 			}
 		},
@@ -69,10 +95,55 @@
 			XDialog
 		},
 		methods:{
-			
+			pickupAll(){
+				this.wallet.pickupNum = this.wallet.sum;
+				this.onInput()
+			},
+			onInput(){
+				var pickupNum = Number.parseFloat(this.wallet.pickupNum);
+				this.btn.class.disabled = !pickupNum || pickupNum < 100;
+			},
+			onFocus(){
+				var pickupNum = Number.parseFloat(this.wallet.pickupNum);
+				if(!pickupNum)
+					this.wallet.pickupNum = ""
+			},
+			onBlur(){
+				var pickupNum = Number.parseFloat(this.wallet.pickupNum);
+				if(!pickupNum)
+					this.wallet.pickupNum = 0
+			},
+			onPickup(){
+				var pickupNum = Number.parseFloat(this.wallet.pickupNum);
+				// if (this.btn.class.disabled) return;
+				this.dialog.show = true;
+			},
+			onConfirm(){
+				var params={
+					id:this.$store.state.id,
+					money: Number.parseInt(this.wallet.pickupNum)
+				}
+				var self = this;
+				this.$HRApp("cashWithdrawal" ,{
+					FIXME: true,
+					params: params,
+					then: function(data){
+						if(data.status === "200"){
+							self.wallet.sum = self.wallet.sum = self.wallet.pickupNum;
+							self.wallet.pickupNum = 0;
+						}
+
+						self.dialog.show = false;
+						alert(data.msg);
+					}
+				})
+			},
+			onCancel(){
+				this.dialog.show = false
+			},
 		},
 		mounted(){
-			
+			this.wallet.sum = this.$route.query.sum || 0;
 		}
 	}
 </script>

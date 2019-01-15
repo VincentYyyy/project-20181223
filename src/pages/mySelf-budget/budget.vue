@@ -108,8 +108,21 @@
 	  		window.history.go(-1)
 	  	},
 	  	onItemClick(val){
-
+			
 	  	}
+	  },
+		created(){
+		  this.$HRApp('getUserBill',{
+				FIXME: true,
+				params: {
+					id: this.$store.state.id,
+					pageNum: 0,
+					pageSize: 200
+				},
+				then: function (data){
+					console.log("ddd", data)
+				}
+			})
 	  }
 	}
 </script>

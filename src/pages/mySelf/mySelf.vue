@@ -16,7 +16,7 @@
 					<p class="user-phone f-gray-1 f-sz-18"
 						v-if="user.phone"
 					>
-						手机号：{{user.phone}}
+						手机号：{{user.phone | filterFactory('phone')}}
 					</p>
 				</div>
 				<div class="wallet-details">
@@ -83,27 +83,30 @@
 <script>
 	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
+import { debug } from 'util';
 	
 	var popup ={show: false}
 	var common = {
 		pageState: 'details'
 	}
-
+	// console.log(this)
 	export default{
 		name:'myself',
 		filters: {
 			filterFactory: function(value, type){
-				var filter = {
-					phone: function(value){
-						return "TODO " + value
+				var filters = {
+					phone: function(){
+						if( !value ) return "未认证";
+						value = value.toString();
+						if(!value.length) return "未认证";
+						return value.substr(0, 3) + '****' + value.substr(7);
 					},
 					identify: function(){
 						return "TODO " + value
 					}
-				}[type];
-
-				return filter(value);
-			},
+				};
+				return filters[type]();
+			}
 		},
 		data(){
 			return{
@@ -111,9 +114,10 @@
 				commond: common,
 				hasIdentified: false,
 				user:{
-					name:'欧阳诸葛',
-					img: require('../../img/myself/man.png'),
-					phone:'169838929193',
+					name:'',
+					img: '',
+					// img: require('../../img/myself/man.png'),
+					phone:'',
 					userLevel:''
 				},
 				details: {
@@ -232,15 +236,34 @@
 					url:'/appApi/appUsers/getUserDetail'
 				}).then(function(res){
 					var data = res.data;
+					
 					if(data && data.status=='200'){
 						var userinfor = res.data.data;
+						var userinfor = self.$getUserInfo();
+						var headImg = userinfor.headImg || 'headpoint-man.png';
+
 						self.$resetUserInfor(userinfor);
 						self.user.name = userinfor.nickName || '未设置昵称';
 						self.user.phone = userinfor.phone;
 						self.hasIdentified = !!userinfor.userName;
+						self.user.img = require("../../img/myself/" + headImg);
 					}
 				}).catch(function(err){
 					
+				})
+
+				this.$HRApp('getUserReward', {
+					FIXME: true,
+					params: {
+						id: this.$store.state.id
+					},
+					then: function (data){
+						if(data.status === "200"){
+							self.wallet.sum = data.data.balance;
+							self.wallet.incommonyes = data.data.amount;
+							self.wallet.pickedup = data.data.withdrawAmount;
+						}
+					}
 				})
 			},
 			getBalance(){
@@ -319,6 +342,7 @@
 			text-align: center;
 			position: relative;
 			margin-bottom: 0.2rem;
+			height: 0.53rem;
 
 			span{
 				font-size: 20px;
