@@ -91,14 +91,6 @@ import { debug } from 'util';
 					if(res.status=='200'){	 
 						console.log("请求会员列表成功：", res.data);
 						var data = res.data;
-
-						// 测试数据
-						// data.data = [{
-						// 	nickName: "xxx",
-						// 	headImg: "headpont-woman.png",
-						// 	phone: "1344555566",
-						// 	invitationTime: new Date()
-						// }]
 						
 						if(data.status === "200" && data.data){ 	// FIXME 500
 							var arr = [];

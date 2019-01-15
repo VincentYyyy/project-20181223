@@ -33,7 +33,7 @@
 			</div>
 		</div>
 		<p class="tips f-gray-1">
-			最低是100元才能提现
+			最低是{{wallet.sum || 0}}元才能提现
 		</p>
 
 		<div class="c-btn  pickup-btn"

@@ -59,7 +59,7 @@
 		methods:{
 			goToPickup(){
 				this.$gotoPages('/mySelf-wallet-pickup', {
-					sum: 100  // FIXME
+					sum: this.sum  // FIXME
 					// sum: this.sum
 				})
 			},
