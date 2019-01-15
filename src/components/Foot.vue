@@ -194,11 +194,11 @@
 	}
 	
 	.weui-grids a:nth-of-type(4) span{
-		background: url(../assets/竞乐投@3x.png);
+		background: url(../assets/我的@3x.png);
 		background-size: 100% 100%;
 	}
 	.weui-grids a:nth-of-type(4) span.active{
-		background: url(../assets/竞乐投选中@3x.png);
+		background: url(../assets/我的选中@3x.png);
 		background-size: 100% 100%;
 	}
 </style>

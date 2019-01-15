@@ -1,8 +1,8 @@
 <template>
 	<div class="goods-detail">
-		<div @click="controlResult" style="position: fixed;top: 400px;">
+		<!--<div @click="controlResult" style="position: fixed;top: 400px;">
 			controlResult
-		</div>
+		</div>-->
 		<!--<cmheader :title="thatTitle"></cmheader>-->
 		<div class="btn-bg bg-now" @click="showPopUp">
 			立即购买
@@ -239,8 +239,6 @@
 					receiptPhone:this.receiptPhone,	//必填	String	收货人电话
 					receiptPerson:this.receiptPerson	//必填	String	收货人姓名
 				}
-				console.log(params)
-				return false
 				params=this.$qs.stringify(params)
 				this.$axios({
 					method:'post',
@@ -269,9 +267,9 @@
 			goNativeAPP(orderStr){
 				console.log(orderStr)
 				if(window.android){
-					window.android.lbZFBPay(orderStr)
+					window.android.ZFBPay(orderStr)
 				}else{
-					lbZFBPay(orderStr)
+					ZFBPay(orderStr)
 				}			
 			},
 			controlResult(){
@@ -323,11 +321,13 @@
 				this.isShowPopUp=true
 			}
 			window.onload=function(){
-				window['lbZFBPayState']=function(val){
+				function PayState(val){
 					_this.controlResult()
 				}
 			}
-			
+			function PayState(val){
+				_this.controlResult()
+			}
 		}
 	}
 </script>
