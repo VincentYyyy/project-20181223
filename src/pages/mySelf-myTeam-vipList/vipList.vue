@@ -38,6 +38,7 @@
 <script>
 	import { XButton, Popup } from 'vux'	
 	import cmheader from '../../components/cmHeader.vue'
+import { debug } from 'util';
 	
 	var common = {
 		pageState: 'details'
@@ -53,15 +54,17 @@
 				title: '一级会员',
 				level: 1,
 				vipList:{
-					items: [{
-						label: '李一鸣',
-						img: require('../../img/myself/男@2x.png'),
-						phone: "12345678901",
-						date: '2018.12.25',
-						onClick: function (){
-							
-						}
-					}]
+					items: [
+						// {
+						// 	label: '李一鸣',
+						// 	img: require('../../img/myself/男@2x.png'),
+						// 	phone: "12345678901",
+						// 	date: '2018.12.25',
+						// 	onClick: function (){
+								
+						// 	}
+						// }
+					]
 				}
 			}
 		},
@@ -70,8 +73,9 @@
 				var params={
 					id:this.$store.state.id,
 					pageNum: pageNum,
-					pageSize: 100		// FIXME
+					pageSize: 200		// FIXME
 				}
+				var self = this;
 
 				params=this.$qs.stringify(params);
 				var levelApi = {
@@ -84,8 +88,25 @@
 					data:params,
 					url: url
 				}).then(function(res){
-					if(res.status=='200'){		// TODO 
+					if(res.status=='200'){	 
 						console.log("请求会员列表成功：", res.data);
+						var data = res.data;
+						
+						if(data.status === "200" && data.data){ 	// FIXME 500
+							var arr = [];
+							data.data.forEach(function(item, index){
+								arr.push({			// FIXME push 生效
+									label: item.nickName || "无昵称",
+									img: require('../../img/myself/' + (item.headImg || 'headpoint-man.png')),
+									phone: item.phone,
+									date: item.inviteTime.split(" ")[0],
+								})
+							})
+
+							self.vipList.items = arr;
+						}else{
+
+						}
 					}
 				}).catch(function(err){
 
@@ -104,7 +125,7 @@
 				2: '二级会员'
 			}[this.level];
 			
-			this.getVipList(0);
+			this.getVipList(1);
 		}
 	}
 </script>

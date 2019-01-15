@@ -57,36 +57,15 @@
 			cmheader
 		},
 		methods:{
-			demo(){
-				var _this=this
-				var params={
-					keyname:''
-				}
-				params=this.$qs.stringify(params)
-				this.$axios({
-					method:'post',
-					data:params,
-					url:''
-				}).then(function(res){
-					console.log(res)
-					if(res.status=='200'){
-						var getData=res.data
-						if(getData.status=='200'){
-							var _data=getData.data
-							_this.XXXX=_data
-						}
-					}
-				}).catch(function(err){
-					console.log(err)
-				})
-			},
 			goToPickup(){
-				this.$gotoPages('/mySelf-wallet-pickup')
+				this.$gotoPages('/mySelf-wallet-pickup', {
+					sum: this.sum  // FIXME
+					// sum: this.sum
+				})
 			},
 			goToBind(){
 				this.$gotoPages('/mySelf-wallet-bind')
-			},
-			
+			}
 		},
 		mounted(){
 			var _this = this;
@@ -108,7 +87,21 @@
 			}).catch(function(err){
 				
 			})
-	}
+
+			this.$HRApp('getUserReward', {
+				FIXME: true,
+				params: {
+					id: this.$store.state.id
+				},
+				then: function (data){
+					if(data.status === "200"){
+						_this.sum = data.data.balance;
+						_this.voucher = data.data.couponBalance;
+						_this.incomon = data.data.amount;
+					}
+				}
+			})
+		}
 	}
 </script>
 

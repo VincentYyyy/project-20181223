@@ -6,7 +6,7 @@
 		<div class="u-header-padding" ></div>
 
 		<!-- 个人信息 -->
-		<div class="m-details" v-show="commond.pageState === 'details'">
+		<div class="m-details">
 
 			<div class="c-list-item c-list-item-raw">
 				<div class="c-item-label">
@@ -54,53 +54,36 @@
 		
 		</div>
 
-		<!-- 输入昵称 -->
-		<div class="m-name-input" v-if="commond.pageState === 'nameInput'">
-			<div class="c-list-item">
-				<input  type="text" placeholder="输入昵称">
-			</div>
-		</div>
-
-		<popup v-model="popup.show" >
+		<popup v-model="popup.show" 
+			@on-show="popup.onShow"
+			@on-hide="popup.onHide"
+		>
 			<div class="m-popup popoup-select-headport" height="300">
 			<div class="m-selector">
 				<div class="header f-fs-14">
 					选择头像
 				</div>
 				<div class="haederpoit-list">
-					<div class="list-item">
 
-							<div class="wrap f-clear">
-								<img class="headpoint" src="../../img/myself/男@2x.png" alt="">
-								<div class="checkbox i-checkbox"></div>
-								<label>男</label>
-							</div>
-							
+					<div class="list-item" v-for = "item in headPoint.items"
+						@click="item.check(item)"
+					>
+						<div class="wrap f-clear"
+						>
+							<img class="headpoint" :src="item.url" alt=""
+							>
+							<div class="checkbox i-checkbox"
+								:class="item.class"
+							></div>
+							<label>{{item.label}}</label>
+						</div>
 					</div>
-					<div class="list-item">
-							<div class="wrap f-clear">
-								<img class="headpoint" src="../../img/myself/女@3x.png" alt="">
-								<div class="checkbox i-checkbox checked"></div>
-								<label>女</label>
-							</div>
-					</div>
-					<div class="list-item">
-							<div class="wrap f-clear">
-								<img class="headpoint" src="../../img/myself/老@2x.png" alt="">
-								<div class="checkbox i-checkbox"></div>
-								<label>老</label>
-							</div>
-					</div>
-					<div class="list-item">
-							<div class="wrap f-clear">
-								<img class="headpoint" src="../../img/myself/少@2x.png" alt="">
-								<div class="checkbox i-checkbox"></div>
-								<label>少</label>
-							</div>
-					</div>
+
 				</div>
 			</div>
-			<div class="cancel f-fs-16">
+			<div class="cancel f-fs-16"
+				@click="popup.onCancel"
+			>
 				取消
 			</div>
 			</div>
@@ -111,10 +94,53 @@
 <script>
 	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
+import { debug } from 'util';
+
+	var self = this;
+	var popup ={
+		show: false,
+		headUlrBak: "headpoint-man.png",
+		$parent: null,
+		onShow: function (){
 	
-	var popup ={show: false}
-	var common = {
-		pageState: 'details'
+		},
+		onCancel: function (){			// 取消
+			var $parent = popup.$parent;
+			var headPointItem = null;
+			var headPointItems = $parent.headPoint.items;
+			for(var i=0; i<headPointItems.length; i++){
+				headPointItems[i].class.checked = headPointItems[i].img === popup.headUlrBak;
+			}
+		},
+		onHide: function (){			// 确定
+			var $parent = popup.$parent;
+			var headPoints = $parent.headPoint.items;
+			var checkedItem = null;
+
+			$parent.headPoint.items.forEach(function (item){
+				if(item.class.checked)
+					checkedItem = item;
+			}) 
+
+			var params = {
+				id: $parent.$store.state.id,
+				headImg: checkedItem.img
+			};
+			
+			$parent.$HRApp('updateUserDetail', {
+				FIXME: true,    // 500 报错
+				params: params,
+				then: function(res){
+					$parent.$resetUserInfor({
+						headImg: checkedItem.img
+					})
+					$parent.details.userImg.img = require('../../img/myself/' + checkedItem.img);
+					popup.headUlrBak = checkedItem.img;
+				},
+				catch: function(err){
+				}
+			})
+		}
 	}
 
 	export default{
@@ -134,53 +160,90 @@
 			},
 		},
 		data(){
+			var _self = this;
+			var nameItem = {
+				label: '昵称',
+				content: '未设置昵称',
+				rawRight: true,
+				onClick: function(){
+					var name = nameItem.content === "未设置昵称" ? "" : nameItem.content;
+					_self.$gotoPages("/mySelf-userinfor-changename", {
+						nickName: name
+					})
+				},
+				class: {
+					'f-gray-2': true
+				}
+			}
+
 			return{
 				popup: popup,
-				commond: common,
 				details: {
 					userImg:{
 						label: '头像',
-						img: require('../../img/myself/男@2x.png'),
+						img: require('../../img/myself/headpoint-man.png'),
 						rawRight: true,
 						onClick: function(){
 							popup.show = true;
 						}
 					},
-					items:[{
-						label: '昵称',
-						content: '未设置昵称',
-						rawRight: true,
-						onClick: function(){
-							common.pageState = "nameInput";
+					items:[
+						nameItem,
+						{
+							label: '手机号码',
+							content: '未认证',
+							// filterType: 'phone',
+							class: {
+								'f-gray-1': true
+							}
+						},{
+							label: '身份证',
+							content: '未认证',
+							// filterType: "identify",
+							class: {
+								'f-gray-1': true
+							}
+					}]
+				},
+				headPoint: {
+					items: [{
+						label: '男',
+						img: 'headpoint-man.png',
+						check: function(item){
+							_self.check(item)
 						},
 						class: {
-							'f-gray-2': true
+							checked: true
 						}
-					},{
-						label: '手机号码',
-						content: '未认证',
-						// filterType: 'phone',
+					}, {
+						label: '女',
+						img: 'headpoint-woman.png',
+						check: function(item){
+							_self.check(item)
+						},
 						class: {
-							'f-gray-1': true
+							checked: false
 						}
-					},{
-						label: '身份证',
-						content: '未认证',
-						// filterType: "identify",
+					}, {
+						label: '老',
+						img: 'headpoint-old.png',
+						check: function(item){
+							_self.check(item)
+						},
 						class: {
-							'f-gray-1': true
+							checked: false
+						}
+					}, {
+						label: '少',
+						img: 'headpoint-young.png',
+						check: function(item){
+							_self.check(item)
+						},
+						class: {
+							checked: false
 						}
 					}]
 				},
-
-				isLogined:false,
-				random:'',
-				user:{
-					name:'',
-					img:require('../../img/myself/nav6.jpg'),
-					mobile:'',
-					userLevel:''
-				}
 			}
 		},
 		methods:{
@@ -194,8 +257,22 @@
 			showPopUp(){
 				this.$store.state.isShowPop=true				
 			},
+			check: function (item){
+				var checked = true;
+				var self = this;
+				this.headPoint.items.forEach(function (item){
+					item.class.checked = false;
+				}) 
+				item.class.checked = checked;
+				// this.details.userImg.img = item.url;
+			},
+			creatHeadPointUrl(item){
+				this.headPoint.items.forEach(function (item){
+					item.url = require('../../img/myself/' + item.img)
+				})
+			}
 		},
-		components:{
+		components:{ 
 			XButton,
 			Popup,
 			cmheader
@@ -203,14 +280,36 @@
 		created(){
 			var userInfo = this.$store.state.userInfo;
 
-			var nameItem =  this.$userInfo(this.details.items, 'label', '昵称');
-			nameItem.content = userInfo.nikeName || nameItem.content;
+			var nameItem =  this.$findObj(this.details.items, 'label', '昵称');
+			nameItem.content = userInfo.nickName || nameItem.content;
 
-			var phoneItem =  this.$userInfo(this.details.items, 'label', '手机号码');
+			var phoneItem =  this.$findObj(this.details.items, 'label', '手机号码');
 			phoneItem.content = userInfo.phone || phoneItem.content;
 
-			var idCardItem =  this.$userInfo(this.details.items, 'label', '身份证');
+			var idCardItem =  this.$findObj(this.details.items, 'label', '身份证');
 			idCardItem.content = userInfo.idCard || idCardItem.content;
+
+			this.creatHeadPointUrl();
+
+			var headimg = this.$store.state.userInfo.headimg;
+			if(headimg){
+				this.details.userImg.img = headimg;
+			}
+			var userInfo = this.$getUserInfo();
+			popup.$parent = this;
+			if(userInfo.headImg){
+				var headPointItem = this.$findObj(
+					this.headPoint.items, 
+					'img',
+					userInfo.headImg
+				)
+
+				if(headPointItem){
+					this.details.userImg.img = require('../../img/myself/' + userInfo.headImg);
+					this.check(headPointItem)
+					popup.headUlrBak = headPointItem.img;
+				}
+			}
 		}
 	}
 </script>

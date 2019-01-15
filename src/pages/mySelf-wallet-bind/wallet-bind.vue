@@ -55,7 +55,7 @@
 						}
 					}, {
 						name: 'bankCard',
-						value: '6231132201000248419',			//FIXME
+						value: '',			//FIXME
 						placeholder: '输入银行卡账号',
 						checker: function(item, $getChecker){
 							if(!item.value)
@@ -94,6 +94,8 @@
 		},
 		methods:{
 			submit(){
+				var self = this;
+				debugger
 				var params={
 					id:this.$store.state.id,
 				}
@@ -109,28 +111,21 @@
 						return;
 					}
 				}
-				params=this.$qs.stringify(params);
+				var userInfoParmas = JSON.parse(JSON.stringify(params));
 
-				this.$axios({
-					method:'post',
-					data:params,
-					url:'/appApi/appUsers/bindBankCard'
-				}).then(function(res){
-					if(res.status=='200'){		// TODO 
-						var code=res.data.data.code;
-						if(code=='200'){
-							console.log("ok", res.data);
+				this.$HRApp('bindBankCard', {
+					params: params,
+					then: function(data){
+						if(data.status=='200'){
+							alert('绑定成功');
+							delete userInfoParmas.id;
+							userInfoParmas.bankStatus = 1;  // FIXME getUserDetail接口无这些字段
+							self.$resetUserInfor(userInfoParmas);
 						}else{
-
+							data.msg && alert(data.msg);
 						}
 					}
-				}).catch(function(err){
-
 				})
-			},
-			seGlobelUserInfor: function (params){
-				var self = this;
-				
 			}
 		},
 		components:{
