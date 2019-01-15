@@ -167,6 +167,10 @@ export default new Router({
 		name: 'mySelf-userinfor',
 		component: resolve => require(['../pages/mySelf-userinfor/userinfor.vue'], resolve)
 	}, {
+		path: '/mySelf-userinfor-changename',
+		name: 'mySelf-userinfor-changename',
+		component: resolve => require(['../pages/mySelf-userinfor-changename/changename.vue'], resolve)
+	}, {
 		path: '/mySelf-acount',
 		name: 'mySelf-acount',
 		component: resolve => require(['../pages/mySelf-acount/acount.vue'], resolve)

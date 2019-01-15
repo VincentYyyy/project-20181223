@@ -6,13 +6,23 @@
 		<div class="u-header-padding" ></div>
 
 		<!-- 个人信息 -->
-		<div class="m-details" v-show="commond.pageState === 'details'">
-			<textarea class="u-content f-fs-14" name="" id="" cols="30" rows="10" placeholder="请输入给客服的留言..."></textarea>
-			<input class="u-conection f-fs-14" type="text" placeholder="请输入联系方式 （手机 / 微信 / 邮箱）">
+		<div class="m-details">
+			<textarea class="u-content f-fs-14" 
+				name="" id="" cols="30" rows="10" 
+				placeholder="请输入给客服的留言..."
+				v-model="conection.content"
+			></textarea>
+			<input class="u-conection f-fs-14" 
+				type="text" 
+				placeholder="请输入联系方式 （手机 / 微信 / 邮箱）"
+				v-model="conection.way"			
+			>
 		</div>
 
 		<div class="c-btn">
-			<button class="f-fs-16">提交</button>
+			<button class="f-fs-16"
+				@click="onSubmit"
+			>提交</button>
 		</div>
 		
 	</div>
@@ -22,47 +32,39 @@
 	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
 	
-	var popup ={show: false}
-	var common = {
-		pageState: 'details'
-	}
-
 	export default{
 		name:'myself',
-		filters: {
-			filterFactory: function(value, type){
-				var filter = {
-					phone: function(value){
-						return "TODO " + value
-					},
-					identify: function(){
-						return "TODO " + value
-					}
-				}[type];
-
-				return filter(value);
-			},
-		},
 		data(){
 			return{
-				popup: popup,
-				commond: common,
-				details: {
-					items:[{
-						label: '一级会员',
-						level: 1,
-						rawRight: true,
-					},{
-						label: '二级会员',
-						level: 2,
-						rawRight: true,
-					}]
-				},
+				conection: {
+					content: "",
+					way: "",
+				}
 			}
 		},
 		methods:{
-			toLink(item){
-				this.$gotoPages('/mySelf-myTeam-vipList', {level: item.level})
+			onSubmit(){
+				if( !this.conection.content || this.conection.content.length < 5 ){
+					alert("请输入反馈")
+					return;
+				}
+
+				var params = {
+					id: this.$getUserInfo().id,
+					content: this.conection.content,
+					way: this.conection.way,			// FIXME 接口无联系方式字段
+				};
+				this.$HRApp("userFeedBack",{
+					params: params,
+					then: function(data){
+						if(data.status === "200"){
+							alert("反馈成功");
+							window.history.go(-1)
+						}else{
+							data.msg && alert(data.msg);
+						}
+					}
+				})
 			}
 		},
 		components:{
