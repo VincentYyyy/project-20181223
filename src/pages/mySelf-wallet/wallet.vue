@@ -87,7 +87,21 @@
 			}).catch(function(err){
 				
 			})
-	}
+
+			this.$HRApp('getUserReward', {
+				FIXME: true,
+				params: {
+					id: this.$store.state.id
+				},
+				then: function (data){
+					if(data.status === "200"){
+						_this.sum = data.data.balance;
+						_this.voucher = data.data.couponBalance;
+						_this.incomon = data.data.amount;
+					}
+				}
+			})
+		}
 	}
 </script>
 

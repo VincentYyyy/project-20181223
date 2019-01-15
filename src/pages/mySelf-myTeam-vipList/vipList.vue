@@ -95,7 +95,7 @@ import { debug } from 'util';
 						// 测试数据
 						// data.data = [{
 						// 	nickName: "xxx",
-						// 	headUrl: "headpont-woman.png",
+						// 	headImg: "headpont-woman.png",
 						// 	phone: "1344555566",
 						// 	invitationTime: new Date()
 						// }]
@@ -103,13 +103,11 @@ import { debug } from 'util';
 						if(data.status === "200" && data.data){ 	// FIXME 500
 							var arr = [];
 							data.data.forEach(function(item, index){
-								var date = new Date(item.invitationTime);
-								date = date.Format('yyyy.MM.dd');
 								arr.push({			// FIXME push 生效
-									label: item.nickName,
-									img: require('../../img/myself/' + (item.headUrl || 'headpoint-man.png')),
+									label: item.nickName || "无昵称",
+									img: require('../../img/myself/' + (item.headImg || 'headpoint-man.png')),
 									phone: item.phone,
-									date: date,
+									date: item.inviteTime.split(" ")[0],
 								})
 							})
 
@@ -135,7 +133,7 @@ import { debug } from 'util';
 				2: '二级会员'
 			}[this.level];
 			
-			this.getVipList(0);
+			this.getVipList(1);
 		}
 	}
 </script>

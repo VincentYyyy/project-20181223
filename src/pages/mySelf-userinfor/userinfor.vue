@@ -94,6 +94,7 @@
 <script>
 	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
+import { debug } from 'util';
 
 	var self = this;
 	var popup ={
@@ -123,7 +124,7 @@
 
 			var params = {
 				id: $parent.$store.state.id,
-				headUrl: checkedItem.img
+				headImg: checkedItem.img
 			};
 			
 			$parent.$HRApp('updateUserDetail', {
@@ -131,7 +132,7 @@
 				params: params,
 				then: function(res){
 					$parent.$resetUserInfor({
-						headUrl: checkedItem.img
+						headImg: checkedItem.img
 					})
 					$parent.details.userImg.img = require('../../img/myself/' + checkedItem.img);
 					popup.headUlrBak = checkedItem.img;
@@ -180,7 +181,7 @@
 				details: {
 					userImg:{
 						label: '头像',
-						img: require('../../img/myself/男@2x.png'),
+						img: require('../../img/myself/headpoint-man.png'),
 						rawRight: true,
 						onClick: function(){
 							popup.show = true;
@@ -296,15 +297,15 @@
 			}
 			var userInfo = this.$getUserInfo();
 			popup.$parent = this;
-			if(userInfo.headUrl){
+			if(userInfo.headImg){
 				var headPointItem = this.$findObj(
 					this.headPoint.items, 
 					'img',
-					userInfo.headUrl
+					userInfo.headImg
 				)
 
 				if(headPointItem){
-					this.details.userImg.img = require('../../img/myself/' + userInfo.headUrl);
+					this.details.userImg.img = require('../../img/myself/' + userInfo.headImg);
 					this.check(headPointItem)
 					popup.headUlrBak = headPointItem.img;
 				}

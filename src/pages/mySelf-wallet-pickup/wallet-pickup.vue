@@ -115,7 +115,7 @@
 			},
 			onPickup(){
 				var pickupNum = Number.parseFloat(this.wallet.pickupNum);
-				if (this.btn.class.disabled) return;
+				// if (this.btn.class.disabled) return;
 				this.dialog.show = true;
 			},
 			onConfirm(){

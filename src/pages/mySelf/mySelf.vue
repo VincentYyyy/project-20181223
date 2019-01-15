@@ -236,17 +236,17 @@ import { debug } from 'util';
 					url:'/appApi/appUsers/getUserDetail'
 				}).then(function(res){
 					var data = res.data;
+					
 					if(data && data.status=='200'){
 						var userinfor = res.data.data;
 						var userinfor = self.$getUserInfo();
+						var headImg = userinfor.headImg || 'headpoint-man.png';
+
 						self.$resetUserInfor(userinfor);
 						self.user.name = userinfor.nickName || '未设置昵称';
 						self.user.phone = userinfor.phone;
 						self.hasIdentified = !!userinfor.userName;
-
-						if(userinfor.headUrl){
-							self.user.img = require("../../img/myself/" + userinfor.headUrl);
-						}
+						self.user.img = require("../../img/myself/" + headImg);
 					}
 				}).catch(function(err){
 					
