@@ -1,6 +1,6 @@
 <template>
 	<div class="mall-wrap">
-		<cmheader :title="thatTitle" :backUrl='backUrl'></cmheader>
+		<cmheader :title="thatTitle" ></cmheader>
 		<iframe :src="mallSrc" id="mall-iframe" ref="myIframe">
 			
 		</iframe>
@@ -17,32 +17,35 @@
 		data(){
 			return{
 //				thatTitle:'商城',
-				backUrl:'/home',
-				mallSrc:''
+				backUrl:'',
+//				mallSrc:''
 			}
 		},
 		watch:{
-			"mallSrc":{
-				handler:function(){
-					console.log(111111111111111)	
-				},
-				deeply:true
-			}
+//			"mallSrc":{
+//				handler:function(){
+//					console.log(111111111111111)	
+//				},
+//				deeply:true
+//			}
 		},
 		props:{
 			"thatTitle":{
 	            default:"我是默认值"
 	        },
+	        "mallSrc":{
+	        	default:""
+	        }
 		},
 		methods:{
 			autoGetUserInfo(){
-				var userInfo=JSON.parse(sessionStorage.getItem('userInfo'))
-				var phone=userInfo.phone
-				console.log(phone)
-				var params='?app_phone='+phone+'&app_strkey='+md5('hpyshop'+md5(phone))
-				var domain=this.$route.query.domain
-				var _url=domain+params
-				this.mallSrc=_url
+//				var userInfo=JSON.parse(sessionStorage.getItem('userInfo'))
+//				var phone=userInfo.phone
+//				console.log(phone)
+//				var params='?app_phone='+phone+'&app_strkey='+md5('hpyshop'+md5(phone))
+//				var domain=this.$route.query.domain
+//				var _url=domain+params
+//				this.mallSrc=_url
 			}
 		},
 		components:{

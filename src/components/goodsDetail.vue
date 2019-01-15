@@ -11,7 +11,7 @@
 			<Popup v-model="isShowPopUp">
 			<div class="goods-buy-popup" v-if="payStatus==0">
 				<div class="gbp-title">
-					<img src="../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 购买礼包支付
+					<img src="../../static/chicon/关闭支付页面@2x.png" @click="closeWindow"> 购买礼包支付
 				</div>
 				<div class="goods-price-wrap flex-start-end">
 					<div>
@@ -43,17 +43,53 @@
 			</div>
 			<div class="goods-buy-popup" v-if="payStatus==1">
 				<div class="gbp-title" style="border-bottom: 0;">
-					<img src="../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 地址选择
+					<img src="../../static/chicon/关闭支付页面@2x.png" @click="closeWindow"> 地址选择
 				</div>
-				<div>
-					<div @click="newAddress">
+				<div style="max-height: 45vh;overflow-y: scroll;overflow-x: hidden;">
+					<div>
+						<img src="../assets/no-add.png" v-if="addList.length==0&&!isFisrtLoad" style="margin: 0 auto;">
+					</div>
+					<div class="btn-bg buy-now-btn" @click="newAddress" v-if="addList.length==0&&!isFisrtLoad">
 						新增
+					</div>
+					<div v-for="(item,index) in addList" class="add-list">
+						<div class="flex-start">
+							<div>
+								<img src="../../static/chicon/选中@2x.png" v-if="item.isCheck" @click="checkClk(item,index)">
+								<span v-else style="border-radius: 100%;border: 1px solid #ddd; box-sizing: border-box;width: 18px;height: 18px;display: inline-block;" @click="checkClk(item,index)">
+									<img src="../../static/chicon/选中@2x.png" style="opacity: 0;">
+								</span>
+							</div>
+							<div style="flex: 1;">
+								<div class="flex-start">
+									<div style="flex: 1;padding: 0 .2rem;"  @click="checkClk(item,index)">
+										<div class="flex-start-end">
+											<div><strong>
+												{{item.consignee}}
+											</strong></div>
+											<div>
+												{{item.mobile}}
+											</div>
+										</div>
+										<div>
+											{{item.address}}
+										</div>
+									</div>
+									<div @click="newAddress">
+										<img src="../../static/chicon/右箭头@2x.png">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div v-if="addList.length!=0&&!isFisrtLoad"  class="btn-bg buy-now-btn" @click="changeStatus">
+						去支付
 					</div>
 				</div>
 			</div>
 			<div class="goods-buy-popup" v-if="payStatus==2">
 				<div class="gbp-title" style="border-bottom: 0;">
-					<img src="../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 购买礼包支付
+					<img src="../../static/chicon/关闭支付页面@2x.png" @click="closeWindow"> 购买礼包支付
 				</div>
 				<div class="pay-result">
 					<img src="../../static/chicon/椭圆1@2x.png">
@@ -67,7 +103,7 @@
 			</div>
 			<div class="goods-buy-popup" v-if="payStatus==3">
 				<div class="gbp-title" style="border-bottom: 0;">
-					<img src="../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 购买礼包支付
+					<img src="../../static/chicon/关闭支付页面@2x.png" @click="closeWindow"> 购买礼包支付
 				</div>
 				<div class="pay-result">
 					<img src="../../static/chicon/支付失败@2x.png">
@@ -82,6 +118,7 @@
 </template>
 
 <script>
+	import md5 from 'js-md5'
 //	import cmheader from '../../components/cmHeader.vue'
 	import { Popup,TransferDom } from 'vux'
 	
@@ -89,13 +126,15 @@
 		name: 'goods-detail',
 		data() {
 			return {
-				payStatus:0,
+				payStatus:1,
 				payResultStatus:0,
 				isShowPopUp: false,
 				orderId:'',//支付订单号
 				thatTitle: '礼包详情',
 				selectedIndex:0,
 				outlinkType:0,
+				addList:[],
+				isFisrtLoad:true,
 				payList:[{
 					label:'支付宝支付',
 					img:'../../static/chicon/支付宝@2x.png',
@@ -104,15 +143,68 @@
 					label:'微信支付',
 					img:'../../static/chicon/微信@2x.png',
 					isSelected:false
-				}]
+				}],
+				receiptAddress:'',
+				receiptPhone:'',
+				receiptPerson:''
 		}},
 		props:['goodsInfo'],
 		methods: {
+			checkClk(item,index){
+//				item.isChecked=!item.isChecked
+				for(var i=0;i<this.addList.length;i++){
+					if(i!=index){
+						this.addList[i].isCheck=false
+					}else{
+						this.addList[i].isCheck=!this.addList[i].isCheck
+//						if(this.addList[i].isCheck){
+//							
+//						}
+					}
+				}
+			},
+			changeStatus(){
+				this.payStatus=0
+			},
+			closeWindow(){
+				this.isShowPopUp=false
+				this.payStatus=1
+			},
+			initAddList(){
+				let _this=this
+				let userInfo=JSON.parse(sessionStorage.getItem('userInfo'))
+				let phone=userInfo.phone
+				let str='?app_phone='+phone+'&app_strkey='+md5('hpyshop'+md5(phone))+'&act=address_list'	
+				var _url='http://39.98.52.58:8081/app_api.php'+str
+				console.log(_url)
+				this.$axios({
+					method:'get',
+					url:_url
+				}).then(function(res){
+					console.log(res)
+					if(res.status=='200'){
+						var getData=res.data
+						if(getData.data.length>0){
+							getData.data.forEach(function(item){
+								item.isCheck=false
+							})
+							getData.data[0].isCheck=true
+							_this.receiptAddress=getData.data[0].address	//必填	String	收货人地址
+							_this.receiptPhone=getData.data[0].mobile	//必填	String	收货人电话
+							_this.receiptPerson=getData.data[0].consignee	//必填	String	收货人姓名
+							_this.addList=getData.data							
+						}
+						_this.isFisrtLoad=false
+					}
+				}).catch(function(err){
+					console.log(err)
+				})
+			},
 			newAddress(){
-				var outlink='xxxx'
+				var outlink='http://39.98.52.58:8081/user.php?act=edit_consignee'
 				var outlinkType=this.outlinkType
+				sessionStorage.setItem('mallSrc',outlink)
 				this.$gotoPages('/outlink/addressManage',{
-					outlink:outlink,
 					outlinkType:outlinkType
 				})
 			},
@@ -143,10 +235,12 @@
 					id:this.$store.state.id,//	必填	String	用户ID
 					giftId:this.goodsInfo.id,  //必填	String	礼包ID
 					payType:payType,	//必填	Integer	支付方式
-					receiptAddress:'广州天河区111',	//必填	String	收货人地址
-					receiptPhone:'17666066115',	//必填	String	收货人电话
-					receiptPerson:'陈鸿'	//必填	String	收货人姓名
+					receiptAddress:this.receiptAddress,	//必填	String	收货人地址
+					receiptPhone:this.receiptPhone,	//必填	String	收货人电话
+					receiptPerson:this.receiptPerson	//必填	String	收货人姓名
 				}
+				console.log(params)
+				return false
 				params=this.$qs.stringify(params)
 				this.$axios({
 					method:'post',
@@ -218,11 +312,16 @@
 			Popup,
 //			cmheader
 		},
-		 directives: {
+		directives: {
 		    TransferDom
-		  },
+		},
 		mounted(){
 			var _this=this
+			this.initAddList()
+			console.log(this.$store.state.isFromMall)
+			if(this.$store.state.isFromMall){
+				this.isShowPopUp=true
+			}
 			window.onload=function(){
 				window['lbZFBPayState']=function(val){
 					_this.controlResult()
@@ -234,6 +333,28 @@
 </script>
 
 <style lang="less">
+	.add-list{
+		>div{
+			font-size: 16px;
+			padding: .2rem;
+			box-sizing: border-box;
+		}
+		img{
+			display: block;
+			width: 18px;
+			height: 18px;
+			
+		}
+		span{
+			display: inline-block;
+		}
+		strong{
+		font-size: 14px;
+		/*padding: .1rem;*/
+		color: #333333;
+	}
+	}
+	
 	/*.buying{
  -webkit-transition-property: -webkit-transform;
     -webkit-transition-duration: 1s;

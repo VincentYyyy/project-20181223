@@ -37,7 +37,11 @@
 				} else {
 					this.isShowFoot = false
 				}
-				
+				if(to.name=='moreDetail'&&from.name=='addressManage'){
+					this.$store.state.isFromMall=true
+				}else{
+					this.$store.state.isFromMall=false
+				}
 				// 进入个人中心验证登录
 				var toMySelf = to.name.indexOf('mySelf') > -1;
 				var isUnLogin = !this.$store.state.id;
