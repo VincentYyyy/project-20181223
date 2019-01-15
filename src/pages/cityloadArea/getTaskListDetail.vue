@@ -13,7 +13,7 @@
 								{{taskDetailObj.taskName}}
 							</div>
 							<div class="goods-type">
-								{{taskDetailObj.memberTypeStr}}
+								{{taskDetailObj.taskStatusStr}}
 							</div>
 						</div>
 					</div>
@@ -23,7 +23,7 @@
 								¥&nbsp;{{taskDetailObj.memberAmount}}
 							</div>
 							<div class="goods-status">
-								{{taskDetailObj.taskStatusStr}}
+								{{taskDetailObj.memberTypeStr}}
 							</div>
 						</div>
 					</div>
@@ -36,6 +36,11 @@
 						<img :src="item" class="pre">
 					</div>
 				</div>
+				<div style="text-align: center;padding-top: .26rem;" v-if="taskDetailObj.imgsArr.length>0">
+					<div class="copy-btn btn-bg" @click="copyImgs">
+						复制图片
+					</div>
+				</div>
 				<div class="ac-title">
 					<strong>
 						任务要求
@@ -46,7 +51,7 @@
 						
 					</strong>
 				</div>
-				<div>
+				<div style="text-align: center;">
 					<div class="copy-btn btn-bg" @click="copyUrl2">
 						复制文字
 					</div>
@@ -65,7 +70,7 @@
 			
 		</div>
 
-	<toast v-model="showMsg" type="text" :time='1200' is-show-mask :text="msgContent" :position="'middle'" width="auto"></toast>
+	<toast v-model="showMsg" type="text" :time='1200' is-show-mask :text="msgContent" :position="'middle'" width="8em"></toast>
 	</div>
 </template>
 
@@ -78,7 +83,9 @@
 			return {
 				id: '',
 				thatTitle: '任务详情',
-				taskDetailObj: {},
+				taskDetailObj: {
+					imgsArr:[]
+				},
 				showMsg: false,
 				msgContent: '',
 				textareaValue:'11111111111111'
@@ -133,6 +140,15 @@
 				    }
 				    
 			},
+			copyImgs(){
+				var imgs=''
+				imgs=this.taskDetailObj.imgsArr
+				if(window.android){
+					window.android.oneKeySave(imgs)
+				}else{
+					oneKeySave(imgs)
+				}		
+			},
 			getTaskDetail() {
 				var params = {
 					id: this.id
@@ -157,11 +173,19 @@
 				}).catch(function(err) {
 
 				})
+			},
+			loadMore(){
+				if(this.isScrollDown(this.$refs.scrollArea)){
+					this.getTaskListByStatus()
+				}
 			}
 		},
 		components: {
 			cmheader,
 			Toast
+		},
+		mounted(){
+			
 		}
 	}
 </script>

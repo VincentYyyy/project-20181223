@@ -122,12 +122,35 @@
         border: 0;
         padding: 0;
     }
+    .vux-popup-dialog{
+        background: #FFFFFF!important;
+    }
+    .mall-wrap-outer{
+        height: 100%;
+        overflow: hidden;
+    }
     .mall-wrap{
         box-sizing: border-box;
         height: 100%;
         width: 100%;
-        overflow: hidden;
-        padding-top: .88rem;
+        -webkit-overflow-scrolling: touch;
+         overflow: scroll;
+//      -webkit-overflow-scrolling:touch;
+//      overflow:auto;
+//      position: fixed;
+//      top: 0;
+//      left: 0;
+//      padding-top: .88rem;
+    }
+    iframe {
+        width: 100%!important;
+        height:100%!important;
+//      position: fixed;
+//      z-index: 0;
+        padding-top: .89rem;
+//      overflow: scroll;
+        box-sizing: border-box;
+        border: 0;
     }
     .weui-toast{
         width: 9em!important;

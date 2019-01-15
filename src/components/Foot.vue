@@ -18,7 +18,7 @@
 			<grid-item>
 				<div  @click="toLink(2)">
 					<span :class="{'active':nowIndex==2}"></span>
-					<p :class="{'active':nowIndex==2}">幸福村</p>
+					<p :class="{'active':nowIndex==2}">竞乐投</p>
 				</div>
 			</grid-item>
 			<grid-item>

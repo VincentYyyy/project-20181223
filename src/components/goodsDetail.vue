@@ -1,24 +1,28 @@
 <template>
 	<div class="goods-detail">
-		<cmheader :title="thatTitle"></cmheader>
+		<div @click="controlResult" style="position: fixed;top: 400px;">
+			controlResult
+		</div>
+		<!--<cmheader :title="thatTitle"></cmheader>-->
 		<div class="btn-bg bg-now" @click="showPopUp">
 			立即购买
 		</div>
-		<Popup v-model="isShowPopUp">
+		<div v-transfer-dom>
+			<Popup v-model="isShowPopUp">
 			<div class="goods-buy-popup" v-if="payStatus==0">
 				<div class="gbp-title">
-					<img src="../../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 购买礼包支付
+					<img src="../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 购买礼包支付
 				</div>
 				<div class="goods-price-wrap flex-start-end">
 					<div>
-						购买XX商品需要支付
+						购买&nbsp;{{goodsInfo.giftName}}&nbsp;需要支付
 					</div>
 					<div>
-						<strong>88元</strong>
+						<strong>{{goodsInfo.price}}元</strong>
 					</div>
 				</div>
 				<div class="paytype-wrap">
-					<div class="flex-start-end no-wrap pay-item" v-for="(item,index) in payList">
+					<div class="flex-start-end no-wrap pay-item" v-for="(item,index) in payList" @click="selectPayType(index)">
 						<div class="flex-start">
 							<div>
 								<img :src="item.img">
@@ -27,41 +31,32 @@
 								{{item.label}}
 							</div>
 						</div>
-						<div @click="selectPayType(index)">
-							<img src="../../../static/chicon/未选中@2x.png" v-if="!item.isSelected">
-							<img src="../../../static/chicon/选中@2x.png" v-else>	
+						<div>
+							<img src="../../static/chicon/未选中@2x.png" v-if="!item.isSelected">
+							<img src="../../static/chicon/选中@2x.png" v-else>	
 						</div>
 					</div>
 				</div>
-				<div class="btn-bg buy-now-btn">
-				立即支付:&nbsp;&nbsp;88元
-			</div>
+				<div class="btn-bg buy-now-btn" @click="buyGoods">
+				立即支付:&nbsp;&nbsp;{{goodsInfo.price}}元
+				</div>
 			</div>
 			<div class="goods-buy-popup" v-if="payStatus==1">
 				<div class="gbp-title" style="border-bottom: 0;">
-					<img src="../../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 购买礼包支付
+					<img src="../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 地址选择
 				</div>
-				<div class="pay-result">
-					<img src="../../../static/chicon/支付成功@2x.png">
-					<div class="pay-result-title">
-						购买成功
-					</div>
-					<div class="pay-result-tips">
-						提示，购买成功
-					</div>
-				</div>
-				<div class="result-back">
-					<div class=" btn-bg back-btn">
-						返回城主专区
+				<div>
+					<div @click="newAddress">
+						新增
 					</div>
 				</div>
 			</div>
 			<div class="goods-buy-popup" v-if="payStatus==2">
 				<div class="gbp-title" style="border-bottom: 0;">
-					<img src="../../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 购买礼包支付
+					<img src="../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 购买礼包支付
 				</div>
 				<div class="pay-result">
-					<img src="../../../static/chicon/椭圆1@2x.png" class="buying">
+					<img src="../../static/chicon/椭圆1@2x.png">
 					<div class="pay-result-title">
 						正在购买中
 						<label>
@@ -72,42 +67,57 @@
 			</div>
 			<div class="goods-buy-popup" v-if="payStatus==3">
 				<div class="gbp-title" style="border-bottom: 0;">
-					<img src="../../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 购买礼包支付
+					<img src="../../static/chicon/关闭支付页面@2x.png" @click="isShowPopUp=false"> 购买礼包支付
 				</div>
 				<div class="pay-result">
-					<img src="../../../static/chicon/支付失败@2x.png">
+					<img src="../../static/chicon/支付失败@2x.png">
 					<div class="pay-result-title">
 						购买失败
 					</div>
 				</div>
 			</div>
 		</Popup>
+		</div>
 	</div>
 </template>
 
 <script>
-	import cmheader from '../../components/cmHeader.vue'
-	import { Popup } from 'vux'
+//	import cmheader from '../../components/cmHeader.vue'
+	import { Popup,TransferDom } from 'vux'
+	
 	export default {
 		name: 'goods-detail',
 		data() {
 			return {
-				payStatus:2,
+				payStatus:0,
+				payResultStatus:0,
 				isShowPopUp: false,
+				orderId:'',//支付订单号
 				thatTitle: '礼包详情',
 				selectedIndex:0,
+				outlinkType:0,
 				payList:[{
 					label:'支付宝支付',
-					img:'../../../static/chicon/支付宝@2x.png',
+					img:'../../static/chicon/支付宝@2x.png',
 					isSelected:true
 				},{
 					label:'微信支付',
-					img:'../../../static/chicon/微信@2x.png',
+					img:'../../static/chicon/微信@2x.png',
 					isSelected:false
 				}]
 		}},
+		props:['goodsInfo'],
 		methods: {
+			newAddress(){
+				var outlink='xxxx'
+				var outlinkType=this.outlinkType
+				this.$gotoPages('/outlink/addressManage',{
+					outlink:outlink,
+					outlinkType:outlinkType
+				})
+			},
 			showPopUp() {
+				console.log(1111)
 				this.isShowPopUp = true
 			},
 			selectPayType(index){
@@ -120,17 +130,111 @@
 						item.isSelected=false
 					}					
 				}
+			},
+			buyGoods(){
+				var _this=this
+				var payType=1
+				if(this.selectedIndex==0){
+					payType=1
+				}else{
+					payType=0
+				}
+				var params={
+					id:this.$store.state.id,//	必填	String	用户ID
+					giftId:this.goodsInfo.id,  //必填	String	礼包ID
+					payType:payType,	//必填	Integer	支付方式
+					receiptAddress:'广州天河区111',	//必填	String	收货人地址
+					receiptPhone:'17666066115',	//必填	String	收货人电话
+					receiptPerson:'陈鸿'	//必填	String	收货人姓名
+				}
+				params=this.$qs.stringify(params)
+				this.$axios({
+					method:'post',
+					url:'/appApi/appUsers/getGift',
+					data:params
+				}).then(function(res){
+					
+					if(res.status==200){
+						var getData=res.data
+						if(getData.status=='200'){
+							var orderStr=getData.data.orderStr
+	//						console.log(orderStr)
+							_this.orderId=getData.data.orderId
+							_this.goNativeAPP(orderStr)
+						}else{
+							alert('支付异常,请重试')
+						}
+						
+					}else{
+						alert('支付异常,请重试')
+					}
+				}).catch(function(err){
+					console.log(err)
+				})
+			},
+			goNativeAPP(orderStr){
+				console.log(orderStr)
+				if(window.android){
+					window.android.lbZFBPay(orderStr)
+				}else{
+					lbZFBPay(orderStr)
+				}			
+			},
+			controlResult(){
+				var _this=this
+				var params={
+					id:this.$store.state.id,
+					orderId:this.orderId
+				}
+				alert('调用了支付状态后台数据返回接口')
+				params=this.$qs.stringify(params)
+				this.$axios({
+					method:'post',
+					data:params,
+					url:'/appApi/appUsers/getOrdeById'
+				}).then(function(res){
+					if(res.status=='200'){
+						var getData=res.data
+						if(getData.status=='200'){
+							var payResultStatus=getData.data.status
+							_this.payResultStatus=payResultStatus
+							if(payResultStatus==1||payResultStatus==4){
+								_this.$gotoPages('/cityloadArea/payResult',{payResultStatus:payResultStatus})
+							}else{
+								alert('支付异常,请重试')
+							}
+						}else{
+							alert('支付异常,请重试')
+						}
+					}else{
+						alert('支付异常,请重试')
+					}
+				}).catch(function(err){
+					console.log(err)
+				})
 			}
 		},
 		components: {
 			Popup,
-			cmheader
+//			cmheader
+		},
+		 directives: {
+		    TransferDom
+		  },
+		mounted(){
+			var _this=this
+			window.onload=function(){
+				window['lbZFBPayState']=function(val){
+					_this.controlResult()
+				}
+			}
+			
 		}
 	}
 </script>
 
 <style lang="less">
-	.buying{
+	/*.buying{
  -webkit-transition-property: -webkit-transform;
     -webkit-transition-duration: 1s;
     -moz-transition-property: -moz-transform;
@@ -151,6 +255,9 @@
 }
 @keyframes rotate{from{transform: rotate(0deg)}
     to{transform: rotate(359deg)}
+}*/
+.goods-detail,.bg-now{
+	/*z-index: 10000;*/
 }
 	.pay-result{
 		padding-top: 1.3rem;
@@ -193,17 +300,19 @@
 				color: #FFFFFF;
 				border-radius: .1rem;
 				font-size: 16px;
+				text-align: center;
 				font-weight: 600;
 				line-height: .86rem;
 			}
 		}
 	.buy-now-btn{
-		line-height: .96rem;
+		line-height: 50px;
 		position: absolute;
 		bottom: 0;
 		left: 0;
 		width: 100%;
-		height: .96rem;
+		height: 50px;
+		text-align: center;
 		color: #FFFFFF;
 		font-size: 16px;
 	}
@@ -246,6 +355,7 @@
 		padding: 0 .2rem;
 		box-sizing: border-box;
 		border-bottom: .1rem solid #f5f5f5;
+		justify-content: space-between;
 		>div{
 			font-size: 13px;
 		}
@@ -261,8 +371,8 @@
 		bottom: 0;
 		left: 0;
 		width: 100%;
-		height: .96rem;
-		line-height: .96rem;
+		height: 50px;
+		line-height: 50px;
 		font-size: 16px;
 		color: #FFFFFF;
 	}

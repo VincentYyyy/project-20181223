@@ -1,7 +1,7 @@
 <template>
 	<div class="get-task-list">
 		<cmheader :title="thatTitle" :backUrl="backUrl"></cmheader>
-		<div class="order-content-scroll">
+		<div class="order-content-scroll"  ref="scrollArea">
 			
 			
 			<div v-for="(item,index) in taskList" class="flex-start-end no-wrap goods-item" @click="goTaskDetail(item)">
@@ -22,7 +22,7 @@
 				<div class="flex-end">
 					<div>
 						<div class="goods-price">
-							¥&nbsp;6
+							¥&nbsp;{{item.memberAmount}}
 							<!--数量&nbsp;:&nbsp;{{item.applyNum}}-->
 						</div>
 						<div class="goods-status">
@@ -35,7 +35,7 @@
 					</div>
 				</div>
 			</div>
-			<div lass="text-center">
+			<!--<div lass="text-center">
 				<div class="loadding-status"v-if="isLoadding">
 					<load-more :tip="tips"></load-more>
 				</div>
@@ -47,6 +47,14 @@
 						加载完毕
 					</label>					
 				</div>
+			</div>-->
+			<div class="loadding-status" v-if="isLoadding">
+				<load-more :tip="tips"></load-more>
+			</div>
+			<div class="loadding-status" v-if="!isLoadding&&isLoadDown">
+				<label>
+					加载完毕
+				</label>
 			</div>
 		</div>
 	</div>
@@ -64,12 +72,14 @@
 				taskType:0,
 				taskList:[],
 				pageNum:1,
-				isLoadding:true,
+				pageSize:10,
+				isLoadding:false,
+				isLoadDown:false,
 				tips:'正在加载...'
 			}
 		},
 		created(){
-			this.thatTitle=this.$route.query.type==0?'普通任务':'高级任务'
+			this.thatTitle=this.$route.query.type==0?'会员任务':'城主任务'
 			this.taskType=this.$route.query.type
 		},
 		components:{
@@ -86,41 +96,67 @@
 				var params={
 					type:this.taskType,
 					pageNum:this.pageNum,
-					pageSize:10
+					pageSize:this.pageSize
 				}
 				var _this=this
+				if(this.isLoadding||this.isLoadDown){
+					return false
+				}
+				this.isLoadding=true
 				params=this.$qs.stringify(params)
-				_this.isLoadding=true
 				this.$axios({
 					method:'post',
 					data:params,
 					url:'/appApi/appUsers/getTaskListByType'
 				}).then(function(res){
-					console.log(res)
-					//str.split('')
-					_this.isLoadding=false
 					if(res.status=='200'){
 						var getData=res.data
 						if(getData.status=='200'){
-							_this.taskList=getData.data
-							if(getData.data.length>0){
-								_this.taskList.forEach(function(item){
-									if(item.imgs==null){
-										item.imgsArr=[]
-									}else{
-										item.imgsArr=item.imgs.split(',')
-									}
-								})
+							var _data=getData.data
+							if(_data.length<_this.pageSize){
+								_this.isLoadDown=true
+							}else{
+								_this.isLoadDown=false
 							}
+							var arr=_this.taskList.concat(_data)
+							arr.forEach(function(item){
+								if(item.imgs!=null){
+									var imgsArr=item.imgs.split(',')
+									item.imgsArr=imgsArr
+								}
+							})
+							_this.taskList=arr
+							console.log(arr)
 						}
+						if(getData.status=='1906'){
+							_this.isLoadDown=true
+						}
+						_this.pageNum++
+						_this.isLoadding=false
 					}
 				}).catch(function(err){
 					
 				})
+			},
+			loadMore(){
+				if(this.isScrollDown(this.$refs.scrollArea)){
+					this.initGetTaskList()
+				}
+			},
+			isScrollDown(dom){
+				var boxDom=dom
+				var h=dom.offsetHeight
+				var scrollTop=boxDom.scrollTop
+				if(scrollTop+boxDom.clientHeight>=boxDom.scrollHeight){
+					return true
+				}else{
+					return false
+				}
 			}
 		},
 		mounted(){
 			this.initGetTaskList()
+			this.$refs.scrollArea.addEventListener('scroll',this.loadMore)
 		}
 	}
 </script>

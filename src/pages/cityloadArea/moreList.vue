@@ -3,7 +3,7 @@
 		<cmheader :title="thatTitle"></cmheader>
 		<div class="more-content-list">
 			<div class="package-list flex-item-3 flex-start">
-				<div class="" v-for="(item,index) in goodsList" @click="toGoodsDetail(item.detailLinkUrl)">
+				<div class="" v-for="(item,index) in goodsList" @click="toGoodsDetail(item.detailLinkUrl,item)">
 					<img :src="item.imgs">
 				</div>
 				<div @click="morePackage" v-if="!isFirstLoad">
@@ -38,9 +38,15 @@
 			Toast
 		},
 		methods:{
-			toGoodsDetail(link){
+			toGoodsDetail(link,goodsInfo){
+				var price=goodsInfo.price
+				var id=goodsInfo.id
+				var giftName=goodsInfo.giftName
 				this.$gotoPages('/cityloadArea/moreDetail',{
-					link:link
+					link:link,
+					price:price,
+					giftName:giftName,
+					id:id
 				})
 			},
 			initData(){

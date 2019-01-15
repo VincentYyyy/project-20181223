@@ -8,7 +8,7 @@
 						<img src="../../../static/chicon/task/普通任务@2x.png">
 					</div>
 					<div>
-						普通任务
+						会员任务
 					</div>
 				</div>
 				<div>
@@ -21,7 +21,7 @@
 						<img src="../../../static/chicon/task/高级任务@2x.png">
 					</div>
 					<div>
-						高级任务
+						城主任务
 					</div>
 				</div>
 				<div>

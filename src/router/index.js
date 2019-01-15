@@ -33,6 +33,10 @@ export default new Router({
 		name:'register',
 		component: resolve => require(['../pages/register/register.vue'], resolve)
 	},{
+		path:'/outlink/addressManage',
+		name:'addressManage',
+		component: resolve => require(['../pages/outlink/addressManage.vue'], resolve)	
+	},{
 		path: '/cityloadArea',
 		name: 'cityloadArea',
 		component: resolve => require(['../pages/cityloadArea/cityloadArea.vue'], resolve)
@@ -42,15 +46,25 @@ export default new Router({
 		name:'moreList',
 		component: resolve => require(['../pages/cityloadArea/moreList.vue'], resolve)
 	},{
+		//商品详情
+		path:'/cityloadArea/mallDetail',
+		name:'mallDetail',
+		component: resolve => require(['../pages/cityloadArea/mallDetail.vue'], resolve)
+	},{
 		//礼包详情页
 		path:'/cityloadArea/moreDetail',
 		name:'moreDetail',
 		component: resolve => require(['../pages/cityloadArea/moreDetail.vue'], resolve)
 	},{
-		path:'/cityloadArea/goodsDetail',
-		name:'goodsDetail',
-		component: resolve => require(['../pages/cityloadArea/goodsDetail.vue'], resolve)
-	},{
+		path:'/cityloadArea/payResult',
+		name:'payResult',
+		component: resolve => require(['../pages/cityloadArea/payResult.vue'], resolve)	
+	},
+//	{	path:'/cityloadArea/goodsDetail',
+//		name:'goodsDetail',
+//		component: resolve => require(['../pages/cityloadArea/goodsDetail.vue'], resolve)
+//	},
+	{
 		//发布广告
 		path:'/cityloadArea/editAd',
 		name:'editAd',

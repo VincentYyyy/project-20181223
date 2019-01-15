@@ -6,7 +6,8 @@
 		<div class="home-content">
 			<div>
 				<div class="swiper">
-			<swiper :list="swiperList" :show-dots="false" v-model="swiperIndex" @on-index-change="swiperonIndexChange"></swiper>
+			<!--<swiper :list="swiperList" :show-dots="false" v-model="swiperIndex" @on-index-change="swiperonIndexChange"></swiper>-->
+				<swiperTemplate :swiperList="swiperList" @swiperClk="swiperClk"></swiperTemplate>
 			</div>
 			<div class="mall">
 				<div @click="goMall">
@@ -24,8 +25,8 @@
 				</div>
 			</div>
 			<div class="ad-list flex-start flex-item-2">
-					<div v-for="(item,index) in staticAdList">
-					<a :href="item.url">
+					<div v-for="(item,index) in staticAdList" @click="goAdDetail(item)">
+					<a>
 						<img :src="item.img">
 					</a>
 					</div>
@@ -36,7 +37,11 @@
 </template>
 
 <script>
-	import { Swiper,SwiperItem} from 'vux'
+	import md5 from 'js-md5'
+	import 'swiper/dist/css/swiper.css'
+	import { swiper, swiperSlide } from 'vue-awesome-swiper'
+	import swiperTemplate from '../../components/SwiperDemo.vue'
+//	import { Swiper,SwiperItem} from 'vux'
 	const baseList = [{
 	  url: 'http://www.baidu.com',
 	  img: 'https://ww1.sinaimg.cn/large/663d3650gy1fq66vvsr72j20p00gogo2.jpg',
@@ -50,23 +55,68 @@
 		name:'home',
 		data(){
 			return{
-				swiperList: baseList,
+				swiperList: [],
 				swiperIndex:0,
-				logoList:baseList,
-				staticAdList:baseList
+				logoList:[],
+				staticAdList:[]
 			}
 		},
 		components:{
-			Swiper,
-    		SwiperItem
+//			Swiper,
+//  		SwiperItem
+			swiper,
+			swiperSlide,
+			swiperTemplate
 		},
 		methods:{
+			goAdDetail(val){
+//				console.log(val)
+//				return false
+				var link=val.linkUrl
+				var goodsInfo=val
+				this.toGoodsDetail(link,goodsInfo)
+			},
+			initSwiper(){
+				var mySwiper = new Swiper('.swiper-container', {
+					autoplay: true,//可选选项，自动滑动
+				})
+			},
 			swiperonIndexChange (index) {
 		      this.swiperIndex = index
+		      console.log(this.swiperList[index])
 		    },
 		    goMall(){
-		    	this.$gotoPages('/mall',{domain:'http://39.98.52.58:8081/'})
+		    	if(this.$isIOS()){
+		    		this.isIOSWebView('http://39.98.52.58:8081/')	
+		    	}else{
+		    		this.$gotoPages('/mall',{domain:'http://39.98.52.58:8081/'})
+		    	}
 		    },
+		    isIOSWebView(domain){
+		    	var userInfo=JSON.parse(sessionStorage.getItem('userInfo'))
+				var phone=userInfo.phone
+				var params='?app_phone='+phone+'&app_strkey='+md5('hpyshop'+md5(phone))
+				var domain=domain
+				var _url=domain+params
+				showNativeView(_url)
+		    },
+		    swiperClk(val){
+				var link=val.linkUrl
+				var goodsInfo=val
+				this.toGoodsDetail(link,goodsInfo)
+			},
+		    toGoodsDetail(link,goodsInfo){
+				var price=goodsInfo.status
+				var id=goodsInfo.id
+				var giftName=goodsInfo.mallName
+				var userInfo=JSON.parse(sessionStorage.getItem('userInfo'))
+				var phone=userInfo.phone
+				var params='&app_phone='+phone+'&app_strkey='+md5('hpyshop'+md5(phone))
+				var _url=link+params
+				this.$gotoPages('/cityloadArea/mallDetail',{
+					link:_url
+				})
+			},
 		    initHomeData(type){
 		    	var _this=this
 		    	var params={
@@ -142,7 +192,7 @@
 		}
 	}
 	.swiper{
-		padding: 0 .3rem;
+		/*padding: 0 .3rem;*/
 	}
 	.mall{
 		box-sizing: border-box;

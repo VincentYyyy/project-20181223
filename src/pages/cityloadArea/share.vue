@@ -11,7 +11,7 @@
 			
 			<div class="share-div">
 				<div class="share-code">
-					<div class="share-code-radius">
+					<div class="share-code-radius" @click="saveCodeImg">
 						<img :src="userInfo.linkImgUrl">
 					</div>
 				</div>
@@ -35,7 +35,7 @@
 			</div>
 			<textarea ref="myWords" v-model="userInfo.linkUrl" class="remember-value" ></textarea>
 		</div>
-		<toast v-model="showMsg" type="text" :time='1200' is-show-mask :text="msgContent" :position="'middle'" width="auto"></toast>
+		<toast v-model="showMsg" type="text" :time='1200' is-show-mask :text="msgContent" :position="'middle'" width="6em"></toast>
 		<Popup v-model="isPopUp">
 			<div class="share-link-list">
 				<div class="share-link-title">
@@ -87,11 +87,19 @@
 			shareClk(item){
 				
 			},
+			saveCodeImg(){
+				var imgsLink=this.userInfo.linkImgUrl
+				if(window.android){
+					window.android.SaveCode(imgsLink)
+				}else{
+					SaveCode(imgsLink)
+				}	
+			},
 			copyUrl2(){
 					var v=this.$refs.myWords
 				    if(v.value.length>0){
 				        v.select();
-				        this.msgContent = '任务要求已复制'
+				        this.msgContent = '链接已复制'
 						this.showMsg = true
 				        document.execCommand("Copy");
 				        return false;
@@ -102,7 +110,13 @@
 				this.$gotoPages('/cityloadArea')
 			},
 			showDialog(){
-				this.isPopUp=true
+				//this.isPopUp=true
+				var linkUrl=this.userInfo.linkUrl
+				if(window.android){
+					window.android.shareClick(linkUrl)
+				}else{
+					shareClick(linkUrl)
+				}	
 			},
 			initData(){
 				var _this=this

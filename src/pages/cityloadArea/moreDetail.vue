@@ -1,25 +1,35 @@
 <template>
-	<div class="mall-wrap">
+	<div class="mall-wrap-outer">
 		<cmheader :title="thatTitle"></cmheader>
-		<iframe :src="mallSrc" id="mall-iframe" ref="myIframe">
+		<div class="mall-wrap">
+			<iframe :src="mallSrc" id="mall-iframe" ref="myIframe">
+				
+			</iframe>
 			
-		</iframe>
-		<>
+		</div>
+		<payGroup :goodsInfo='goodsInfo'></payGroup>
 	</div>
 </template>
 
 <script>
 	import cmheader from '../../components/cmHeader.vue'
+	import payGroup from '../../components/goodsDetail.vue'
 	export default{
 		name:'',
 		data(){
 			return{
 				thatTitle:'礼包详情',
-				mallSrc:''
+				mallSrc:'',
+				goodsInfo:{
+					price:'',
+					giftName:'',
+					id:''
+				}
 			}
 		},
 		components:{
-			cmheader
+			cmheader,
+			payGroup
 		},
 		methods:{
 			demo(){
@@ -47,7 +57,10 @@
 			}
 		},
 		created(){
-			this.mallSrc=this.$route.query.link+'?APPBagType=1'
+			this.mallSrc=this.$route.query.link+'&APPBagType=1'
+			this.goodsInfo.price=this.$route.query.price
+			this.goodsInfo.giftName=this.$route.query.giftName
+			this.goodsInfo.id=this.$route.query.id
 		},
 		mounted(){
 			

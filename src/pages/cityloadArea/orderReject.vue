@@ -4,25 +4,25 @@
 			<div v-for="(item,index) in imperfectList" class="flex-start-end no-wrap goods-item" @click="goDetail(item)">
 				<div class="flex-start no-wrap"> 
 					<div>
-						<img :src="item.imgsArr[0]" v-if="item.imgsArr" class="goods-img">
+						<img :src="item.imgsArr[0]" class="goods-img" v-if="item.imgsArr">
 						<img src="/static/chicon/88商城余额@2x.png" v-else class="goods-img">
 					</div>
 					<div>
 						<div class="goods-name">
-							X奥传媒
+							{{item.content}}
 						</div>
 						<div class="goods-type">
-							【普通】
+							【{{item.statusStr}}】
 						</div>
 					</div>
 				</div>
 				<div class="flex-end">
 					<div>
 						<div class="goods-price">
-							¥&nbsp;6
-						</div>
+							¥&nbsp;{{item.taskAmount}}
+						</div>  
 						<div class="goods-status">
-							待完成
+							<!--{{item.statusStr}}-->
 						</div>
 					</div>
 					<div class="goods-trangle-wrap">
