@@ -28,6 +28,7 @@
 <script>
 	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
+import { debug } from 'util';
 	
 	var popup ={show: false}
 	var common = {
@@ -43,7 +44,7 @@
 		methods:{
 			onConfirm(){
 				var self = this;
-				var $ressetUserInfor = self.$ressetUserInfor;
+				var $resetUserInfor = self.$resetUserInfor;
 
 				if(!this.name || this.name.length < 3){
 					alert("请输入三位字符以上昵称")
@@ -59,7 +60,8 @@
 					FIXME: true,    // 500 报错
 					params: params,
 					then: function(res){
-						self.$ressetUserInfor({
+						debugger
+						self.$resetUserInfor({
 							nickName: self.name
 						})
 						alert("更新成功");

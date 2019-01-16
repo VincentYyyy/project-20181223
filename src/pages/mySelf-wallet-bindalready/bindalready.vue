@@ -1,7 +1,7 @@
 <template>
 	<div class="myself home">
 
-		<cmheader :title="'设置'"></cmheader>
+		<cmheader :title="'认证中心'"></cmheader>
 
 		<!-- 头部占位 -->
 		<div class="u-header-padding" ></div>
@@ -9,29 +9,23 @@
 		<!-- 个人信息 -->
 		<div class="m-details">
 
-			<div v-for="item in setting.items" 
+			<div v-for="item in nameInputs.items" 
 				class="c-list-item"
-				@click="item.onClick && item.onClick(item)"
 			>
-				<div class="c-item-label">{{item.label}}</div>
-				<div class="c-item-raw-right"></div>
+				<div class="c-item-label">
+					{{item.label}}
+				</div>
 			</div>
 		
 		</div>
-
-		<div class="c-btn btn-cancel"
-			@click="logout"
-		>
-			<button>退出</button>
-		</div>
-	
 	</div>
 </template>
 
 <script>
-	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
+	import cmheader from '../../components/cmHeader.vue'
 	
+	var popup ={show: false}
 	var common = {
 		pageState: 'details'
 	}
@@ -41,26 +35,50 @@
 		filters: {
 		},
 		data(){
-			var self = this;
-			
 			return{
+				popup: popup,
 				commond: common,
-				setting:{
-					items: [{
-						label: '意见反馈',
-						onClick: function (){
-							self.$gotoPages('/mySelf-conect');
-						}
-					}]
+				nameInputs:{
+					items: []
 				}
 			}
 		},
 		methods:{
-			logout(){
-				sessionStorage.clear();
-				alert("退出成功");
-				this.$gotoPages('/login');
-			}
+			submit(){
+				var params={
+					id:this.$store.state.id,
+				}
+				var items = this.nameInputs.items;
+				var warn;
+
+				for(var i=0; i< items.length; i++){
+					var item = items[i];
+					warn = item.checker(item, this.$getChecker);
+					params[item.name] = item.value;
+					if(warn){
+						alert(warn);
+						return;
+					}
+				}
+				params=this.$qs.stringify(params);
+
+				this.$axios({
+					method:'post',
+					data:params,
+					url:'/appApi/appUsers/updateUserDetail'
+				}).then(function(res){
+					if(res.status=='200'){		// TODO 
+						var code=res.data.data.code;
+						if(code=='200'){
+							console.log("ok", res.data);
+						}else{
+
+						}
+					}
+				}).catch(function(err){
+
+				})
+			},
 		},
 		components:{
 			XButton,
@@ -68,7 +86,22 @@
 			cmheader
 		},
 		created(){
+			var fields = ['userName', 'idCard', 'phone', 'email', 'address'];
+			var self = this;
+			var userInfo = self.$getUserInfo();
+			for(var f in userInfo){
+				if(userInfo[f] && fields.indexOf(f) > -1){
+					self.nameInputs.items.push({
+						name: f,
+						label: userInfo[f]
+					})
+				}
+			}
 
+			self.nameInputs.items.sort(function(a, b){
+				return fields.indexOf(a.name) > fields.indexOf(b.name) 
+			})
+			// console.log(userInfo);
 		}
 	}
 </script>
@@ -184,10 +217,6 @@
 				}
 			}
 		}
-	}
-
-	.c-btn.btn-cancel{
-		margin-top: 1.2rem;
 	}
 }
 </style>

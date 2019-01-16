@@ -15,7 +15,7 @@
 			<input class="u-conection f-fs-14" 
 				type="text" 
 				placeholder="请输入联系方式 （手机 / 微信 / 邮箱）"
-				v-model="conection.way"			
+				v-model="conection.contactInformation"			
 			>
 		</div>
 
@@ -38,23 +38,23 @@
 			return{
 				conection: {
 					content: "",
-					way: "",
+					contactInformation: "",
 				}
 			}
 		},
 		methods:{
 			onSubmit(){
-				if( !this.conection.content || this.conection.content.length < 5 ){
-					alert("请输入反馈")
+				if( !this.conection.content || this.conection.content.length < 8 ){
+					alert("反馈留言需不少于8个字体")
 					return;
 				}
 
 				var params = {
 					id: this.$getUserInfo().id,
 					content: this.conection.content,
-					way: this.conection.way,			// FIXME 接口无联系方式字段
+					contactInformation: this.conection.contactInformation,
 				};
-				this.$HRApp("userFeedBack",{
+				this.$HRApp("adsServ",{			// 用的是广告接口
 					params: params,
 					then: function(data){
 						if(data.status === "200"){

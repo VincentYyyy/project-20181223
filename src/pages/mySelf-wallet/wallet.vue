@@ -31,7 +31,7 @@
 				<label> 绑定银行卡 </label>
 			</div>
 			<div class="c-item-content">
-				<div v-if="bankStatus == 0">
+				<div v-if="!isBinded()">
 					未绑定
 				</div>
 				<div class="c-item-raw-right"></div>
@@ -59,12 +59,26 @@
 		methods:{
 			goToPickup(){
 				this.$gotoPages('/mySelf-wallet-pickup', {
-					sum: this.sum  // FIXME
+					sum: this  // FIXME
 					// sum: this.sum
 				})
 			},
 			goToBind(){
-				this.$gotoPages('/mySelf-wallet-bind')
+				var nextPage = false ? '/mySelf-wallet-bindalready' :'/mySelf-wallet-bind';
+				this.$gotoPages(nextPage)
+			},
+			isBinded(){
+				var userinfo = this.$getUserInfo();
+				var binded = false;
+				var fields = ['bankAddress', 'bankCard', 'bankPerson', 'bankPhone'];
+				
+				for(var f in userinfo){
+					if(fields.indexOf(f) > -1 && userinfo[f]){
+						binded = true;
+					}
+				}
+				return binded;
+
 			}
 		},
 		mounted(){
@@ -115,7 +129,7 @@
 		height: 5rem;
 		width: 100%;
 		text-align: center;
-		background: url(../../img/myself/wallet-bg.png) no-repeat;
+		background: url(../../assets/wallet-bg.png) no-repeat;
 		background-size: 100% 100%; 
 		padding-top: 0.7rem;
 		box-sizing: border-box;

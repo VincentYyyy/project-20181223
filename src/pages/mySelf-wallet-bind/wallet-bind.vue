@@ -121,6 +121,7 @@
 							delete userInfoParmas.id;
 							userInfoParmas.bankStatus = 1;  // FIXME getUserDetail接口无这些字段
 							self.$resetUserInfor(userInfoParmas);
+							window.history.go(-1);
 						}else{
 							data.msg && alert(data.msg);
 						}
