@@ -63,8 +63,7 @@
 				this.$axios({
 					method:'post',
 					data:params,
-					url:'/appApi/appUsers/getCityOwnerGiftList'
-					
+					url:'/appApi/appUsers/getCityOwnerGiftList'					
 				}).then(function(res){
 					_this.isLoadding=false
 					if(res.status=='200'){
@@ -170,5 +169,5 @@
 					height: 2rem;
 					display: block;
 				}
-		}
+	}
 </style>

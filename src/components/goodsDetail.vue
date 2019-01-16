@@ -244,15 +244,25 @@
 					method:'post',
 					url:'/appApi/appUsers/getGift',
 					data:params
-				}).then(function(res){
-					
+				}).then(function(res){	
 					if(res.status==200){
 						var getData=res.data
 						if(getData.status=='200'){
-							var orderStr=getData.data.orderStr
-	//						console.log(orderStr)
-							_this.orderId=getData.data.orderId
-							_this.goNativeAPP(orderStr)
+							if(payType==1){
+								var orderStr=getData.data.orderStr
+		//						console.log(orderStr)
+								_this.orderId=getData.data.orderId
+								_this.goZFBPay(orderStr)
+							}else{
+								var partnerId=getData.data.partnerId
+								var prepayId=getData.data.prepayId
+								var _package=getData.data.package
+								var nonceStr=getData.data.nonceStr
+								var timeStamp=getData.data.timeStamp
+								var sign=getData.data.sign
+								_this.goWXPay(partnerId,prepayId,_package,nonceStr,timeStamp,sign)
+							}
+							
 						}else{
 							alert('支付异常,请重试')
 						}
@@ -264,42 +274,74 @@
 					console.log(err)
 				})
 			},
-			goNativeAPP(orderStr){
+			goZFBPay(orderStr){
 				console.log(orderStr)
 				if(window.android){
+					window.android.toast()
 					window.android.ZFBPay(orderStr)
 				}else{
 					ZFBPay(orderStr)
 				}			
 			},
-			controlResult(){
+			goWXPay(partnerId,prepayId,_package,nonceStr,timeStamp,sign){
+				//partnerId  商家id
+				//prepayId   预支付订单
+				//package    根据财付通文档填写的数据和签名
+				//nonceStr   随机码
+				//timeStamp  时间
+				//sign       签名
+				let obj=new Object()
+					obj={
+						partnerId:partnerId,
+						prepayId:prepayId,
+						package:_package,
+						nonceStr:nonceStr,
+						timeStamp:timeStamp,
+						sign:sign
+					}
+				var JSONString=JSON.stringify(obj)
+				if(window.android){
+					window.android.toast()
+					window.android.WXPay(JSONString)
+				}else{
+					WXPay(JSONString)
+				}
+			},
+			controlResult(val){
 				var _this=this
 				var params={
 					id:this.$store.state.id,
 					orderId:this.orderId
 				}
-				alert('调用了支付状态后台数据返回接口')
+				if(val!='success'){
+					return false
+				}
 				params=this.$qs.stringify(params)
 				this.$axios({
 					method:'post',
 					data:params,
 					url:'/appApi/appUsers/getOrdeById'
 				}).then(function(res){
+					console.log('后台返回的responds对象:')
+//					alert('后台返回的responds对象')
+					alert(res.status)
 					if(res.status=='200'){
 						var getData=res.data
 						if(getData.status=='200'){
+							console.log('后台返回的订单状态0待付款1已付款2取消订单3订单已关闭4支付失败')
+//							alert('后台返回的订单状态0待付款1已付款2取消订单3订单已关闭4支付失败')
 							var payResultStatus=getData.data.status
 							_this.payResultStatus=payResultStatus
+							alert('获取到后台订单状态是:'+payResultStatus)
 							if(payResultStatus==1||payResultStatus==4){
+								console.log('订单状态为已付款或者支付失败')
+								alert('获取到后台订单状态是:'+payResultStatus)
 								_this.$gotoPages('/cityloadArea/payResult',{payResultStatus:payResultStatus})
 							}else{
-								alert('支付异常,请重试')
+								_this.closeWindow()
+								alert('订单状态为非非非非非非已付款或者支付失败')
 							}
-						}else{
-							alert('支付异常,请重试')
 						}
-					}else{
-						alert('支付异常,请重试')
 					}
 				}).catch(function(err){
 					console.log(err)
@@ -313,20 +355,15 @@
 		directives: {
 		    TransferDom
 		},
+		created(){
+			window.PayState=this.controlResult
+		},
 		mounted(){
 			var _this=this
 			this.initAddList()
-			console.log(this.$store.state.isFromMall)
+			console.log(window.PayState)
 			if(this.$store.state.isFromMall){
 				this.isShowPopUp=true
-			}
-			window.onload=function(){
-				function PayState(val){
-					_this.controlResult()
-				}
-			}
-			function PayState(val){
-				_this.controlResult()
 			}
 		}
 	}

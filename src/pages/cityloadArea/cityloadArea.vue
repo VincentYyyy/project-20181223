@@ -67,7 +67,6 @@
 				isFirstLoad: true,
 				isLoadDown: false,
 				msgContent: '',
-
 				//				show3:true,
 				cityLoadList: [{
 					p: '赚钱模式',
@@ -147,6 +146,12 @@
 				if(this.isLoadding || this.isLoadDown) {
 					return false
 				}
+				if(sessionStorage.getItem('goodsList')){
+					let goodsList=JSON.parse(sessionStorage.getItem('goodsList'))
+					this.goodsList=goodsList
+					this.isFirstLoad=false
+					return false
+				}
 				var _this = this
 				this.isLoadding = true
 				params = this.$qs.stringify(params)
@@ -166,6 +171,9 @@
 							}
 							for(var i = 0; i < len; i++) {
 								_this.goodsList.push(getData.data[i])
+							}
+							if(_this.goodsList){
+								sessionStorage.setItem('goodsList',JSON.stringify(_this.goodsList))
 							}
 							if(_this.pageNum >= 2 && getData.data.length == 0) {
 								_this.isLoadDown = true
@@ -205,7 +213,9 @@
 			padding: .2rem;
 		}
 		.package-list>div {
-			padding-bottom: .15rem;
+			/*padding-bottom: .15rem;*/
+			padding: .1rem;
+			box-sizing: border-box;
 		}
 	}
 	
@@ -213,19 +223,21 @@
 		.more-content-list {
 			position: relative;
 			/*		margin-top: .88rem;*/
-			padding: .2rem;
+			padding: .1rem 0;
 			padding-top: .2rem;
 			box-sizing: border-box;
 			>div {
 				/*padding: .1rem;*/
 				text-align: center;
 				box-sizing: border-box;
+				padding: .1rem;
 				img {
-					width: 3.1rem;
-					height: 3.1rem;
+					width: 100%;
+					height: auto;
+					display: block;
 				}
 				.only-more-btn {
-					width: 3.1rem;
+					width: 100%;
 					height: auto;
 				}
 			}

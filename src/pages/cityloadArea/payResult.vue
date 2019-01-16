@@ -1,7 +1,7 @@
 <template>
 	<div class="">
 		<cmheader :title="thatTitle"></cmheader>
-		<div v-if="payResultStatus==0">
+		<div v-if="payResultStatus==4">
 			<div class="pay-result">
 				<img src="../../../static/chicon/支付失败@2x.png">
 				<div class="pay-result-title">

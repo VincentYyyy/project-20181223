@@ -28,7 +28,7 @@
 			this.thatTitle=this.$route.query.linkType==0?'收货地址新增':'收货地址编辑'
 			console.log(sessionStorage.getItem('mallSrc'))
 			var mallSrc=sessionStorage.getItem('mallSrc')
-			var params='&app_phone='+phone+'&app_strkey='+md5('hpyshop'+md5(phone))
+			var params='&APPBagType=1&app_phone='+phone+'&app_strkey='+md5('hpyshop'+md5(phone))
 			this.mallSrc=mallSrc+params
 			console.log(mallSrc+params)
 		},
