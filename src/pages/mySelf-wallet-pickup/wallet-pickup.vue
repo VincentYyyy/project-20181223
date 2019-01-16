@@ -1,7 +1,7 @@
 <template>
 	<div class="myself f-bg-gray p-binkbind">
 
-		<cmheader :title="'绑定银行卡'"></cmheader>
+		<cmheader :title="'收支明细'"></cmheader>
 
 		<!-- 头部占位 -->
 		<div class="u-header-padding" ></div>
@@ -33,7 +33,7 @@
 			</div>
 		</div>
 		<p class="tips f-gray-1">
-			最低是{{wallet.sum || 0}}元才能提现
+			最低是100元才能提现
 		</p>
 
 		<div class="c-btn  pickup-btn"
@@ -81,7 +81,7 @@
 				},
 				wallet: {
 					sum: 0,
-					pickupNum: 0
+					pickupNum: null
 				},
 				btn: {
 					class: {
@@ -101,27 +101,35 @@
 			},
 			onInput(){
 				var pickupNum = Number.parseFloat(this.wallet.pickupNum);
-				this.btn.class.disabled = !pickupNum || pickupNum < 100;
+				this.btn.class.disabled = !pickupNum || pickupNum <= 0;
 			},
 			onFocus(){
+				return
 				var pickupNum = Number.parseFloat(this.wallet.pickupNum);
 				if(!pickupNum)
 					this.wallet.pickupNum = ""
 			},
 			onBlur(){
+				return
 				var pickupNum = Number.parseFloat(this.wallet.pickupNum);
 				if(!pickupNum)
 					this.wallet.pickupNum = 0
 			},
 			onPickup(){
+				var reg = /^\+?(\d+\.\d{2})$/;
+				if( reg.test(this.wallet.pickupNum)) {
+					alert("请输入有效的提现额度");
+					return;
+				}
+
 				var pickupNum = Number.parseFloat(this.wallet.pickupNum);
-				// if (this.btn.class.disabled) return;
+				if (this.btn.class.disabled) return;
 				this.dialog.show = true;
 			},
 			onConfirm(){
 				var params={
 					id:this.$store.state.id,
-					money: Number.parseInt(this.wallet.pickupNum)
+					money: Number.parseFloat(this.wallet.pickupNum)
 				}
 				var self = this;
 				this.$HRApp("cashWithdrawal" ,{

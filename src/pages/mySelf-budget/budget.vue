@@ -7,26 +7,31 @@
 
 		<div class="tab-wrap">
 			<tab>
-		      <tab-item selected @on-item-click="onItemClick('all')">全部</tab-item>
-		      <tab-item @on-item-click="onItemClick('pay')">支出</tab-item>
-		      <tab-item @on-item-click="onItemClick('income')">收入</tab-item>
+		      <tab-item selected @on-item-click="checkout('all')">全部</tab-item>
+		      <tab-item @on-item-click="checkout('pay')">支出</tab-item>
+		      <tab-item @on-item-click="checkout('income')">收入</tab-item>
 		    </tab>
 		</div>
 		<!-- <router-view/> -->
 
 		<div class="order-content p-budget-panel-0">
 			<div class="order-content-scroll">
+				
+				<div class="no-data" v-if="budget.noData">
+					没有数据...
+				</div>
 
 				<div v-for="item in budget.items" 
 					class="c-list-item"
 					@click="item.onClick && item.onClick(item)"
+					v-show="!item.hide"
 				>
 					<div class="c-item-label budget-infor">
 						<img class="user-infor-img" :src="item.img" alt="">
 						<div class="user-infor-details">
-							<p class="f-tl">{{item.label}}</p>
-							<p class="budget-type f-tl" v-if="item.phone">[{{item.type}}]</p>
-							<p class="f-tl">{{item.date}}</p>
+							<p class="f-tl f-fs-14">{{item.label}}</p>
+							<p class="budget-type f-tl f-fs-12" v-if="item.phone">[{{item.type}}]</p>
+							<p class="f-tl f-fs-12">{{item.date}}</p>
 						</div>
 					</div>
 					<div class="c-item-content">
@@ -38,7 +43,7 @@
 						>
 							<span v-if="item.budget > 0">+</span>{{item.budget}}
 						</p>
-						<p class="budget-status"
+						<p class="budget-status f-fs-12"
 							:class="item.class"
 							v-if="item.status"
 						>
@@ -60,41 +65,8 @@
 		data(){
 			return{
 				budget:{
-					items:[{
-						label: '余额提现到银行卡',
-						img: require('../../img/myself/男@2x.png'),
-						type: "提现",
-						phone: "12345678901",
-						date: '今天 20:33',
-						budget: -200,
-						class:  {
-							'f-red-1': true
-						},
-						status: {
-							type: 'finished',
-							label: '已完成'
-						},
-						onClick: function (){
-
-						}
-					}, {
-						label: '完成任务奖励',
-						img: require('../../img/myself/男@2x.png'),
-						type: "提现",
-						phone: "12345678901",
-						date: '今天 20:33',
-						class:  {
-							'f-gray-1': true
-						},
-						budget: 200,
-						status: {
-							type: 'processing',
-							label: '正在处理'
-						},
-						onClick: function (){
-
-						}
-					}]
+					noData: false,
+					items:[]
 				}
 			}
 		},
@@ -104,24 +76,76 @@
 			cmheader
 		},
 	  methods:{
-	  	goPrev(){
-	  		window.history.go(-1)
-	  	},
-	  	onItemClick(val){
-			
-	  	}
-	  },
-		created(){
-		  this.$HRApp('getUserBill',{
-				FIXME: true,
-				params: {
-					id: this.$store.state.id,
-					pageNum: 0,
-					pageSize: 200
-				},
-				then: function (data){
-					console.log("ddd", data)
+			goPrev(){
+				window.history.go(-1)
+			},
+			checkout(type){
+				var filter = {
+					'all': function (){
+						return true
+					},
+					'pay': function (item){
+						return item.budget < 0
+					},
+					'income': function (item){
+						return item.budget >= 0
+					}
 				}
+				var self = this;
+				var Vue = self.$root;
+				var noData = true;
+				this.budget.items.forEach(function (item){
+					var hide = !filter[type](item);
+					Vue.$set(item, 'hide', hide);
+					noData = hide && noData;
+				})
+				console.log(!!noData)
+				self.budget.noData = !!noData;
+			},
+			showNoData(){
+
+			}
+		},
+		created(){
+			var self = this;
+
+			var params = {
+				id: this.$store.state.id,
+				pageNum: 1,
+				pageSize: 200
+			}
+			params=this.$qs.stringify(params);
+			this.$axios({
+				method:'post',
+				data:params,
+				url:'/appApi/appUsers/getUserBill'
+			}).then(function(res){
+				var data = res.data;
+				if(data.status === "200" && data.data){
+					data.data.forEach(function(item, index){
+						self.budget.items.push({
+							label: "收支描述",
+							img: require('../../img/myself/男@2x.png'),
+							type: item.type ? "任务" : "提现",
+							phone: "12345678901",
+							date: item.createTime.split(" ")[0],
+							budget: item.amount,
+							class:  {
+								'f-red-1': !item.cashStatus			
+							},
+							status: {
+								type: 'finished',
+								label: item.cashStatus ? '已完成' : '正在处理'
+							},
+						})
+					})
+					self.checkout('all')
+				}else{
+					self.budget.noData = true;
+				}
+				
+			}).catch(function(err){
+				console.log(err)
 			})
 	  }
 	}
@@ -158,6 +182,13 @@
 	}
 	.order-content{
 		padding-top: 0.9rem;
+
+		.no-data{
+			line-height: 1rem;
+			text-align: center;
+			font-size: 14px;
+			color: #9f9f9f;
+		}
 	}
 	.tab-wrap{
 		position: fixed;

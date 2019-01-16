@@ -2,12 +2,21 @@
 	<div class="myself home">
 
 		<div class="m-bg">
-
+			<i class="u-custom-service"
+				@click="toLink({toPageUrl: '/mySelf-conect'})"
+			></i>
 		</div>
-
 		<div class="m-user">
 			<div class="container">	
 				<div @click="toLink({toPageUrl: '/mySelf-userinfor'})">
+					<div class="cityowner f-clear"
+						v-if="isCityOwner"
+					>
+						<i class="i-cityowner f-fl"></i>
+						<span class="f-fr">
+							城主
+						</span>
+					</div>
 					<img class="user-headport" :src="user.img" alt="">
 					<p class="user-name">
 						<span class="f-fs-18">{{user.name}}</span>
@@ -16,7 +25,7 @@
 					<p class="user-phone f-gray-1 f-sz-18"
 						v-if="user.phone"
 					>
-						手机号：{{user.phone | filterFactory('phone')}}
+						手机号：{{user.phone | myfilters('phone')}}
 					</p>
 				</div>
 				<div class="wallet-details">
@@ -52,7 +61,7 @@
 					<div class="c-item-content"
 					>
 						<div
-							v-if="!hasIdentified && item.content"
+							v-if="item.content"
 							:class="item.class"
 							class="f-fs-14"
 						>
@@ -83,7 +92,6 @@
 <script>
 	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
-import { debug } from 'util';
 	
 	var popup ={show: false}
 	var common = {
@@ -93,19 +101,8 @@ import { debug } from 'util';
 	export default{
 		name:'myself',
 		filters: {
-			filterFactory: function(value, type){
-				var filters = {
-					phone: function(){
-						if( !value ) return "未认证";
-						value = value.toString();
-						if(!value.length) return "未认证";
-						return value.substr(0, 3) + '****' + value.substr(7);
-					},
-					identify: function(){
-						return "TODO " + value
-					}
-				};
-				return filters[type]();
+			myfilters: function(value, type){
+				return value && utils.filters(value, type);
 			}
 		},
 		data(){
@@ -113,6 +110,7 @@ import { debug } from 'util';
 				popup: popup,
 				commond: common,
 				hasIdentified: false,
+				isCityOwner: true,
 				user:{
 					name:'',
 					img: '',
@@ -122,7 +120,6 @@ import { debug } from 'util';
 				},
 				details: {
 					sum: 0,
-
 					items:[{
 							label: '钱包',
 							icon: 'wallet',
@@ -145,7 +142,7 @@ import { debug } from 'util';
 							icon: 'identification',
 							rawRight: true,
 							toPageUrl: '/mySelf-identification',
-							content: "未认证",
+							content: "",
 							class: {
 								'f-gray-1': true
 							}
@@ -161,6 +158,7 @@ import { debug } from 'util';
 							label: '邀请有奖',
 							icon: 'invite',
 							rawRight: true,
+							toPageUrl: '/cityloadArea/share',
 							class: {
 								'f-gray-1': true
 							}
@@ -205,7 +203,7 @@ import { debug } from 'util';
 					sum:0,
 					incommonyes:0,
 					pickedup:0
-				}
+				},
 			}
 		},
 		methods:{
@@ -214,8 +212,9 @@ import { debug } from 'util';
 			},
 			toLink(item){
 				if(item.toPageUrl){
+					// if(item.label === "认证中心" && !this.hasIdentified){
 					if(item.label === "认证中心" && this.hasIdentified){
-						this.$gotoPages('/mySelf-userinfor')
+						this.$gotoPages('/mySelf-identifiedalready')
 						return;
 					}
 					this.$gotoPages(item.toPageUrl)
@@ -223,6 +222,17 @@ import { debug } from 'util';
 			},
 			showPopUp(){
 				this.$store.state.isShowPop=true				
+			},
+			isIdentified(userinfo){
+				var identifield = false;
+				var fields = ['userName', 'idCard', 'wechat', 'email', 'address'];
+				
+				for(var f in userinfo){
+					if(fields.indexOf(f) > -1 && userinfo[f]){
+						identifield = true;
+					}
+				}
+				return identifield;
 			},
 			getUserDetail(){
 				var self = this;
@@ -239,14 +249,20 @@ import { debug } from 'util';
 					
 					if(data && data.status=='200'){
 						var userinfor = res.data.data;
-						var userinfor = self.$getUserInfo();
+						// var userinfor = self.$getUserInfo();
 						var headImg = userinfor.headImg || 'headpoint-man.png';
 
+						self.isCityOwner = !!userinfor.cityOwner;
 						self.$resetUserInfor(userinfor);
 						self.user.name = userinfor.nickName || '未设置昵称';
 						self.user.phone = userinfor.phone;
-						self.hasIdentified = !!userinfor.userName;
+						self.hasIdentified = self.isIdentified(userinfor);
 						self.user.img = require("../../img/myself/" + headImg);
+
+						var identificationItem = self.$findObj(self.details.items, "label", "认证中心");
+						var Vue = self.$root;
+						Vue.$set(identificationItem, 'content', self.hasIdentified ? "" : "未认证")
+
 					}
 				}).catch(function(err){
 					
@@ -308,6 +324,17 @@ import { debug } from 'util';
 	background: url(../../img/myself/myself-bg.png) no-repeat;
 	background-size: 100% 100%;
 	margin-bottom: 2.2rem;
+	position: relative;
+
+	.u-custom-service{
+		position: absolute;
+		top: 0.5rem;
+		right: 0.3rem;
+		background: url(../../img/myself/i-custom-service.png) no-repeat;
+		background-size: 100% 100%;
+		width: 0.44rem;
+		height: 0.44rem;
+	}
 }
 
 .m-user{
@@ -325,6 +352,33 @@ import { debug } from 'util';
 		width: 100%;
 		height: 100%;
 		padding-top: 0.95rem; 
+
+		.cityowner{
+			position: absolute;
+			right: 0;
+			top: 0.3rem;
+			font-size: 12px;
+			line-height: 0.5rem;
+			height: 0.5rem;
+			width: 1.1rem;
+			text-align: center;
+			background-color: #f3d7d5; 
+			padding-right: 0.2rem;
+			box-sizing: border-box; 
+
+			.i-cityowner{
+				background: url(../../img/myself/i-city-owner.png) no-repeat;
+				background-size: 100% 100%;
+				width: 0.5rem;
+				height: 0.5rem;
+				border-radius: 0.25rem;
+				margin-left: -0.25rem; 
+				display: inline-block;
+			}
+			span{
+				color: #d55d51;
+			}
+		}
 
 		.user-headport{
 			width: 1.7rem;
@@ -360,7 +414,7 @@ import { debug } from 'util';
 
 		.user-phone{
 			text-align: center;
-			font-size: 0.16rem;
+			font-size: 0.16px;
 			margin-bottom: 0.3rem;
 		}
 

@@ -177,6 +177,10 @@ export default new Router({
 		name: 'mySelf-identification',
 		component: resolve => require(['../pages/mySelf-identification/identification.vue'], resolve)
 	}, {
+		path: '/mySelf-identifiedalready',
+		name: 'mySelf-identifiedalready',
+		component: resolve => require(['../pages/mySelf-identifiedalready/identifiedalready.vue'], resolve)
+	}, {
 		path: '/mySelf-userinfor',
 		name: 'mySelf-userinfor',
 		component: resolve => require(['../pages/mySelf-userinfor/userinfor.vue'], resolve)
@@ -215,11 +219,15 @@ export default new Router({
 		path: '/mySelf-wallet',
 		name: 'mySelf-wallet',
 		component: resolve => require(['../pages/mySelf-wallet/wallet.vue'], resolve)
-	},{
+	}, {
 		path: '/mySelf-wallet-bind',
 		name: 'mySelf-wallet-bind',
 		component: resolve => require(['../pages/mySelf-wallet-bind/wallet-bind.vue'], resolve)
-	},{
+	}, {
+		path: '/mySelf-wallet-bindalready',
+		name: 'mySelf-wallet-bindalready',
+		component: resolve => require(['../pages/mySelf-wallet-bindalready/bindalready.vue'], resolve)
+	}, {
 		path: '/mySelf-wallet-pickup',
 		name: 'mySelf-wallet-pickup',
 		component: resolve => require(['../pages/mySelf-wallet-pickup/wallet-pickup.vue'], resolve)

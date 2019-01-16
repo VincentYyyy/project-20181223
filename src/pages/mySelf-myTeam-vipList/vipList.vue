@@ -8,6 +8,10 @@
 		<!-- 个人信息 -->
 		<div class="m-details">
 
+			<div class="no-data" v-if="!vipList.items.length">
+				没有数据...
+			</div>
+
 			<div v-for="item in vipList.items" 
 				class="c-list-item"
 				@click="item.onClick && item.onClick(item)"
@@ -54,17 +58,7 @@ import { debug } from 'util';
 				title: '一级会员',
 				level: 1,
 				vipList:{
-					items: [
-						// {
-						// 	label: '李一鸣',
-						// 	img: require('../../img/myself/男@2x.png'),
-						// 	phone: "12345678901",
-						// 	date: '2018.12.25',
-						// 	onClick: function (){
-								
-						// 	}
-						// }
-					]
+					items: []
 				}
 			}
 		},
@@ -105,7 +99,6 @@ import { debug } from 'util';
 
 							self.vipList.items = arr;
 						}else{
-
 						}
 					}
 				}).catch(function(err){
@@ -139,6 +132,14 @@ import { debug } from 'util';
 	}
 
 	.m-details{
+
+		.no-data{
+			line-height: 1rem;
+			text-align: center;
+			font-size: 14px;
+			color: #9f9f9f;
+		}
+
 		.c-list-item{
 			padding-right: 0.6rem;
 

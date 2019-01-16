@@ -1,5 +1,31 @@
 exports.install = function(Vue, options) {
 
+	window.utils = {
+		filters: function(value, type){
+			var filters = {
+				phone: function(){
+					return markStar(value, 3, 4);
+				},
+				identify: function(){
+					return markStar(value, 5, 8)
+				}
+			};
+			function markStar (str,frontLen,endLen) { 
+				var len = str.length-frontLen-endLen;
+				var star = '';
+				for (var i=0;i<len;i++) {
+					star+='*';
+				}
+				return str.substring(0,frontLen)+star+str.substring(str.length-endLen);
+			}
+
+			if(value === null || value === undefined || value === "" || typeof value !== "string")
+				return value;
+			else 
+				return filters[type]();
+		}
+	}
+
 	Date.prototype.Format = function(fmt){ //author: meizz   
 	  var o = {   
 		"M+" : this.getMonth()+1,                 //月份   
@@ -168,6 +194,7 @@ exports.install = function(Vue, options) {
 		return filters[type]()
 	}
 
+	// 海润APP 请求
 	Vue.prototype.$HRApp = function(name, obj){
 		obj.params=this.$qs.stringify(obj.params);
 		this.$axios({
@@ -259,7 +286,7 @@ exports.install = function(Vue, options) {
 		var luhn= 10-k;
 		
 		if(lastNum==luhn){
-			console.log("验证通过");
+			// console.log("验证通过");
 			return true;
 		}else{
 			return false;

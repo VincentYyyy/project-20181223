@@ -107,7 +107,7 @@
 				    
 			},
 			goBack(){
-				this.$gotoPages('/cityloadArea')
+				window.history.go(-1);
 			},
 			showDialog(){
 				//this.isPopUp=true

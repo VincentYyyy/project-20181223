@@ -39,7 +39,7 @@
 						:class="item.class"
 						class="f-fs-14"
 					>
-						{{ item.content | filterFactory(item.filterType) }}
+						{{ item.content | myfilters(item.filterType) }}
 					</div>
 					<div v-else
 						:class="item.class"
@@ -94,7 +94,7 @@
 <script>
 	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
-import { debug } from 'util';
+	import { debug } from 'util';
 
 	var self = this;
 	var popup ={
@@ -158,6 +158,12 @@ import { debug } from 'util';
 
 				return filter(value);
 			},
+			myfilters: function(value, type){
+				if(!value) return "未认证";
+				value = value.toString();
+				if(!value.length) return "未认证";
+				return utils.filters(value, type);
+			}
 		},
 		data(){
 			var _self = this;
@@ -192,14 +198,14 @@ import { debug } from 'util';
 						{
 							label: '手机号码',
 							content: '未认证',
-							// filterType: 'phone',
+							filterType: 'phone',
 							class: {
 								'f-gray-1': true
 							}
 						},{
 							label: '身份证',
 							content: '未认证',
-							// filterType: "identify",
+							filterType: "identify",
 							class: {
 								'f-gray-1': true
 							}
