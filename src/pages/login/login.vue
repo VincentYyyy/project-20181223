@@ -136,11 +136,16 @@
 			goBack(){
 				sessionStorage.setItem('nowIndex',0)
 				this.$gotoPages('/home')
-				
+			}
+		},
+		beforeCreate(){
+			var toLogout = this.$store.state.logout;
+			if(toLogout){		// 登出状态进入，刷新页面清除
+				window.sessionStorage.clear();
+				window.location.reload()
 			}
 		},
 		mounted() {
-			//this.clearLocalStorage()
 		}
 	}
 </script>

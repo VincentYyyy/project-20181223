@@ -61,6 +61,8 @@
 	import { Tab, TabItem } from 'vux'
 	import cmheader from '../../components/cmHeader.vue'
 
+	var imgSrc = "http://39.98.52.58:8088/resource/header/";
+
 	export default {
 		data(){
 			return{
@@ -108,7 +110,6 @@
 		},
 		created(){
 			var self = this;
-
 			var params = {
 				id: this.$store.state.id,
 				pageNum: 1,
@@ -125,7 +126,7 @@
 					data.data.forEach(function(item, index){
 						self.budget.items.push({
 							label: "收支描述",
-							img: require('../../img/myself/男@2x.png'),
+							img: imgSrc + (item.headImg || 'man.png'),
 							type: item.type ? "任务" : "提现",
 							phone: "12345678901",
 							date: item.createTime.split(" ")[0],

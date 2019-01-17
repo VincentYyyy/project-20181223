@@ -28,16 +28,35 @@
 			<button @click="changePassword">确定</button>
 		</div>
 	
+		<div>
+			<toast v-model="toast.show" 
+				type="text" :time='1200' 
+				is-show-mask 
+				:text="toast.text" 
+				:position="'middle'" 
+				width="6em">
+			</toast>
+		</div>
+
 	</div>
 </template>
 
 <script>
 	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
+	import {Toast} from 'vux'
 	
 	var popup ={show: false}
 	var common = {
 		pageState: 'details'
+	}
+	var toast = {
+		show: false,
+		text: "",
+		alert: function(text){
+			this.show = true;
+			this.text = text;
+		}
 	}
 
 	export default{
@@ -46,6 +65,7 @@
 		},
 		data(){
 			return{
+				toast: toast,
 				popup: popup,
 				commond: common,
 				nameInputs:{
@@ -84,9 +104,10 @@
 				}
 				var validPhone = this.$getChecker('phone')(phone);
 				if(!validPhone){
-					alert("请输入正确的手机号")
+					this.$store.$toast.alert("请输入正确的手机号")
 					return;
 				}
+				var self = this;
 				params=this.$qs.stringify(params)
 				this.$axios({
 					method:'post',
@@ -94,9 +115,9 @@
 					url:'/appApi/appUsers/sendMs'
 				}).then(function(res){
 					if(res.status=='200'){
-						alert("获取验证码成功")
+						self.$store.$toast.alert("获取验证码成功")
 					}else{
-						alert("获取验证码失败")
+						self.$store.$toast.alert("获取验证码失败")
 					}
 				}).catch(function(err){
 					console.log(err)
@@ -131,7 +152,7 @@
 				})
 
 				if(!validInput){
-					msg && alert(msg);
+					msg && self.$store.$toast.alert(msg);
 					return;
 				}
 
@@ -144,9 +165,10 @@
 					if(res.status=='200'){
 						var data=res.data;
 						if(data.status=='200'){		// FIXME 服务器报错
-							alert("密码修改成功");
+							self.$store.$toast.alert("密码修改成功");
+							window.history.go(-1);
 						}else{
-							data.msg && alert(data.msg);
+							data.msg && self.$store.$toast.alert(data.msg);
 						}
 					}
 				}).catch(function(err){
@@ -157,7 +179,8 @@
 		components:{
 			XButton,
 			Popup,
-			cmheader
+			cmheader,
+			Toast
 		},
 		created(){
 		}

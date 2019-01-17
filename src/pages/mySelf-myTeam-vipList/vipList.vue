@@ -47,6 +47,7 @@ import { debug } from 'util';
 	var common = {
 		pageState: 'details'
 	}
+	var imgSrc = "http://39.98.52.58:8088/resource/header/";
 
 	export default{
 		name:'myself',
@@ -91,7 +92,7 @@ import { debug } from 'util';
 							data.data.forEach(function(item, index){
 								arr.push({			// FIXME push 生效
 									label: item.nickName || "无昵称",
-									img: require('../../img/myself/' + (item.headImg || 'headpoint-man.png')),
+									img: imgSrc + (item.headImg || 'man.png'),
 									phone: item.phone,
 									date: item.inviteTime.split(" ")[0],
 								})

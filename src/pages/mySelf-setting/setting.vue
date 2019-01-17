@@ -57,9 +57,9 @@
 		},
 		methods:{
 			logout(){
-				sessionStorage.clear();
-				alert("退出成功");
-				this.$gotoPages('/login');
+				this.$store.$toast.alert("退出成功");
+				this.$store.state.logout = true; // 标志登出
+				this.$gotoPages('/login')
 			}
 		},
 		components:{

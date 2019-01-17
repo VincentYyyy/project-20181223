@@ -1,6 +1,6 @@
 <template>
 	<div class="myself home">
-		<cmheader :title="'联系我们'"></cmheader>
+		<cmheader :title="'意见反馈'"></cmheader>
 
 		<!-- 头部占位 -->
 		<div class="u-header-padding" ></div>
@@ -44,24 +44,25 @@
 		},
 		methods:{
 			onSubmit(){
+				var self = this;
 				if( !this.conection.content || this.conection.content.length < 8 ){
-					alert("反馈留言需不少于8个字体")
+					this.$store.$toast.alert("反馈留言需不少于8个字体")
 					return;
 				}
 
 				var params = {
 					id: this.$getUserInfo().id,
 					content: this.conection.content,
-					contactInformation: this.conection.contactInformation,
+					contactInformation: this.conection.contactInformation,		// FIXME
 				};
-				this.$HRApp("adsServ",{			// 用的是广告接口
+				this.$HRApp("userFeedBack",{
 					params: params,
 					then: function(data){
 						if(data.status === "200"){
-							alert("反馈成功");
-							window.history.go(-1)
+							self.$store.$toast.alert("反馈成功");
+							window.history.go(-2)
 						}else{
-							data.msg && alert(data.msg);
+							data.msg && self.$store.$toast.alert(data.msg);
 						}
 					}
 				})
