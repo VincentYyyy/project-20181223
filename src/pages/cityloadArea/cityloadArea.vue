@@ -23,7 +23,7 @@
 				<div class="swiper">
 				<swiper :list="swiperList" :show-dots="false" v-model="swiperIndex" @on-index-change="swiperonIndexChange"></swiper>
 			</div>-->
-			<div class="more-content-list" style="margin-top: -.1rem;">
+			<div class="more-content-list" style="margin-top: -.3rem;">
 				<div class="package-list flex-item-2 flex-start">
 					<div class="" v-for="(item,index) in goodsList" @click="toGoodsDetail(item.detailLinkUrl,item)">
 						<img :src="item.imgs">

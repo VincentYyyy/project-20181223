@@ -13,10 +13,13 @@
 				class="c-list-item"
 			>
 				<div class="c-item-label">
-					{{item.label}}
+					<!--{{}}-->
+					<div v-html="item.label">
+						
+					</div>
 				</div>
 				<div class="c-item-content">
-					 : {{item.content}}
+					 {{item.content}}
 				</div>
 			</div>
 		
@@ -92,27 +95,27 @@
 			var fields = {
 				'userName': {
 					index: 0,
-					label: '姓名',
+					label: '姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名&nbsp;:',
 					filterType: 'username'
 				},
 				'idCard': {
 					index: 1,
-					label: '身份证',
+					label: '身&nbsp;份&nbsp;证&nbsp;:',
 					filterType: 'identify'
 				},
 				'phone': {
 					index: 2,
-					label: '手机',
+					label: '手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机&nbsp;:',
 					filterType: 'phone'
 				},
 				'email': {
 					index: 3,
-					label: '邮箱',
+					label: '邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱&nbsp;:',
 					filterType: 'email'
 				},
 				'address': {
 					index: 4,
-					label: '地址'
+					label: '地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址&nbsp;:'
 				}
 			}
 
@@ -214,15 +217,23 @@
 			}
 
 			.c-item-label{
-				width: 25%;
+				width: 1.2rem;
+				padding-right: .1rem;
+				box-sizing: border-box;
+				>div{
+					font-size: 14px;
+					width: 100%;
+					text-align: right;
+				}
 			}
 
 			.c-item-content{
-				width: 75%;
+				flex: 1;
 				-webkit-box-pack: start;
 				-ms-flex-pack: start;
 				justify-content: flex-start;
-
+				padding-left: .1rem;
+				box-sizing: border-box;
 				.head-portrail{
 					width: 1.25rem;
 					height: 1.25rem;

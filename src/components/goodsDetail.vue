@@ -47,7 +47,7 @@
 				</div>
 				<div style="max-height: 45vh;overflow-y: scroll;overflow-x: hidden;">
 					<div>
-						<img src="../assets/no-add.png" v-if="addList.length==0&&!isFisrtLoad" style="margin: 0 auto;">
+						<img src="../assets/no-add.png" v-if="addList.length==0&&!isFisrtLoad" style="margin: 0 auto;display: block;">
 					</div>
 					<div class="btn-bg buy-now-btn" @click="newAddress" v-if="addList.length==0&&!isFisrtLoad">
 						新增
@@ -121,7 +121,7 @@
 <script>
 	import md5 from 'js-md5'
 //	import cmheader from '../../components/cmHeader.vue'
-	import { Popup,TransferDom } from 'vux'
+	import { Toast,Popup,TransferDom } from 'vux'
 	
 	export default {
 		name: 'goods-detail',
@@ -345,7 +345,7 @@
 				}).then(function(res){
 					console.log('后台返回的responds对象:')
 //					alert('后台返回的responds对象')
-					alert(res.status)
+					//alert(res.status)
 					if(res.status=='200'){
 						var getData=res.data
 						if(getData.status=='200'){
@@ -353,14 +353,14 @@
 //							alert('后台返回的订单状态0待付款1已付款2取消订单3订单已关闭4支付失败')
 							var payResultStatus=getData.data.status
 							_this.payResultStatus=payResultStatus
-							alert('获取到后台订单状态是:'+payResultStatus)
+							//alert('获取到后台订单状态是:'+payResultStatus)
 							if(payResultStatus==1||payResultStatus==4){
 								console.log('订单状态为已付款或者支付失败')
-								alert('获取到后台订单状态是:'+payResultStatus)
+								//alert('获取到后台订单状态是:'+payResultStatus)
 								_this.$gotoPages('/cityloadArea/payResult',{payResultStatus:payResultStatus})
 							}else{
 								_this.closeWindow()
-								alert('订单状态为非非非非非非已付款或者支付失败')
+								//alert('订单状态为非非非非非非已付款或者支付失败')
 							}
 						}
 					}else{
@@ -373,6 +373,7 @@
 		},
 		components: {
 			Popup,
+			Toast
 //			cmheader
 		},
 		directives: {

@@ -17,7 +17,11 @@
 							城主
 						</span>
 					</div>
-					<img class="user-headport" :src="user.img" alt="">
+					<img class="user-headport" src="http://39.98.52.58:8088/resource/header/man.png" alt="" v-if="user.img=='man.png'">
+					<img class="user-headport" src="http://39.98.52.58:8088/resource/header/old.png" v-else-if="user.img=='old.png'">
+					<img class="user-headport" src="http://39.98.52.58:8088/resource/header/woman.png" v-else-if="user.img=='woman.png'">
+					<img class="user-headport" src="http://39.98.52.58:8088/resource/header/young.png" v-else-if="user.img=='young.png'">
+					<img class="user-headport" src="http://39.98.52.58:8088/resource/header/man.png" v-else>
 					<p class="user-name">
 						<span class="f-fs-18">{{user.name}}</span>
 						<i class="i-raw-right"></i>
@@ -108,7 +112,7 @@
 		show: false,
 		text: ""
 	}
-	var imgSrc = "http://39.98.52.58:8088/resource/header/";
+	var imgSrc = ""; //http://39.98.52.58:8088/resource/header/
 	var popup ={show: false}
 	var common = {
 		pageState: 'details'
@@ -267,7 +271,7 @@
 					if(data && data.status=='200'){
 						var userinfor = res.data.data;
 						// var userinfor = self.$getUserInfo();
-						var headImg = userinfor.headImg || 'man.png';
+						var headImg = userinfor.headImg || 'headpoint-man.png';
 
 						self.isCityOwner = !!userinfor.cityOwner;
 						self.$resetUserInfor(userinfor);

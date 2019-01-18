@@ -147,7 +147,7 @@
 				var boxDom=dom
 				var h=dom.offsetHeight
 				var scrollTop=boxDom.scrollTop
-				if(scrollTop+boxDom.clientHeight>=boxDom.scrollHeight){
+				if(scrollTop+boxDom.clientHeight+50>=boxDom.scrollHeight){
 					return true
 				}else{
 					return false
