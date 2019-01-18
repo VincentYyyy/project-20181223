@@ -79,10 +79,7 @@
 		},
 		created(){
 			// 全局弹窗
-			this.$store.$toast = toast;
-			this.$toast = toast;
-			console.log(this.$store)
-			console.log(this.$toast)
+			window.$toast = toast;
 		}
 	}
 </script>

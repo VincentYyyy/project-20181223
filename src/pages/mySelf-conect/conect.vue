@@ -46,7 +46,7 @@
 			onSubmit(){
 				var self = this;
 				if( !this.conection.content || this.conection.content.length < 8 ){
-					this.$store.$toast.alert("反馈留言需不少于8个字体")
+					window.$toast.alert("反馈留言需不少于8个字体")
 					return;
 				}
 
@@ -59,10 +59,10 @@
 					params: params,
 					then: function(data){
 						if(data.status === "200"){
-							self.$store.$toast.alert("反馈成功");
+							window.$toast.alert("反馈成功");
 							window.history.go(-2)
 						}else{
-							data.msg && self.$store.$toast.alert(data.msg);
+							data.msg && window.$toast.alert(data.msg);
 						}
 					}
 				})

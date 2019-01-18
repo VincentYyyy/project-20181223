@@ -57,7 +57,7 @@
 					warn = item.checker(item, this.$getChecker);
 					params[item.name] = item.value;
 					if(warn){
-						self.$store.$toast.alert(warn);
+						window.$toast.alert(warn);
 						return;
 					}
 				}

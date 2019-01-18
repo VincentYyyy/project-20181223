@@ -104,7 +104,7 @@
 				}
 				var validPhone = this.$getChecker('phone')(phone);
 				if(!validPhone){
-					this.$store.$toast.alert("请输入正确的手机号")
+					window.$toast.alert("请输入正确的手机号")
 					return;
 				}
 				var self = this;
@@ -115,9 +115,9 @@
 					url:'/appApi/appUsers/sendMs'
 				}).then(function(res){
 					if(res.status=='200'){
-						self.$store.$toast.alert("获取验证码成功")
+						window.$toast.alert("获取验证码成功")
 					}else{
-						self.$store.$toast.alert("获取验证码失败")
+						window.$toast.alert("获取验证码失败")
 					}
 				}).catch(function(err){
 					console.log(err)
@@ -152,7 +152,7 @@
 				})
 
 				if(!validInput){
-					msg && self.$store.$toast.alert(msg);
+					msg && window.$toast.alert(msg);
 					return;
 				}
 
@@ -165,10 +165,10 @@
 					if(res.status=='200'){
 						var data=res.data;
 						if(data.status=='200'){		// FIXME 服务器报错
-							self.$store.$toast.alert("密码修改成功");
+							window.$toast.alert("密码修改成功");
 							window.history.go(-1);
 						}else{
-							data.msg && self.$store.$toast.alert(data.msg);
+							data.msg && window.$toast.alert(data.msg);
 						}
 					}
 				}).catch(function(err){

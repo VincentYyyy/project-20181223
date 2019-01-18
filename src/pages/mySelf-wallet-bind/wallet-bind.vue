@@ -107,7 +107,7 @@
 					warn = item.checker(item, this.$getChecker);
 					params[item.name] = item.value;
 					if(warn){
-						self.$store.$toast.alert(warn);
+						window.$toast.alert(warn);
 						return;
 					}
 				}
@@ -117,13 +117,13 @@
 					params: params,
 					then: function(data){
 						if(data.status=='200'){
-							self.$store.$toast.alert('绑定成功');
+							window.$toast.alert('绑定成功');
 							delete userInfoParmas.id;
 							userInfoParmas.bankStatus = 1;  // FIXME getUserDetail接口无这些字段
 							self.$resetUserInfor(userInfoParmas);
 							window.history.go(-1);
 						}else{
-							data.msg && self.$store.$toast.alert(data.msg);
+							data.msg && window.$toast.alert(data.msg);
 						}
 					}
 				})

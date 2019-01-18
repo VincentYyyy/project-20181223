@@ -57,7 +57,8 @@
 		},
 		methods:{
 			logout(){
-				this.$store.$toast.alert("退出成功");
+				console.log(this.$toast);
+				window.$toast.alert("退出成功")
 				this.$store.state.logout = true; // 标志登出
 				this.$gotoPages('/login')
 			}

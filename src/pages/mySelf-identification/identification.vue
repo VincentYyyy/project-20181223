@@ -119,7 +119,7 @@
 					warn = item.checker(item, this.$getChecker);
 					params[item.name] = item.value;
 					if(warn){
-						self.$store.$toast.alert(warn);
+						window.$toast.alert(warn);
 						return;
 					}
 				}
@@ -135,7 +135,7 @@
 						if(status=='200'){
 							window.history.go(-1)
 						}else{
-							res.data.msg && self.$store.$toast.alert(res.data.msg)
+							res.data.msg && window.$toast.alert(res.data.msg)
 						}
 					}
 				}).catch(function(err){
