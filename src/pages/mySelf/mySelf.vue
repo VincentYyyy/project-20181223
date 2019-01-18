@@ -127,7 +127,7 @@
 				popup: popup,
 				commond: common,
 				hasIdentified: false,
-				isCityOwner: true,
+				isCityOwner: false,
 				user:{
 					name:'',
 					img: '',
@@ -432,7 +432,7 @@
 
 		.user-phone{
 			text-align: center;
-			font-size: 0.16px;
+			font-size: 13px;
 			margin-bottom: 0.3rem;
 		}
 

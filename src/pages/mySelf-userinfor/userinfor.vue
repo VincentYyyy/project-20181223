@@ -142,7 +142,7 @@
 			};
 			
 			$parent.$HRApp('updateUserDetail', {
-				FIXME: true,    // 500 报错
+				// FIXME: true,    // 500 报错
 				params: params,
 				then: function(res){
 					$parent.$resetUserInfor({

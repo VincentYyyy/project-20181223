@@ -33,7 +33,7 @@
 			</div>
 		</div>
 		<p class="tips f-gray-1">
-			最低是100元才能提现
+			最低提现100元, 手续率为{{wallet.procedureRate * 100}}%
 		</p>
 
 		<div class="c-btn  pickup-btn"
@@ -98,6 +98,7 @@
 					show: false,
 				},
 				wallet: {
+					procedureRate: 0.002,
 					bankAddress: "",
 					bankCardTail: "",
 					sum: 0,
@@ -154,6 +155,15 @@
 					money: Number.parseFloat(this.wallet.pickupNum)
 				}
 				var self = this;
+
+				if(this.wallet.pickupNum < 100){
+					this.$store.$toast.alert("最低提现100元")
+					return;
+				}else if(this.wallet.sum < this.wallet.pickupNum){
+					this.$store.$toast.alert("余额不足")
+					return;
+				}
+
 				this.$HRApp("cashWithdrawal" ,{
 					FIXME: true,
 					params: params,
@@ -161,10 +171,12 @@
 						if(data.status === "200"){
 							self.wallet.sum = self.wallet.sum = self.wallet.pickupNum;
 							self.wallet.pickupNum = "";
+							self.$store.$toast.alert("提现成功");
 							window.history.go(-1);
+						}else{
+							data.msg && self.$store.$toast.alert(data.msg);
 						}
 						self.dialog.show = false;
-						self.$store.$toast.alert("提现成功");
 					}
 				})
 			},

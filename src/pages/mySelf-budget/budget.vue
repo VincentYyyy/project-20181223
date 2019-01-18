@@ -1,6 +1,6 @@
 <template>
 	<div class="order-manager">
-		<cmheader :title="'绑定银行卡'"></cmheader>
+		<cmheader :title="'收支明细'"></cmheader>
 
 		<!-- 头部占位 -->
 		<div class="u-header-padding" ></div>
@@ -87,10 +87,10 @@
 						return true
 					},
 					'pay': function (item){
-						return item.budget < 0
+						return item.budget > 0
 					},
 					'income': function (item){
-						return item.budget >= 0
+						return item.budget <= 0
 					}
 				}
 				var self = this;
@@ -125,7 +125,7 @@
 				if(data.status === "200" && data.data){
 					data.data.forEach(function(item, index){
 						self.budget.items.push({
-							label: "收支描述",
+							label: item.billName || "收支描述",
 							img: imgSrc + (item.headImg || 'man.png'),
 							type: item.type ? "任务" : "提现",
 							phone: "12345678901",

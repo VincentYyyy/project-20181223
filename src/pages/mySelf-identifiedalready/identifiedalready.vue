@@ -13,10 +13,10 @@
 				class="c-list-item"
 			>
 				<div class="c-item-label">
-					{{item.label}}
+					<div class="justify" v-html="item.label"></div> ：
 				</div>
 				<div class="c-item-content">
-					 : {{item.content}}
+					 {{item.content}}
 				</div>
 			</div>
 		
@@ -92,27 +92,27 @@
 			var fields = {
 				'userName': {
 					index: 0,
-					label: '姓名',
+					label: '姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名',
 					filterType: 'username'
 				},
 				'idCard': {
 					index: 1,
-					label: '身份证',
+					label: '身&nbsp;&nbsp;份&nbsp;&nbsp;证',
 					filterType: 'identify'
 				},
 				'phone': {
 					index: 2,
-					label: '手机',
+					label: '手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机',
 					filterType: 'phone'
 				},
 				'email': {
 					index: 3,
-					label: '邮箱',
+					label: '邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱',
 					filterType: 'email'
 				},
 				'address': {
 					index: 4,
-					label: '地址'
+					label: '地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址'
 				}
 			}
 
@@ -148,6 +148,18 @@
 </script>
 
 <style lang="less" scoped>
+
+// .justify { 
+// 	text-align: justify; 
+// 	width: 100%;
+// }
+// .justify > span { 
+// 	display: inline-block; 
+// 	padding-left: 100%; 
+// 	height: 0;
+// 	margin-left: -100%; 
+// }
+
 .myself{
 
 	.u-header-padding{
