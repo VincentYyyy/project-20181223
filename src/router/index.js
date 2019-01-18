@@ -208,6 +208,10 @@ export default new Router({
 		name: 'mySelf-conect',
 		component: resolve => require(['../pages/mySelf-conect/conect.vue'], resolve)
 	}, {
+		path: '/mySelf-about',
+		name: 'mySelf-about',
+		component: resolve => require(['../pages/mySelf-about/about.vue'], resolve)
+	}, {
 		path: '/mySelf-myTeam',
 		name: 'mySelf-myTeam',
 		component: resolve => require(['../pages/mySelf-myTeam/myTeam.vue'], resolve)

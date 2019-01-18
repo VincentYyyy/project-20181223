@@ -194,6 +194,7 @@
 							label: '关于我们',
 							icon: 'about',
 							rawRight: true,
+							toPageUrl: '/mySelf-about',
 							class: {
 								'f-gray-1': true
 							}
