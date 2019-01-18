@@ -226,23 +226,15 @@
 			}
 
 			.c-item-label{
-				width: 1.2rem;
-				padding-right: .1rem;
-				box-sizing: border-box;
-				>div{
-					font-size: 14px;
-					width: 100%;
-					text-align: right;
-				}
+				width: 25%;
 			}
 
 			.c-item-content{
-				flex: 1;
+				width: 75%;
 				-webkit-box-pack: start;
 				-ms-flex-pack: start;
 				justify-content: flex-start;
-				padding-left: .1rem;
-				box-sizing: border-box;
+
 				.head-portrail{
 					width: 1.25rem;
 					height: 1.25rem;
@@ -269,7 +261,7 @@
 				height: 0.33rem;
 			}
 		}
-  
+
 		.item{
 			padding: 0.24rem 0.6rem 0.24rem 0.16rem;
 			box-sizing: border-box;
