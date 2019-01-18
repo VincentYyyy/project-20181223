@@ -161,6 +161,17 @@
 						this.addList[i].isCheck=false
 					}else{
 						this.addList[i].isCheck=!this.addList[i].isCheck
+						if(this.addList[i].isCheck){
+							console.log(this.addList[i])
+							var address=this.addList[i].province_name+this.addList[i].city_name+this.addList[i].district_name+this.addList[i].address
+							this.receiptAddress=address
+							this.receiptPhone=this.addList[i].mobile
+							this.receiptPerson=this.addList[i].consignee
+						}else{
+							this.receiptAddress=''
+							this.receiptPhone='',
+							this.receiptPerson=''
+						}
 //						if(this.addList[i].isCheck){
 //							
 //						}

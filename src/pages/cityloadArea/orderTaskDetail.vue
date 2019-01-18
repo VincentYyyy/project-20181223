@@ -18,6 +18,9 @@
 					<img src="../../../static/chicon/提交图片审核@3x.png" class="pre">
 				</div>
 			</div>
+			<div style="color: red;">
+				注：图片不能大于1.2MB,否则系统自动过滤
+			</div>
 			<div class="ac-remark">
 				<textarea v-model="remark" placeholder="输入备注">
 					
@@ -27,7 +30,7 @@
 				<!--<div class="btn-bg">
 					提交审核
 				</div>-->
-				<div @click="uploadFiles" class="btn-bg submit-btn" style="margin: 0;margin-top: .33rem;margin-bottom: .59rem;">
+				<div @click="uploadFiles(0)" class="btn-bg submit-btn" style="margin: 0;margin-top: .33rem;margin-bottom: .59rem;">
 					提交审核
 				</div>
 			</div>
@@ -330,7 +333,8 @@
 				showResMsg:false,
 				resMsgContent:'',
 				isUpLoadding:false,
-				imgs:''
+				imgs:'',
+				myfilesArr:[]
 			}
 		},
 		components: {
@@ -343,21 +347,40 @@
 				window.history.go(-1)
 			},
 			
-			uploadFiles(){
+			uploadFiles(count){
 				var _this=this
 				if(this.remark==''){
 					this.resMsgContent='备注不能为空!'
 					this.showResMsg=true
 					return false
 				}
+				console.log(count)
+				console.log(this.myFilesList.length)
+				if(count>=this.myFilesList.length){
+//					this.isUpLoadding=false
+//					console.log(this.myfilesArr)
+					this.saveTask()
+					return false
+				}
+				if(this.myFilesList.length==0){
+					this.myfilesArr=[]
+//					console.log(this.myfilesArr)
+//					this.isUpLoadding=false
+					this.saveTask()
+					return false
+				}
+				if(this.myFilesList.length>=10){
+					this.resMsgContent='图片不能大于9张!'
+					this.showResMsg=true
+					return false
+				}
 				this.isUpLoadding=true
+//				this.isUpLoadding=true
 				var formData=new FormData()
 				if(this.myFilesList.length>0){
-					this.myFilesList.forEach(function(item){
-						var filesBlobs=item.uploadFiles
-						var fileName=item.uploadFiles.name
-						formData.append(fileName,filesBlobs)
-					})
+					var filesBlobs=this.myFilesList[count].uploadFiles
+					var fileName=this.myFilesList[count].uploadFiles.name
+					formData.append(fileName,filesBlobs)
 				}else{
 					formData.append('File',[])
 				}
@@ -381,8 +404,9 @@
 									myfilesArr.push(item.filePath)
 								})
 							}
-							_this.imgs=myfilesArr.join(',')
-							_this.saveTask()
+							_this.myfilesArr=_this.myfilesArr.concat(myfilesArr)
+							count++
+							_this.uploadFiles(count)
 						}else{
 							_this.showResMsg=true
 							_this.isUpLoadding=false
@@ -395,6 +419,7 @@
 			},
 			//tabIndex==0
 			saveTask(){
+				this.imgs=this.myfilesArr.join(',')
 				var params={
 					memberId:this.$store.state.id,
 					id:this.taskId,
@@ -434,6 +459,9 @@
 				if(filesBlobs.length>0){
 					for(var i=0;i<filesBlobs.length;i++){
 						var filesSrc=window.URL.createObjectURL(filesBlobs[i])
+						if(filesBlobs[i].size>=1048576*1.2){
+							continue
+						}
 						var extStart=filesBlobs[i].name.lastIndexOf(".");
 						var ext=filesBlobs[i].name.substring(extStart,filesBlobs[i].name.length).toUpperCase();
 						if(ext!=".BMP"&&ext!=".PNG"&&ext!=".GIF"&&ext!=".JPG"&&ext!=".JPEG"){
@@ -551,9 +579,14 @@
     		box-sizing: border-box;
     		position: relative;
     		img{
-    			width: 1.8rem;
-    			height: 1.8rem;
+    			width: 1.8rem!important;
+    			height: 1.8rem!important;
     		}
+    	}
+    	img{
+    		width: 1.8rem!important;
+    			height: 1.8rem!important;
+    			display: block!important;
     	}
     }
     .ac-set-plr{

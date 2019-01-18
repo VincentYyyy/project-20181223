@@ -1,5 +1,8 @@
 <template>
 	<div class="mall-wrap">
+		<div v-transfer-dom class="my-loadding">
+			<loading :show="showLoadding" :text="loaddingText"></loading>
+    	</div>
 		<cmheader :title="thatTitle" :backUrl='backUrl'></cmheader>
 		<iframe :src="mallSrc" id="mall-iframe" ref="myIframe">
 			
@@ -10,14 +13,25 @@
 <script>
 	import md5 from 'js-md5'
 	import cmheader from '../../components/cmHeader.vue'
+	import {Loading,TransferDomDirective as TransferDom } from 'vux'
 	export default{
+		directives: {
+		    TransferDom
+		},
 		name:'mall',
+		
 		data(){
 			return{
 				thatTitle:'商城',
 				backUrl:'/home',
-				mallSrc:''
+				mallSrc:'',
+				loaddingText:'加载中',
+				showLoadding:true
 			}
+		},
+		components:{
+			cmheader,
+			Loading
 		},
 		watch:{
 			"mallSrc":{
@@ -38,14 +52,14 @@
 				this.mallSrc=_url
 			}
 		},
-		components:{
-			cmheader
-		},
 		created(){
 			this.autoGetUserInfo()
 		},
 		mounted(){
 			var _this=this
+			setTimeout(function(){
+				_this.showLoadding=false
+			},2500)
 //			setInterval(function(){
 //				console.log(this.$refs.myIframe.getAttribute('src'))  
 //			},1000)

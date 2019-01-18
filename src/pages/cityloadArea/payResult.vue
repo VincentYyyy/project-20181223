@@ -27,7 +27,7 @@
 					提示，购买成功
 				</div>
 			</div>
-			<div class="result-back">
+			<div class="result-back" @click="goCityLoadArea">
 				<div class=" btn-bg back-btn">
 					返回城主专区
 				</div>
