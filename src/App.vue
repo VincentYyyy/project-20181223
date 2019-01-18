@@ -4,22 +4,49 @@
 		<div v-if="isShowFoot">
 			<footMenu></footMenu>
 		</div>
-		
+
+		<div>
+			<toast v-model="toast.show" 
+				type="text" :time='1200' 
+				is-show-mask 
+				:text="toast.text" 
+				:position="'middle'" 
+				width="6em">
+			</toast>
+		</div>
+
 	</div>
 </template>
 
 <script>
 	//document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
 	import footMenu from './components/Foot.vue'
+	import {Toast} from 'vux'
+	
+	var toast = {
+		show: false,
+		text: "",
+		alert: function (text){
+			console.log("this", this)
+			this.show = true;
+			this.text = text;
+		}
+	}
+
 	export default {
 		name: 'App',
 		data() {
 			return {
+				toast: toast,
 				isShowFoot: false
 			}
 		},
+		methods:{
+			tetst(){}
+		},
 		components: {
-			footMenu
+			footMenu,
+			Toast
 		},
 		watch: {
 			//切换路由必定滚动到顶部
@@ -51,7 +78,11 @@
 			}
 		},
 		created(){
-				
+			// 全局弹窗
+			this.$store.$toast = toast;
+			this.$toast = toast;
+			console.log(this.$store)
+			console.log(this.$toast)
 		}
 	}
 </script>

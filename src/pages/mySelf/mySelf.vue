@@ -3,7 +3,7 @@
 
 		<div class="m-bg">
 			<i class="u-custom-service"
-				@click="toLink({toPageUrl: '/mySelf-conect'})"
+				@click="toLink({toPageUrl: '/cityloadArea/editAd'})"
 			></i>
 		</div>
 		<div class="m-user">
@@ -84,6 +84,16 @@
 			</div>
 		</div>
 
+		<div>
+			<toast v-model="toast.show" 
+				type="text" :time='1200' 
+				is-show-mask 
+				:text="toast.text" 
+				:position="'middle'" 
+				width="6em">
+			</toast>
+		</div>
+
 		<popup v-model="popup.show" >
 		</popup>		
 	</div>
@@ -92,7 +102,13 @@
 <script>
 	import cmheader from '../../components/cmHeader.vue'
 	import { XButton, Popup } from 'vux'	
-	
+	import {Toast} from 'vux'
+
+	var toast = {
+		show: false,
+		text: ""
+	}
+	var imgSrc = "http://39.98.52.58:8088/resource/header/";
 	var popup ={show: false}
 	var common = {
 		pageState: 'details'
@@ -107,6 +123,7 @@
 		},
 		data(){
 			return{
+				toast: toast, 
 				popup: popup,
 				commond: common,
 				hasIdentified: false,
@@ -184,7 +201,7 @@
 							label: '联系我们',
 							icon: 'conect',
 							rawRight: true,
-							toPageUrl: '/mySelf-conect',
+							toPageUrl: '/cityloadArea/editAd',
 							class: {
 								'f-gray-1': true
 							}
@@ -250,14 +267,14 @@
 					if(data && data.status=='200'){
 						var userinfor = res.data.data;
 						// var userinfor = self.$getUserInfo();
-						var headImg = userinfor.headImg || 'headpoint-man.png';
+						var headImg = userinfor.headImg || 'man.png';
 
 						self.isCityOwner = !!userinfor.cityOwner;
 						self.$resetUserInfor(userinfor);
 						self.user.name = userinfor.nickName || '未设置昵称';
 						self.user.phone = userinfor.phone;
 						self.hasIdentified = self.isIdentified(userinfor);
-						self.user.img = require("../../img/myself/" + headImg);
+						self.user.img = imgSrc + headImg;
 
 						var identificationItem = self.$findObj(self.details.items, "label", "认证中心");
 						var Vue = self.$root;
@@ -309,7 +326,8 @@
 		components:{
 			XButton,
 			Popup,
-			cmheader
+			cmheader,
+			Toast
 		},
 		created(){
 			this.getBalance();

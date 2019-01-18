@@ -47,7 +47,7 @@ import { debug } from 'util';
 				var $resetUserInfor = self.$resetUserInfor;
 
 				if(!this.name || this.name.length < 3){
-					alert("请输入三位字符以上昵称")
+					self.$store.$toast.alert("请输入三位字符以上昵称")
 					return;
 				}
 
@@ -64,7 +64,7 @@ import { debug } from 'util';
 						self.$resetUserInfor({
 							nickName: self.name
 						})
-						alert("更新成功");
+						self.$store.$toast.alert("更新成功");
 
 						window.history.go("-1")
 					},

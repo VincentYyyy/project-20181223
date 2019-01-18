@@ -15,6 +15,9 @@
 				<div class="c-item-label">
 					{{item.label}}
 				</div>
+				<div class="c-item-content">
+					 : {{item.content}}
+				</div>
 			</div>
 		
 		</div>
@@ -50,13 +53,14 @@
 				}
 				var items = this.nameInputs.items;
 				var warn;
+				var self = this;
 
 				for(var i=0; i< items.length; i++){
 					var item = items[i];
 					warn = item.checker(item, this.$getChecker);
 					params[item.name] = item.value;
 					if(warn){
-						alert(warn);
+						self.$store.$toast.alert(warn);
 						return;
 					}
 				}
@@ -70,7 +74,6 @@
 					if(res.status=='200'){		// TODO 
 						var code=res.data.data.code;
 						if(code=='200'){
-							console.log("ok", res.data);
 						}else{
 
 						}
@@ -86,22 +89,60 @@
 			cmheader
 		},
 		created(){
-			var fields = ['userName', 'idCard', 'phone', 'email', 'address'];
+			var fields = {
+				'userName': {
+					index: 0,
+					label: '姓名',
+					filterType: 'username'
+				},
+				'idCard': {
+					index: 1,
+					label: '身份证',
+					filterType: 'identify'
+				},
+				'phone': {
+					index: 2,
+					label: '手机',
+					filterType: 'phone'
+				},
+				'email': {
+					index: 3,
+					label: '邮箱',
+					filterType: 'email'
+				},
+				'address': {
+					index: 4,
+					label: '地址'
+				}
+			}
+
+			// var fields = ['userName', 'idCard', 'phone', 'email', 'address'];
+			// var labels = ['姓名', '身份证', '手机', '邮箱', '地址'];
 			var self = this;
 			var userInfo = self.$getUserInfo();
+
 			for(var f in userInfo){
-				if(userInfo[f] && fields.indexOf(f) > -1){
+				if(fields[f]){
+					var filterType = fields[f].filterType;
+					var content = userInfo[f];
+					content = content
+						? filterType
+							? window.utils.filters(content, filterType)
+							: content
+						: "无";
+
 					self.nameInputs.items.push({
 						name: f,
-						label: userInfo[f]
+						label: fields[f].label,
+						content: content,
 					})
 				}
 			}
 
-			self.nameInputs.items.sort(function(a, b){
-				return fields.indexOf(a.name) > fields.indexOf(b.name) 
-			})
-			// console.log(userInfo);
+			// self.nameInputs.items.sort(function(a, b){
+			// 	console.log(fields[a.name].index)
+			// 	return fields[a.name].index > fields[b.name].index 
+			// })
 		}
 	}
 </script>
@@ -172,7 +213,16 @@
 				margin-right: -0.44rem;
 			}
 
+			.c-item-label{
+				width: 25%;
+			}
+
 			.c-item-content{
+				width: 75%;
+				-webkit-box-pack: start;
+				-ms-flex-pack: start;
+				justify-content: flex-start;
+
 				.head-portrail{
 					width: 1.25rem;
 					height: 1.25rem;

@@ -110,6 +110,7 @@
 				var params={
 					id:this.$store.state.id,
 				}
+				var self = this;
 				var items = this.nameInputs.items;
 				var warn;
 
@@ -118,7 +119,7 @@
 					warn = item.checker(item, this.$getChecker);
 					params[item.name] = item.value;
 					if(warn){
-						alert(warn);
+						self.$store.$toast.alert(warn);
 						return;
 					}
 				}
@@ -130,11 +131,11 @@
 					url:'/appApi/appUsers/updateUserDetail'
 				}).then(function(res){
 					if(res.status=='200'){		// TODO 
-						var code=res.data.data.code;
-						if(code=='200'){
-							console.log("ok", res.data);
+						var status=res.data.status;
+						if(status=='200'){
+							window.history.go(-1)
 						}else{
-
+							res.data.msg && self.$store.$toast.alert(res.data.msg)
 						}
 					}
 				}).catch(function(err){

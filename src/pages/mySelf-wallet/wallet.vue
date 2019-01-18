@@ -6,6 +6,7 @@
 		<div class="u-header-padding" ></div>
 
 		<div class="m-wallet-details">
+			<!-- <img :src="bgImg" alt=""> -->
 			<p class="details-sum f-fs-12">总余额（元）</p>			
 			<p class="details-num">{{sum}}</p>
 			<div class="details-inner">
@@ -37,16 +38,35 @@
 				<div class="c-item-raw-right"></div>
 			</div>
 		</div>
+
+		<div>
+			<toast v-model="toast.show" 
+				type="text" :time='1200' 
+				is-show-mask 
+				:text="toast.text" 
+				:position="'middle'" 
+				width="6em">
+			</toast>
+		</div>
+
 	</div>
 </template>
 
 <script>
 	import cmheader from '../../components/cmHeader.vue'
+	import {Toast} from 'vux'
+
+	var toast = {
+		show: false,
+		text: ""
+	}
 
 	export default{
 		name:'',
 		data(){
 			return{
+				// bgImg: require('../../assets/wallet-bg-x.png'),
+				toast: toast, 
 				sum: 0,
 				voucher: 0,
 				incomon: 0,
@@ -54,13 +74,18 @@
 			}
 		},
 		components:{
-			cmheader
+			cmheader,
+			Toast
 		},
 		methods:{
 			goToPickup(){
+				if(!this.isBinded()){
+					toast.show = true;
+					toast.text = "请先绑定银行卡";
+					return;
+				}
 				this.$gotoPages('/mySelf-wallet-pickup', {
-					sum: this  // FIXME
-					// sum: this.sum
+					sum: this.sum
 				})
 			},
 			goToBind(){
@@ -129,11 +154,18 @@
 		height: 5rem;
 		width: 100%;
 		text-align: center;
-		background: url(../../assets/wallet-bg.png) no-repeat;
+		background: url(../../img/myself/wallet-bg.png) no-repeat;
+		// background: url(../../assets/wallet-bg-x.png) no-repeat;
 		background-size: 100% 100%; 
 		padding-top: 0.7rem;
 		box-sizing: border-box;
 		color: #fff;
+
+		&>img{
+			height: 5rem;
+			width: 100%;
+			display: block;
+		}
 		
 		.details-sum{
 			color: #eca99d;

@@ -50,13 +50,14 @@
 				}
 				var items = this.nameInputs.items;
 				var warn;
+				var self = this;
 
 				for(var i=0; i< items.length; i++){
 					var item = items[i];
 					warn = item.checker(item, this.$getChecker);
 					params[item.name] = item.value;
 					if(warn){
-						alert(warn);
+						self.$store.$toast.alert(warn);
 						return;
 					}
 				}

@@ -7,10 +7,24 @@ exports.install = function(Vue, options) {
 					return markStar(value, 3, 4);
 				},
 				identify: function(){
-					return markStar(value, 5, 8)
-				}
+					return markStar(value, 5, 5);
+				},
+				username: function(){
+					var len = value.length;
+					return markStar(value, 1, 1);
+				},
+				email: function(){
+					var emailname = value.split("@");
+					var tail = emailname[1];
+					emailname = emailname[0];
+					
+					return emailname
+						? markStar(emailname, 2, 2) + "@" + tail
+						: value;
+				},
 			};
 			function markStar (str,frontLen,endLen) { 
+				if(str.length <= frontLen + endLen) return str;
 				var len = str.length-frontLen-endLen;
 				var star = '';
 				for (var i=0;i<len;i++) {
@@ -22,7 +36,7 @@ exports.install = function(Vue, options) {
 			if(value === null || value === undefined || value === "" || typeof value !== "string")
 				return value;
 			else 
-				return filters[type]();
+				return filters[type] ? filters[type]() : value;
 		}
 	}
 

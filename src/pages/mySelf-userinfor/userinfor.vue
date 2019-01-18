@@ -54,6 +54,16 @@
 		
 		</div>
 
+		<div>
+			<toast v-model="toast.show" 
+				type="text" :time='1200' 
+				is-show-mask 
+				:text="toast.text" 
+				:position="'middle'" 
+				width="6em">
+			</toast>
+		</div>
+
 		<popup v-model="popup.show" 
 			@on-show="popup.onShow"
 			@on-hide="popup.onHide"
@@ -93,13 +103,17 @@
 
 <script>
 	import cmheader from '../../components/cmHeader.vue'
-	import { XButton, Popup } from 'vux'	
+	import { XButton, Popup, Toast } from 'vux'	
 	import { debug } from 'util';
-
-	var self = this;
+	
+	var imgSrc = "http://39.98.52.58:8088/resource/header/";
+	var toast = {
+		show: false,
+		text: ""
+	}
 	var popup ={
 		show: false,
-		headUlrBak: "headpoint-man.png",
+		headUlrBak: "man.png",
 		$parent: null,
 		onShow: function (){
 	
@@ -134,8 +148,11 @@
 					$parent.$resetUserInfor({
 						headImg: checkedItem.img
 					})
-					$parent.details.userImg.img = require('../../img/myself/' + checkedItem.img);
+					$parent.details.userImg.img = imgSrc + checkedItem.img;
 					popup.headUlrBak = checkedItem.img;
+
+					toast.show = true;
+					toast.text = '修改成功';
 				},
 				catch: function(err){
 				}
@@ -146,18 +163,6 @@
 	export default{
 		name:'myself',
 		filters: {
-			filterFactory: function(value, type){
-				var filter = {
-					phone: function(value){
-						return "TODO " + value
-					},
-					identify: function(){
-						return "TODO " + value
-					}
-				}[type];
-
-				return filter(value);
-			},
 			myfilters: function(value, type){
 				if(!value) return "未认证";
 				value = value.toString();
@@ -181,13 +186,14 @@
 					'f-gray-2': true
 				}
 			}
-
 			return{
+				toast: toast,
+				imgSrc: imgSrc,
 				popup: popup,
 				details: {
 					userImg:{
 						label: '头像',
-						img: require('../../img/myself/headpoint-man.png'),
+						img: 'http://39.98.52.58:8088/resource/header/man.png',
 						rawRight: true,
 						onClick: function(){
 							popup.show = true;
@@ -214,7 +220,7 @@
 				headPoint: {
 					items: [{
 						label: '男',
-						img: 'headpoint-man.png',
+						img: 'man.png',
 						check: function(item){
 							_self.check(item)
 						},
@@ -223,7 +229,7 @@
 						}
 					}, {
 						label: '女',
-						img: 'headpoint-woman.png',
+						img: 'woman.png',
 						check: function(item){
 							_self.check(item)
 						},
@@ -232,7 +238,7 @@
 						}
 					}, {
 						label: '老',
-						img: 'headpoint-old.png',
+						img: 'old.png',
 						check: function(item){
 							_self.check(item)
 						},
@@ -241,7 +247,7 @@
 						}
 					}, {
 						label: '少',
-						img: 'headpoint-young.png',
+						img: 'young.png',
 						check: function(item){
 							_self.check(item)
 						},
@@ -273,18 +279,21 @@
 				// this.details.userImg.img = item.url;
 			},
 			creatHeadPointUrl(item){
+				var self = this;
 				this.headPoint.items.forEach(function (item){
-					item.url = require('../../img/myself/' + item.img)
+					item.url = self.imgSrc + item.img
 				})
 			}
 		},
 		components:{ 
 			XButton,
 			Popup,
-			cmheader
+			Toast,
+			cmheader,
 		},
 		created(){
 			var userInfo = this.$store.state.userInfo;
+			var self = this;
 
 			var nameItem =  this.$findObj(this.details.items, 'label', '昵称');
 			nameItem.content = userInfo.nickName || nameItem.content;
@@ -311,7 +320,7 @@
 				)
 
 				if(headPointItem){
-					this.details.userImg.img = require('../../img/myself/' + userInfo.headImg);
+					this.details.userImg.img = self.imgSrc + userInfo.headImg;
 					this.check(headPointItem)
 					popup.headUlrBak = headPointItem.img;
 				}

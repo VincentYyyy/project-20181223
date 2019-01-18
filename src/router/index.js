@@ -11,6 +11,9 @@ export default new Router({
 		redirect: {
 			path:'/login'
 		},
+		params: {
+			logout: false
+		},
 		component: resolve => require(['../pages/login/login.vue'], resolve)
 	},{
 		path: '/home',
@@ -78,7 +81,7 @@ export default new Router({
 		path:'/cityloadArea/getTask',
 		name:'getTask',
 		component: resolve => require(['../pages/cityloadArea/getTask.vue'], resolve)
-	},{
+	},{ 
 		//普通任务，重大任务
 		path:'/cityloadArea/getTaskList',
 		name:'getTaskList',

@@ -8,8 +8,8 @@
 
 		<!-- 个人信息 -->
 		<div class="c-panel">
-			<p class="bank">中国工商银行</p>
-			<p class="bank-card f-gray-2">尾号5266储值卡</p>
+			<p class="bank">{{wallet.bankAddress}}</p>
+			<p class="bank-card f-gray-2">尾号{{wallet.bankCardTail}}储值卡</p>
 		</div>
 
 		<div class="c-panel money">
@@ -45,6 +45,17 @@
 			</button>
 		</div>
 
+		<div>
+			<toast v-model="toast.show" 
+				type="text" :time='1200' 
+				is-show-mask 
+				:text="toast.text" 
+				:position="'middle'" 
+				width="6em">
+			</toast>
+		</div>
+
+
 		<x-dialog v-model="dialog.show">
 			<div class="m-dialog">
 				<p class="header">提现</p>
@@ -71,15 +82,24 @@
 <script>
 	import {XDialog} from 'vux'
 	import cmheader from '../../components/cmHeader.vue'
+	import {Toast} from 'vux'
+
+	var toast = {
+		show: false,
+		text: ""
+	}
 
 	export default{
 		name:'',
 		data(){
 			return{
+				toast: toast,
 				dialog: {
 					show: false,
 				},
 				wallet: {
+					bankAddress: "",
+					bankCardTail: "",
 					sum: 0,
 					pickupNum: null
 				},
@@ -92,7 +112,8 @@
 		},
 		components:{
 			cmheader,
-			XDialog
+			XDialog,
+			Toast
 		},
 		methods:{
 			pickupAll(){
@@ -118,7 +139,8 @@
 			onPickup(){
 				var reg = /^\+?(\d+\.\d{2})$/;
 				if( reg.test(this.wallet.pickupNum)) {
-					alert("请输入有效的提现额度");
+					toast.show = true;
+					toast.text = "请输入有效的提现额度";
 					return;
 				}
 
@@ -138,11 +160,11 @@
 					then: function(data){
 						if(data.status === "200"){
 							self.wallet.sum = self.wallet.sum = self.wallet.pickupNum;
-							self.wallet.pickupNum = 0;
+							self.wallet.pickupNum = "";
+							window.history.go(-1);
 						}
-
 						self.dialog.show = false;
-						alert(data.msg);
+						self.$store.$toast.alert("提现成功");
 					}
 				})
 			},
@@ -151,6 +173,13 @@
 			},
 		},
 		mounted(){
+			var self = this;
+
+			var userinfo = self.$getUserInfo();
+			self.wallet.bankAddress = userinfo.bankAddress;
+			self.wallet.bankCardTail = userinfo.bankCard;
+			var len = userinfo.bankCard.length;
+			self.wallet.bankCardTail = self.wallet.bankCardTail.slice(len - 4, len);
 			this.wallet.sum = this.$route.query.sum || 0;
 		}
 	}
