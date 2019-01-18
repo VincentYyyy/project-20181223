@@ -37,11 +37,13 @@
 					<div class="c-item-content">
 						<p class="budget-num"
 							:class="{
-								'budget-out': item.budget <= 0,
-								'budget-in': item.budget > 0
+								'budget-out': item.type === '提现',
+								'budget-in': item.type === '任务'
 							}"
 						>
-							<span v-if="item.budget > 0">+</span>{{item.budget}}
+							<span v-if="item.type === '提现'">-</span>
+							<span v-if="item.type === '任务'">+</span>
+							{{item.budget}}
 						</p>
 						<p class="budget-status f-fs-12"
 							:class="item.class"
@@ -82,15 +84,17 @@
 				window.history.go(-1)
 			},
 			checkout(type){
+
+				// 0 ==> pay
 				var filter = {
 					'all': function (){
 						return true
 					},
 					'pay': function (item){
-						return item.budget > 0
+						return item.type === "提现"
 					},
 					'income': function (item){
-						return item.budget <= 0
+						return item.type === "任务"
 					}
 				}
 				var self = this;
@@ -124,6 +128,8 @@
 				var data = res.data;
 				if(data.status === "200" && data.data){
 					data.data.forEach(function(item, index){
+						item.type = parseInt(item.type);
+						console.log(item.type);
 						self.budget.items.push({
 							label: item.billName || "收支描述",
 							img: imgSrc + (item.headImg || 'man.png'),
@@ -231,7 +237,7 @@
 				flex-direction: column;
 
 				.budget-num{
-					margin-bottom: 0.4rem;
+					margin-bottom: 0.3rem;
 
 					&.budget-out{
 						color: black;

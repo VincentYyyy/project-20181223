@@ -13,9 +13,9 @@
 				class="c-list-item"
 			>
 				<div class="c-item-label">
-					<div class="justify" v-html="item.label"></div> ：
+					<div class="justify f-fs-15" v-html="item.label"></div> ：
 				</div>
-				<div class="c-item-content">
+				<div class="c-item-content f-fs-14">
 					 {{item.content}}
 				</div>
 			</div>
@@ -226,7 +226,7 @@
 			}
 
 			.c-item-label{
-				width: 25%;
+				width: 30%;
 			}
 
 			.c-item-content{
