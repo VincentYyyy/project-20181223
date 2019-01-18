@@ -3,7 +3,7 @@
 		<cmheader :title="'收支明细'"></cmheader>
 
 		<!-- 头部占位 -->
-		<div class="u-header-padding" ></div>
+		<!--<div class="u-header-padding" ></div>-->
 
 		<div class="tab-wrap">
 			<tab>
@@ -182,7 +182,7 @@
 		background: #FFFFFF;	
 	}
 	.order-content{
-		padding-top: 0.9rem;
+		padding-top: 1.8rem;
 
 		.no-data{
 			line-height: 1rem;

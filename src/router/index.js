@@ -44,6 +44,10 @@ export default new Router({
 		name: 'cityloadArea',
 		component: resolve => require(['../pages/cityloadArea/cityloadArea.vue'], resolve)
 	},{
+		path: '/cityloadArea/getMoney',
+		name: 'getMoney',
+		component: resolve => require(['../pages/cityloadArea/getMoney.vue'], resolve)
+	},{
 		//礼包列表
 		path:'/cityloadArea/moreList',
 		name:'moreList',

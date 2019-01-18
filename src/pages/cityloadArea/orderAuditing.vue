@@ -9,10 +9,10 @@
 					</div>
 					<div>
 						<div class="goods-name">
-							{{item.content}}
+							{{item.taskList.taskName}}
 						</div>
 						<div class="goods-type">
-							【{{item.statusStr}}】
+							【{{item.taskList.memberTypeStr}}】
 						</div>
 					</div>
 				</div>
@@ -22,7 +22,7 @@
 							¥&nbsp;{{item.taskAmount}}
 						</div>  
 						<div class="goods-status">
-							<!--{{item.statusStr}}-->
+							{{item.statusStr}}
 						</div>
 					</div>
 					<div class="goods-trangle-wrap">

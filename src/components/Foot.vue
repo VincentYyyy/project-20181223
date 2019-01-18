@@ -132,7 +132,9 @@
 		padding: .1rem 0 .1rem 0;
 		line-height: 15px;
 	}
-	
+	.weui-grids{
+	    height: 100%!important;
+	}
 	.weui-grid__label {
 		margin: 0;
 	}
@@ -158,6 +160,17 @@
 	}
 	.weui-grids{
 		/*padding: .2rem 0;*/
+		position: relative;
+	}
+	.weui-grid>div{
+		position: absolute;
+		width: 100%;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+		-webkit-transform: translate(-50%,-50%);
+		-moz-transform: translate(-50%,-50%);
+		-o-transform: translate(-50%,-50%);
 	}
 	.weui-grids a span{
 		display: inline-block;
@@ -194,11 +207,11 @@
 	}
 	
 	.weui-grids a:nth-of-type(4) span{
-		background: url(../assets/竞乐投@3x.png);
+		background: url(../assets/我的@3x.png);
 		background-size: 100% 100%;
 	}
 	.weui-grids a:nth-of-type(4) span.active{
-		background: url(../assets/竞乐投选中@3x.png);
+		background: url(../assets/我的选中@3x.png);
 		background-size: 100% 100%;
 	}
 </style>

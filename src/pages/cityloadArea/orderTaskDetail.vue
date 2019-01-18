@@ -1,7 +1,7 @@
 <template>
 	<div class="application-auditing">
 		<div>
-			<toast v-model="showResMsg" type="text" :time='1200' is-show-mask :text="resMsgContent"  :position="'middle'" width="auto"></toast>
+			<toast v-model="showResMsg" type="text" :time='1200' is-show-mask :text="resMsgContent"  :position="'middle'" width="7em"></toast>
 			<loading :show="isUpLoadding" text="提交中"></loading>
 		</div>
 		<cmheader :title="thatTitle"></cmheader>
@@ -345,6 +345,11 @@
 			
 			uploadFiles(){
 				var _this=this
+				if(this.remark==''){
+					this.resMsgContent='备注不能为空!'
+					this.showResMsg=true
+					return false
+				}
 				this.isUpLoadding=true
 				var formData=new FormData()
 				if(this.myFilesList.length>0){
@@ -356,6 +361,7 @@
 				}else{
 					formData.append('File',[])
 				}
+				
 				formData.append('bizCode','新增文件夹')
 				this.$axios({
 					headers: {

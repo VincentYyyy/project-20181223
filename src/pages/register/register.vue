@@ -231,7 +231,7 @@
 		height: .44rem;
 	}
 	#checkNumber{
-		width: 3.8rem;
+		width: 3rem;
 	}
 	.check-btn{
 		color: #e03228;

@@ -113,9 +113,17 @@
 				var phone=userInfo.phone
 				var params='&app_phone='+phone+'&app_strkey='+md5('hpyshop'+md5(phone))
 				var _url=link+params
-				this.$gotoPages('/cityloadArea/mallDetail',{
-					link:_url
-				})
+				if(this.$isIOS()){
+					//ios
+					console.log(_url)
+					goodsDetails(_url)
+				}else{
+					//android
+					this.$gotoPages('/cityloadArea/mallDetail',{
+						link:_url
+					})
+				}
+				
 			},
 		    initHomeData(type){
 		    	var _this=this
@@ -124,13 +132,40 @@
 					pageNum:1,
 					pageSize:10
 		    	}
+		    	var flag=false  //本地存储
+		    	switch(type){
+		    		case 1:
+		    		if(sessionStorage.getItem('swiperList')){
+		    			let swiperList=JSON.parse(sessionStorage.getItem('swiperList'))
+		    			this.swiperList=swiperList
+		    			flag=true
+		    		}
+		    		break;
+		    		case 2:
+		    		if(sessionStorage.getItem('logoList')){
+		    			let logoList=JSON.parse(sessionStorage.getItem('logoList'))
+		    			this.logoList=logoList
+		    			flag=true
+		    		}
+		    		break;
+		    		case 3:
+		    		if(sessionStorage.getItem('staticAdList')){
+		    			let staticAdList=JSON.parse(sessionStorage.getItem('staticAdList'))
+		    			this.staticAdList=staticAdList
+		    			flag=true
+		    		}
+		    		break;
+		    	}
+		    	if(flag){
+		    		//本地存储则直接使用
+		    		return
+		    	}
 		    	params=this.$qs.stringify(params)
 		    	this.$axios({
 		    		method:'post',
 		    		data:params,
 		    		url:'/appApi/appUsers/getAdvertisementList'
 		    	}).then(function(res){
-		    		console.log(res)
 		    		if(res.status=='200'){
 		    			var getData=res.data
 		    			if(getData.status=='200'){
@@ -144,12 +179,17 @@
 		    				switch(type){
 		    					case 1:
 		    					_this.swiperList=resultArr
+//		    					console.log(resultArr.join(','))
+		    					sessionStorage.setItem('swiperList',JSON.stringify(resultArr))
 		    					break;
 		    					case 2:
 		    					_this.logoList=resultArr
+		    					sessionStorage.setItem('logoList',JSON.stringify(resultArr))
 		    					break;
 		    					case 3:
+		    					console.log(resultArr)
 		    					_this.staticAdList=resultArr
+		    					sessionStorage.setItem('staticAdList',JSON.stringify(resultArr))
 		    					break;
 		    					default:
 		    					break;
@@ -169,7 +209,6 @@
 			this.initHomeData(1)
 			this.initHomeData(2)
 			this.initHomeData(3)
-			console.log(JSON.parse(sessionStorage.getItem('userInfo')))
 		},
 		mounted(){
 			

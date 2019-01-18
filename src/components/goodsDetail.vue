@@ -1,8 +1,8 @@
 <template>
 	<div class="goods-detail">
-		<div @click="controlResult" style="position: fixed;top: 400px;">
+		<!--<div @click="controlResult" style="position: fixed;top: 400px;">
 			controlResult
-		</div>
+		</div>-->
 		<!--<cmheader :title="thatTitle"></cmheader>-->
 		<div class="btn-bg bg-now" @click="showPopUp">
 			立即购买
@@ -47,7 +47,7 @@
 				</div>
 				<div style="max-height: 45vh;overflow-y: scroll;overflow-x: hidden;">
 					<div>
-						<img src="../assets/no-add.png" v-if="addList.length==0&&!isFisrtLoad" style="margin: 0 auto;">
+						<img src="../assets/no-add.png" v-if="addList.length==0&&!isFisrtLoad" style="margin: 0 auto;display: block;">
 					</div>
 					<div class="btn-bg buy-now-btn" @click="newAddress" v-if="addList.length==0&&!isFisrtLoad">
 						新增
@@ -113,6 +113,7 @@
 				</div>
 			</div>
 		</Popup>
+		<toast v-model="showMsg" type="text" :time='1200' is-show-mask :text="msgContent"  :position="'middle'" width="auto"></toast>
 		</div>
 	</div>
 </template>
@@ -120,7 +121,7 @@
 <script>
 	import md5 from 'js-md5'
 //	import cmheader from '../../components/cmHeader.vue'
-	import { Popup,TransferDom } from 'vux'
+	import { Toast,Popup,TransferDom } from 'vux'
 	
 	export default {
 		name: 'goods-detail',
@@ -146,7 +147,10 @@
 				}],
 				receiptAddress:'',
 				receiptPhone:'',
-				receiptPerson:''
+				receiptPerson:'',
+				isBuying:false,
+				msgContent:'',
+				showMsg:false,
 		}},
 		props:['goodsInfo'],
 		methods: {
@@ -224,8 +228,13 @@
 				}
 			},
 			buyGoods(){
+				//选中微信或者支付宝支付
 				var _this=this
 				var payType=1
+				if(this.isBuying){
+					this.showMsg=true
+					return false
+				}
 				if(this.selectedIndex==0){
 					payType=1
 				}else{
@@ -239,22 +248,41 @@
 					receiptPhone:this.receiptPhone,	//必填	String	收货人电话
 					receiptPerson:this.receiptPerson	//必填	String	收货人姓名
 				}
-				console.log(params)
-				return false
 				params=this.$qs.stringify(params)
 				this.$axios({
 					method:'post',
 					url:'/appApi/appUsers/getGift',
 					data:params
-				}).then(function(res){
-					
+				}).then(function(res){		
+					_this.countTime=60
+					var inv=setInterval(function(){
+						_this.countTime--
+						_this.msgContent='请勿频繁操作('+_this.countTime+'s)'
+						if(_this.countTime<=0){
+							_this.countTime=60
+							_this.isBuying=false
+							clearInterval(inv)
+						}
+					},1000)
 					if(res.status==200){
 						var getData=res.data
 						if(getData.status=='200'){
-							var orderStr=getData.data.orderStr
-	//						console.log(orderStr)
-							_this.orderId=getData.data.orderId
-							_this.goNativeAPP(orderStr)
+							if(payType==1){
+								//zhifu
+								var orderStr=getData.data.orderStr
+		//						console.log(orderStr)
+								_this.orderId=getData.data.orderId
+								_this.goZFBPay(orderStr)
+							}else{
+								var partnerid=getData.data.partnerid
+								var prepayid=getData.data.prepayid
+								var _package=getData.data.package
+								var noncestr=getData.data.noncestr
+								var timestamp=getData.data.timestamp
+								var sign=getData.data.sign
+								_this.goWXPay(partnerid,prepayid,_package,noncestr,timestamp,sign)
+							}
+							
 						}else{
 							alert('支付异常,请重试')
 						}
@@ -266,42 +294,77 @@
 					console.log(err)
 				})
 			},
-			goNativeAPP(orderStr){
+			goZFBPay(orderStr){
 				console.log(orderStr)
 				if(window.android){
-					window.android.lbZFBPay(orderStr)
+					window.android.toast()
+					window.android.ZFBPay(orderStr)
 				}else{
-					lbZFBPay(orderStr)
+					ZFBPay(orderStr)
 				}			
 			},
-			controlResult(){
+			goWXPay(partnerid,prepayid,_package,noncestr,timestamp,sign){
+				//partnerid  商家id
+				//prepayId   预支付订单
+				//package    根据财付通文档填写的数据和签名
+				//nonceStr   随机码
+				//timeStamp  时间
+				//sign       签名
+				let obj=new Object()
+					obj={
+						partnerId:partnerid,
+						prepayId:prepayid,
+						package:_package,
+						nonceStr:noncestr,
+						timeStamp:timestamp,
+						sign:sign
+					}
+					console.log(obj)
+				var JSONString=JSON.stringify(obj)
+				if(window.android){
+					window.android.toast()
+					window.android.WXPay(JSONString)
+				}else{
+					WXPay(JSONString)
+				}
+			},
+			controlResult(val){
 				var _this=this
 				var params={
 					id:this.$store.state.id,
 					orderId:this.orderId
 				}
-				alert('调用了支付状态后台数据返回接口')
+				if(val!='success'){
+					return false
+				}
 				params=this.$qs.stringify(params)
 				this.$axios({
 					method:'post',
 					data:params,
 					url:'/appApi/appUsers/getOrdeById'
 				}).then(function(res){
+					console.log('后台返回的responds对象:')
+//					alert('后台返回的responds对象')
+					//alert(res.status)
 					if(res.status=='200'){
 						var getData=res.data
 						if(getData.status=='200'){
+							console.log('后台返回的订单状态0待付款1已付款2取消订单3订单已关闭4支付失败')
+//							alert('后台返回的订单状态0待付款1已付款2取消订单3订单已关闭4支付失败')
 							var payResultStatus=getData.data.status
 							_this.payResultStatus=payResultStatus
+							//alert('获取到后台订单状态是:'+payResultStatus)
 							if(payResultStatus==1||payResultStatus==4){
+								console.log('订单状态为已付款或者支付失败')
+								//alert('获取到后台订单状态是:'+payResultStatus)
 								_this.$gotoPages('/cityloadArea/payResult',{payResultStatus:payResultStatus})
 							}else{
-								alert('支付异常,请重试')
+								_this.closeWindow()
+								//alert('订单状态为非非非非非非已付款或者支付失败')
 							}
-						}else{
-							alert('支付异常,请重试')
 						}
 					}else{
-						alert('支付异常,请重试')
+						alert('网络有误，请稍后重试')
 					}
 				}).catch(function(err){
 					console.log(err)
@@ -310,24 +373,22 @@
 		},
 		components: {
 			Popup,
+			Toast
 //			cmheader
 		},
 		directives: {
 		    TransferDom
 		},
+		created(){
+			window.PayState=this.controlResult
+		},
 		mounted(){
 			var _this=this
 			this.initAddList()
-			console.log(this.$store.state.isFromMall)
+			console.log(window.PayState)
 			if(this.$store.state.isFromMall){
 				this.isShowPopUp=true
 			}
-			window.onload=function(){
-				window['lbZFBPayState']=function(val){
-					_this.controlResult()
-				}
-			}
-			
 		}
 	}
 </script>

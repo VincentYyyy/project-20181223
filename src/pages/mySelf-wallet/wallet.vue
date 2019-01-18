@@ -154,13 +154,12 @@
 		height: 5rem;
 		width: 100%;
 		text-align: center;
-		background: url(../../img/myself/wallet-bg.png) no-repeat;
+		background: url(../../assets/wallet-bg.png) no-repeat;
 		// background: url(../../assets/wallet-bg-x.png) no-repeat;
 		background-size: 100% 100%; 
 		padding-top: 0.7rem;
 		box-sizing: border-box;
 		color: #fff;
-
 		&>img{
 			height: 5rem;
 			width: 100%;

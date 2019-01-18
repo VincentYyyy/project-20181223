@@ -113,7 +113,7 @@
     .ac-task-detail{
     	text-align: left;
     	font-size: 18px;
-    	padding: 0.26rems .08rem;
+    	padding: 0.26rem .08rem;
     }
     .ac-title{
     	font-size: 16px;	

@@ -108,7 +108,7 @@
 				if(sec==0){
 					clearInterval(inv)
 					flag=0
-					_this.isShowSe=false
+					_this.isShowSec=false
 				}
 				},1000)
 			},

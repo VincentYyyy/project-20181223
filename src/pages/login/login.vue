@@ -1,6 +1,6 @@
 <template>
 	<div class="login">
-		<img src="../../../static/chicon/close_btn.png" @click="goBack" class="page-close">
+		<!--<img src="../../../static/chicon/close_btn.png" @click="goBack" class="page-close">-->
 		<div class="login-title">
 			登录八八商城
 		</div>
@@ -171,6 +171,7 @@
 		line-height: .12rem;
 		font-size: 12px;
 		div {
+			height: 24px;
 			color: #333333;
 		}
 	}
