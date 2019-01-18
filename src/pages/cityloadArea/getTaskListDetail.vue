@@ -115,7 +115,7 @@
 						if(getData.status == '200') {
 							var _data = getData.data
 							_this.showMsg = true
-							_this.msgContent = getData.msg
+							_this.msgContent = '领取成功'
 							setTimeOut(function() {
 								window.history.go(-1)
 							}, 2000)
@@ -131,6 +131,11 @@
 			},
 			copyUrl2(){
 					var v=this.$refs.myWords
+					if(this.$isIOS()){
+						console.log(v.value)
+						copyWords(v.value)
+						return false
+					}	
 				    if(v.value.length>0){
 				        v.select();
 				        this.msgContent = '任务要求已复制'

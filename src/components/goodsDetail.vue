@@ -113,6 +113,7 @@
 				</div>
 			</div>
 		</Popup>
+		<toast v-model="showMsg" type="text" :time='1200' is-show-mask :text="msgContent"  :position="'middle'" width="auto"></toast>
 		</div>
 	</div>
 </template>
@@ -146,7 +147,10 @@
 				}],
 				receiptAddress:'',
 				receiptPhone:'',
-				receiptPerson:''
+				receiptPerson:'',
+				isBuying:false,
+				msgContent:'',
+				showMsg:false,
 		}},
 		props:['goodsInfo'],
 		methods: {
@@ -224,8 +228,13 @@
 				}
 			},
 			buyGoods(){
+				//选中微信或者支付宝支付
 				var _this=this
 				var payType=1
+				if(this.isBuying){
+					this.showMsg=true
+					return false
+				}
 				if(this.selectedIndex==0){
 					payType=1
 				}else{
@@ -244,23 +253,34 @@
 					method:'post',
 					url:'/appApi/appUsers/getGift',
 					data:params
-				}).then(function(res){	
+				}).then(function(res){		
+					_this.countTime=60
+					var inv=setInterval(function(){
+						_this.countTime--
+						_this.msgContent='请勿频繁操作('+_this.countTime+'s)'
+						if(_this.countTime<=0){
+							_this.countTime=60
+							_this.isBuying=false
+							clearInterval(inv)
+						}
+					},1000)
 					if(res.status==200){
 						var getData=res.data
 						if(getData.status=='200'){
 							if(payType==1){
+								//zhifu
 								var orderStr=getData.data.orderStr
 		//						console.log(orderStr)
 								_this.orderId=getData.data.orderId
 								_this.goZFBPay(orderStr)
 							}else{
-								var partnerId=getData.data.partnerId
-								var prepayId=getData.data.prepayId
+								var partnerid=getData.data.partnerid
+								var prepayid=getData.data.prepayid
 								var _package=getData.data.package
-								var nonceStr=getData.data.nonceStr
-								var timeStamp=getData.data.timeStamp
+								var noncestr=getData.data.noncestr
+								var timestamp=getData.data.timestamp
 								var sign=getData.data.sign
-								_this.goWXPay(partnerId,prepayId,_package,nonceStr,timeStamp,sign)
+								_this.goWXPay(partnerid,prepayid,_package,noncestr,timestamp,sign)
 							}
 							
 						}else{
@@ -283,8 +303,8 @@
 					ZFBPay(orderStr)
 				}			
 			},
-			goWXPay(partnerId,prepayId,_package,nonceStr,timeStamp,sign){
-				//partnerId  商家id
+			goWXPay(partnerid,prepayid,_package,noncestr,timestamp,sign){
+				//partnerid  商家id
 				//prepayId   预支付订单
 				//package    根据财付通文档填写的数据和签名
 				//nonceStr   随机码
@@ -292,13 +312,14 @@
 				//sign       签名
 				let obj=new Object()
 					obj={
-						partnerId:partnerId,
-						prepayId:prepayId,
+						partnerId:partnerid,
+						prepayId:prepayid,
 						package:_package,
-						nonceStr:nonceStr,
-						timeStamp:timeStamp,
+						nonceStr:noncestr,
+						timeStamp:timestamp,
 						sign:sign
 					}
+					console.log(obj)
 				var JSONString=JSON.stringify(obj)
 				if(window.android){
 					window.android.toast()
@@ -342,6 +363,8 @@
 								alert('订单状态为非非非非非非已付款或者支付失败')
 							}
 						}
+					}else{
+						alert('网络有误，请稍后重试')
 					}
 				}).catch(function(err){
 					console.log(err)

@@ -70,7 +70,8 @@
 				//				show3:true,
 				cityLoadList: [{
 					p: '赚钱模式',
-					img: '../../../static/chicon/cityload/矢量智能对象@2x.png'
+					img: '../../../static/chicon/cityload/矢量智能对象@2x.png',
+					href: '/cityloadArea/getMoney'
 				}, {
 					p: '发布广告',
 					img: '../../../static/chicon/cityload/发布广告@2x.png',

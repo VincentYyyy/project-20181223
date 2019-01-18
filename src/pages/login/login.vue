@@ -166,6 +166,7 @@
 		line-height: .12rem;
 		font-size: 12px;
 		div {
+			height: 24px;
 			color: #333333;
 		}
 	}

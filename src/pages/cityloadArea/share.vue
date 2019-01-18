@@ -97,6 +97,11 @@
 			},
 			copyUrl2(){
 					var v=this.$refs.myWords
+					if(this.$isIOS()){
+						console.log(v.value)
+						copyWords(v.value)
+						return false
+					}			
 				    if(v.value.length>0){
 				        v.select();
 				        this.msgContent = '链接已复制'
@@ -111,11 +116,11 @@
 			},
 			showDialog(){
 				//this.isPopUp=true
-				var linkUrl=this.userInfo.linkUrl
+				var linkImgUrl=this.userInfo.linkImgUrl
 				if(window.android){
-					window.android.shareClick(linkUrl)
+					window.android.shareClick(linkImgUrl)
 				}else{
-					shareClick(linkUrl)
+					shareClick(linkImgUrl)
 				}	
 			},
 			initData(){
