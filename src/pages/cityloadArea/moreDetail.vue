@@ -1,5 +1,8 @@
 <template>
 	<div class="mall-wrap-outer">
+		<div v-transfer-dom class="my-loadding">
+			<loading :show="showLoadding" position="fixed" :text="loaddingText"></loading>
+    	</div>
 		<cmheader :title="thatTitle"></cmheader>
 		<div class="mall-wrap">
 			<iframe :src="mallSrc" id="mall-iframe" ref="myIframe">
@@ -14,7 +17,11 @@
 <script>
 	import cmheader from '../../components/cmHeader.vue'
 	import payGroup from '../../components/goodsDetail.vue'
+	import {Loading,TransferDomDirective as TransferDom } from 'vux'
 	export default{
+		directives: {
+		    TransferDom
+		},
 		name:'',
 		data(){
 			return{
@@ -24,12 +31,15 @@
 					price:'',
 					giftName:'',
 					id:''
-				}
+				},
+				loaddingText:'加载中',
+				showLoadding:true
 			}
 		},
 		components:{
 			cmheader,
-			payGroup
+			payGroup,
+			Loading
 		},
 		methods:{
 			demo(){
@@ -63,7 +73,10 @@
 			this.goodsInfo.id=this.$route.query.id
 		},
 		mounted(){
-			
+			var _this=this
+			setTimeout(function(){
+				_this.showLoadding=false
+			},2500)
 		}
 	}
 </script>

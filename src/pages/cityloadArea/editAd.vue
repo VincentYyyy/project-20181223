@@ -143,6 +143,7 @@
 	.edit-ad{
 		/*padding: .3rem;*/
 		textarea{
+			font-size: 15px;
 			background: rgb(245,245,245s);
 			border:0;
 			border-radius: .1rem;
@@ -154,6 +155,7 @@
 			margin-bottom: .3rem;
 		}
 		input{
+			font-size: 15px;
 			background: rgb(245,245,245s);
 			border:0;
 			height: .88rem;
