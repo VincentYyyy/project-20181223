@@ -47,7 +47,7 @@
 				commond: common,
 				nameInputs:{
 					items: [{
-						name: 'name',
+						name: 'userName',
 						value: '',
 						placeholder: '输入姓名',
 						checker: function(item, $getChecker){
