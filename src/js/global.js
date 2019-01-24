@@ -15,11 +15,11 @@ exports.install = function(Vue, options) {
 				},
 				email: function(){
 					var emailname = value.split("@");
-					var tail = emailname[1];
+					var tail = emailname[1] || "" ;
 					emailname = emailname[0];
 					
 					return emailname
-						? markStar(emailname, 2, 2) + "@" + tail
+						? markStar(emailname, 2, 2) + ( tail ? ("@" + tail) : "")
 						: value;
 				},
 			};
@@ -173,14 +173,16 @@ exports.install = function(Vue, options) {
 				return /^1\d{10}$/.test(value)
 			},
 			email: function(value){
-				var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
-				return reg.test(value);
+				return value && value.length >= 3;
+				// var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+				// return reg.test(value);
 			},
 			idCard: function(value){
 				return /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value);
 			},
 			wechat: function (value){
-				return /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})+$/.test(value);
+				return value && value.length >= 3;
+				// return /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})+$/.test(value);
 			},
 			address: commonChecker,
 			password: function(value){

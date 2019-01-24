@@ -77,7 +77,7 @@
 								return "请输入微信号"
 
 							if(!$getChecker('wechat')(item.value))
-								return "微信号格式不正确"
+								return "请输入正确的微信号"
 						}
 					}, {
 						name: 'email',
@@ -88,7 +88,7 @@
 								return "请输入邮箱"
 
 							if(!$getChecker('email')(item.value))
-								return "邮箱格式不正确"
+								return "请输入正确的邮箱"
 						}
 					}, {
 						name: 'address',
